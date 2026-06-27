@@ -3,9 +3,9 @@
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.7 - WEBHOOK FIX)
-    [+] UI Theme    : WindUI
-    [+] Changelog   : - Fixed webhook to show all job stats
+    [+] Version     : DDS FREE EDITION (v5.8 - OFFICE CHAIR SWITCH)
+    [+] Changelog   : - Fixed Office monitoring uang awal & profit
+                      - Added auto kursi ganti kalo sepi soal
                       - Bypass Network Pause auto-active
 ================================================================================
 ]]--
@@ -953,7 +953,7 @@ local function StopBaristaScript(reason)
 end
 
 -- ============================================================================
--- // 12. OFFICE JOB SYSTEM (FIXED)
+-- // 12. OFFICE JOB SYSTEM (V5.8 - CHAIR SWITCH + MONITORING FIX)
 -- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -974,7 +974,7 @@ local myChair            = nil
 local CachedTargetLabel  = nil
 local CachedTargetParent = nil
 
--- ================== FUNGSI BARU: CARI KURSI OTOMATIS ==================
+-- ================== CARI KURSI ==================
 local function findNearestChair(radius)
     local origin = CharRef.Root and CharRef.Root.Position
     if not origin then return nil end
@@ -989,6 +989,28 @@ local function findNearestChair(radius)
             end
         end
         if v:IsA("Seat") and v:IsA("BasePart") then
+            local d = (v.Position - origin).Magnitude
+            if d < bestD then best, bestD = v, d end
+        end
+    end
+    return best
+end
+
+-- Fungsi untuk cari kursi LAIN (selain myChair)
+local function findAnotherChair()
+    local origin = CharRef.Root and CharRef.Root.Position
+    if not origin then return nil end
+    local radius = 50
+    local best, bestD = nil, radius
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v:IsA("ProximityPrompt") and v.Enabled and hasText(v.ActionText, "sit") then
+            local part = v.Parent
+            if part and part:IsA("BasePart") and part ~= myChair then
+                local d = (part.Position - origin).Magnitude
+                if d < bestD then best, bestD = part, d end
+            end
+        end
+        if v:IsA("Seat") and v:IsA("BasePart") and v ~= myChair then
             local d = (v.Position - origin).Magnitude
             if d < bestD then best, bestD = v, d end
         end
@@ -1165,6 +1187,34 @@ local function klikTombol(btn)
     return ok
 end
 
+-- ================== IDLE DETECTOR + CHAIR SWITCH ==================
+local lastActivityTime = tick()
+local isSwitching = false
+local IDLE_SWITCH_TIME = 60 -- detik idle sebelum ganti kursi
+
+task.spawn(function()
+    while true do
+        task.wait(1)
+        if not State.IsOfficeActive then continue end
+        if getgenv().isGoingToPrinter or getgenv().forceStopMath or isSwitching then continue end
+        if tick() - lastActivityTime > IDLE_SWITCH_TIME then
+            isSwitching = true
+            getgenv().forceStopMath = true
+            WindUI:Notify({ Title = "🔄 Office", Content = "Sepi soal, ganti kursi dulu...", Duration = 3 })
+            keluarKursi()
+            local newChair = findAnotherChair()
+            if newChair then
+                myChair = newChair
+            end
+            dudukKeKursi()
+            getgenv().forceStopMath = false
+            isSwitching = false
+            lastActivityTime = tick()
+        end
+    end
+end)
+
+-- ================== MATH THREAD ==================
 task.spawn(function()
     while true do
         task.wait(0.2)
@@ -1179,6 +1229,9 @@ task.spawn(function()
         local soalLabel = soalCacheValid() and CachedTargetLabel or cariSoalBaru()
         if not soalLabel then task.wait(0.8) continue end
 
+        -- Setiap nemu soal (atau mau jawab), reset timer idle
+        lastActivityTime = tick()
+
         local text = soalLabel.Text
         local a, op, b = string.match(text, "(%d+)%s*([%+%-%*/])%s*(%d+)")
         if not a then CachedTargetLabel, CachedTargetParent = nil, nil continue end
@@ -1191,7 +1244,6 @@ task.spawn(function()
         elseif op == "/" and n2 ~= 0 then jawaban = n1 / n2
         else CachedTargetLabel, CachedTargetParent = nil, nil continue end
 
-        -- CARI TOMBOL DI SELURUH PLAYERGUI (BUKAN CUMA PARENT)
         local ditemukan = false
         for _, btn in pairs(playerGui:GetDescendants()) do
             if getgenv().forceStopMath or not State.IsOfficeActive then break end
@@ -1207,6 +1259,7 @@ task.spawn(function()
                     if getgenv().forceStopMath or not State.IsOfficeActive then break end
                     if klikTombol(btn) then
                         State.OfficeMathSolved = (State.OfficeMathSolved or 0) + 1
+                        lastActivityTime = tick() -- reset lagi setelah berhasil jawab
                     end
                     task.wait(math.random(4,12)/10)
                     break
@@ -1229,7 +1282,7 @@ task.spawn(function()
     end
 end)
 
--- ================== MONITORING GUI ==================
+-- ================== MONITORING GUI (DIPERBAIKI) ==================
 local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
 local TrackerGui = nil
 
@@ -1251,7 +1304,7 @@ local function formatTime(seconds)
     return string.format("%02d:%02d:%02d", h, m, s)
 end
 
-local function buatMonitoringGUI()
+local function buatMonitoringGUI(initialMoney)
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy() end
     TrackerGui = Instance.new("ScreenGui")
     TrackerGui.Name = "KingAkbarTracker"
@@ -1302,16 +1355,14 @@ local function buatMonitoringGUI()
     local soal, printCount = baris("Soal Jawab", "Total Print", 5)
     local uptime = barisTunggal("Uptime", 6)
 
+    uangAwal.Text = formatNumber(initialMoney)
+
     task.spawn(function()
         while TrackerGui and TrackerGui.Parent and State.IsOfficeActive do
             pcall(function()
                 local nowMoney = GetPlayerMoney()
-                if type(getgenv().uangAwal) ~= "number" or getgenv().uangAwal == 0 then
-                    if nowMoney > 0 then getgenv().uangAwal = nowMoney end
-                end
-                local awal = tonumber(getgenv().uangAwal) or 0
-                local profit = nowMoney - awal
-                uangAwal.Text = formatNumber(awal)
+                local profit = nowMoney - initialMoney
+                uangAwal.Text = formatNumber(initialMoney)
                 pendapatan.Text = (profit >= 0 and "+" or "") .. formatNumber(profit)
                 soal.Text = tostring(State.OfficeMathSolved or 0)
                 printCount.Text = tostring(State.OfficePrints or 0)
@@ -1333,10 +1384,23 @@ local function StartOfficeScript()
     State.OfficeMathSolved = 0
     State.OfficePrints = 0
     getgenv().fullAuto = true
-    getgenv().uangAwal = GetPlayerMoney()
     getgenv().waktuMulai = tick()
-    
-    -- Kalau belum duduk, cari kursi dulu
+
+    -- NUNGGU UANG BENERAN ADA
+    local initialMoney = 0
+    local waited = 0
+    while waited < 10 do
+        initialMoney = GetPlayerMoney()
+        if initialMoney > 0 then break end
+        task.wait(0.5)
+        waited = waited + 0.5
+    end
+    if initialMoney == 0 then
+        WindUI:Notify({ Title = "⚠️ Office", Content = "Gagal baca uang, profit mungkin nggak akurat.", Duration = 5 })
+    end
+    getgenv().uangAwal = initialMoney
+
+    -- Auto cari kursi kalau belum duduk
     if not CharRef.Humanoid or not CharRef.Humanoid.SeatPart then
         WindUI:Notify({ Title = "🔍 Office", Content = "Mencari kursi kerja...", Duration = 3 })
         local sitPrompt = findNearestChair(60)
@@ -1357,8 +1421,8 @@ local function StartOfficeScript()
         myChair = CharRef.Humanoid.SeatPart
     end
 
-    buatMonitoringGUI()
-    WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan!", Duration = 3 })
+    buatMonitoringGUI(initialMoney)
+    WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Kursi bakal ganti kalo sepi soal.", Duration = 4 })
 end
 
 local function StopOfficeScript()
@@ -2123,7 +2187,7 @@ WindUI:SetTheme("dark")
 TabMenu:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.7 SIAP!",
-    Content  = "Webhook fix: laporan lengkap semua job. Bypass Pause aktif.",
+    Title    = "👑 KING AKBAR V5.8 SIAP!",
+    Content  = "Office fix: uang akurat + auto ganti kursi kalo sepi soal.",
     Duration = 5,
 })
