@@ -3,9 +3,10 @@
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 - INFO TAB)
-    [+] Changelog   : - Ganti Menu Utama jadi Info Discord + Credits
-                      - Office: Fix uang awal & auto ganti kursi kalo sepi
+    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE MONITOR FIX)
+    [+] Changelog   : - Monitoring Office: uang awal dikunci, profit akurat
+                      - GetPlayerMoney(): scan teks Rp di GUI
+                      - Auto ganti kursi kalo sepi soal
                       - Bypass Network Pause auto-active
 ================================================================================
 ]]--
@@ -156,24 +157,50 @@ local function rWait(minSec, maxSec)
 end
 
 -- ============================================================================
--- // 4. WEBHOOK (FIXED)
+-- // 4. WEBHOOK (FIXED) & GetPlayerMoney UPGRADE
 -- ============================================================================
 local function GetPlayerMoney()
     local money = 0
+
+    -- 1. Cek leaderstats (cara paling akurat)
     pcall(function()
-        if LocalPlayer:FindFirstChild("leaderstats") and LocalPlayer.leaderstats:FindFirstChild("Money") then
-            money = LocalPlayer.leaderstats.Money.Value
-        elseif LocalPlayer:FindFirstChild("Data") and LocalPlayer.Data:FindFirstChild("Money") then
-            money = LocalPlayer.Data.Money.Value
-        else
-            for _, v in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
-                if v:IsA("TextLabel") and v.Visible and string.find(v.Text, "Rp%.") then
-                    local m = tonumber(string.gsub(v.Text, "[^%d]", ""))
-                    if m and m > money then money = m end
+        if LocalPlayer:FindFirstChild("leaderstats") then
+            local moneyObj = LocalPlayer.leaderstats:FindFirstChild("Money") or LocalPlayer.leaderstats:FindFirstChild("Cash") or LocalPlayer.leaderstats:FindFirstChild("Uang")
+            if moneyObj and (moneyObj:IsA("IntValue") or moneyObj:IsA("DoubleValue")) then
+                money = moneyObj.Value
+                return
+            end
+        end
+        if LocalPlayer:FindFirstChild("Data") then
+            local moneyObj = LocalPlayer.Data:FindFirstChild("Money") or LocalPlayer.Data:FindFirstChild("Cash")
+            if moneyObj and (moneyObj:IsA("IntValue") or moneyObj:IsA("DoubleValue")) then
+                money = moneyObj.Value
+                return
+            end
+        end
+    end)
+
+    -- 2. Scan teks "Rp" di seluruh PlayerGui (termasuk pojok kiri bawah)
+    pcall(function()
+        for _, gui in ipairs(LocalPlayer.PlayerGui:GetDescendants()) do
+            if gui:IsA("TextLabel") or gui:IsA("TextButton") then
+                if gui.Visible and string.find(gui.Text, "Rp") then
+                    local numStr = string.match(gui.Text, "Rp[%s]*:?[%s]*([%d%,%.]+)")
+                    if not numStr then
+                        numStr = string.match(gui.Text, "([%d%,%.]+)")
+                    end
+                    if numStr then
+                        local clean = string.gsub(numStr, "[^%d]", "")
+                        local val = tonumber(clean)
+                        if val and val > money then
+                            money = val
+                        end
+                    end
                 end
             end
         end
     end)
+
     return money
 end
 
@@ -953,7 +980,7 @@ local function StopBaristaScript(reason)
 end
 
 -- ============================================================================
--- // 12. OFFICE JOB SYSTEM (V5.8 - CHAIR SWITCH + MONITORING FIX)
+-- // 12. OFFICE JOB SYSTEM (V5.8 FINAL - MONITOR FIX)
 -- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -1280,7 +1307,7 @@ task.spawn(function()
     end
 end)
 
--- ================== MONITORING GUI (DIPERBAIKI) ==================
+-- ================== MONITORING GUI (UANG AWAL DIKUNCI) ==================
 local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
 local TrackerGui = nil
 
@@ -1302,7 +1329,7 @@ local function formatTime(seconds)
     return string.format("%02d:%02d:%02d", h, m, s)
 end
 
-local function buatMonitoringGUI(initialMoney)
+local function buatMonitoringGUI(uangAwal)
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy() end
     TrackerGui = Instance.new("ScreenGui")
     TrackerGui.Name = "KingAkbarTracker"
@@ -1349,22 +1376,21 @@ local function buatMonitoringGUI(initialMoney)
         return Val
     end
 
-    local uangAwal, pendapatan = baris("Uang Awal", "Pendapatan", 4)
-    local soal, printCount = baris("Soal Jawab", "Total Print", 5)
-    local uptime = barisTunggal("Uptime", 6)
+    local uangAwalLabel, pendapatanLabel = baris("Uang Awal", "Pendapatan", 4)
+    local soalLabel, printLabel = baris("Soal Jawab", "Total Print", 5)
+    local uptimeLabel = barisTunggal("Uptime", 6)
 
-    uangAwal.Text = formatNumber(initialMoney)
+    uangAwalLabel.Text = formatNumber(uangAwal)
 
     task.spawn(function()
         while TrackerGui and TrackerGui.Parent and State.IsOfficeActive do
             pcall(function()
                 local nowMoney = GetPlayerMoney()
-                local profit = nowMoney - initialMoney
-                uangAwal.Text = formatNumber(initialMoney)
-                pendapatan.Text = (profit >= 0 and "+" or "") .. formatNumber(profit)
-                soal.Text = tostring(State.OfficeMathSolved or 0)
-                printCount.Text = tostring(State.OfficePrints or 0)
-                uptime.Text = formatTime(tick() - (getgenv().waktuMulai or tick()))
+                local profit = nowMoney - uangAwal
+                pendapatanLabel.Text = (profit >= 0 and "+" or "") .. formatNumber(profit)
+                soalLabel.Text = tostring(State.OfficeMathSolved or 0)
+                printLabel.Text = tostring(State.OfficePrints or 0)
+                uptimeLabel.Text = formatTime(tick() - (getgenv().waktuMulai or tick()))
             end)
             task.wait(1)
         end
@@ -1384,18 +1410,17 @@ local function StartOfficeScript()
     getgenv().fullAuto = true
     getgenv().waktuMulai = tick()
 
-    local initialMoney = 0
+    local uangAwal = 0
     local waited = 0
     while waited < 10 do
-        initialMoney = GetPlayerMoney()
-        if initialMoney > 0 then break end
+        uangAwal = GetPlayerMoney()
+        if uangAwal > 0 then break end
         task.wait(0.5)
         waited = waited + 0.5
     end
-    if initialMoney == 0 then
+    if uangAwal == 0 then
         WindUI:Notify({ Title = "⚠️ Office", Content = "Gagal baca uang, profit mungkin nggak akurat.", Duration = 5 })
     end
-    getgenv().uangAwal = initialMoney
 
     if not CharRef.Humanoid or not CharRef.Humanoid.SeatPart then
         WindUI:Notify({ Title = "🔍 Office", Content = "Mencari kursi kerja...", Duration = 3 })
@@ -1417,8 +1442,8 @@ local function StartOfficeScript()
         myChair = CharRef.Humanoid.SeatPart
     end
 
-    buatMonitoringGUI(initialMoney)
-    WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Kursi bakal ganti kalo sepi soal.", Duration = 4 })
+    buatMonitoringGUI(uangAwal)
+    WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Uang awal terkunci.", Duration = 4 })
 end
 
 local function StopOfficeScript()
@@ -1856,7 +1881,7 @@ local Window = WindUI:CreateWindow({
 })
 
 -- ============================
--- TAB 1: INFO (MENU UTAMA BARU)
+-- TAB 1: INFO
 -- ============================
 local TabInfo = Window:Tab({ Title = "Info", Icon = "info", Border = true })
 
@@ -2198,10 +2223,10 @@ end)
 -- ============================
 Window:SetIconSize(47)
 WindUI:SetTheme("dark")
-TabInfo:Select()  -- Buka Info Tab duluan
+TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.8 SIAP!",
-    Content  = "Info Tab + Office fix + auto kursi siap cuan!",
+    Title    = "👑 KING AKBAR V5.8 FINAL SIAP!",
+    Content  = "Office fix: uang awal dikunci, profit real-time. Scan Rp ready.",
     Duration = 5,
 })
