@@ -4,7 +4,8 @@
 ================================================================================
     [+] Developer   : King Akbar
     [+] Version     : DDS FREE EDITION (v5.8 FINAL - WEBHOOK FIX)
-    [+] Changelog   : - Fix webhook: Uang Awal & Profit 0 (State.UangAwal di-set ulang)
+    [+] Changelog   : - Fix webhook: Uang Awal & Profit akurat (State.UangAwal di-set ulang)
+                      - Fix webhook: Aktivitas tetap muncul walau job distop (cek data > 0)
                       - GetPlayerMoney() scan teks "Rp" lebih robust
                       - Office langsung jawab soal pas start (timer idle reset)
                       - Monitoring Office scan langsung UI, Uang Awal dikunci
@@ -206,6 +207,7 @@ local function GetReq()
     return (syn and syn.request) or (http and http.request) or http_request or request or nil
 end
 
+-- ================== FUNGSI WEBHOOK (FIXED) ==================
 local function SendDiscordReport()
     if not State.WebhookEnabled or State.WebhookURL == "" then return end
     pcall(function()
@@ -220,18 +222,20 @@ local function SendDiscordReport()
         body = body .. "💵 **Uang Sekarang:** " .. FormatMoney(now) .. "\n"
         body = body .. "📈 **Profit:** ```diff\n+ " .. FormatMoney(profit) .. "\n```\n"
 
+        -- STATS: tampilkan jika job aktif ATAU datanya sudah > 0
         local stats = {}
-        if State.IsBaristaActive then
+        if State.IsBaristaActive or State.OrderCount > 0 then
             table.insert(stats, "☕ Kopi: " .. State.OrderCount .. " cangkir")
-            table.insert(stats, "🔧 Mesin diperbaiki: " .. State.MachineFixCount .. "x")
+            table.insert(stats, "🔧 Mesin diperbaiki: " .. (State.MachineFixCount or 0) .. "x")
         end
-        if State.IsOfficeActive then
-            table.insert(stats, "🧠 Soal dijawab: " .. State.OfficeMathSolved)
-            table.insert(stats, "🖨️ Print: " .. State.OfficePrints .. "x")
+        if State.IsOfficeActive or State.OfficeMathSolved > 0 then
+            table.insert(stats, "🧠 Soal dijawab: " .. (State.OfficeMathSolved or 0))
+            table.insert(stats, "🖨️ Print: " .. (State.OfficePrints or 0) .. "x")
         end
-        if State.IsCourierActive then
-            table.insert(stats, "📦 Paket terkirim: " .. State.CourierDelivered)
+        if State.IsCourierActive or State.CourierDelivered > 0 then
+            table.insert(stats, "📦 Paket terkirim: " .. (State.CourierDelivered or 0))
         end
+
         if #stats > 0 then
             body = body .. "📊 **Aktivitas:**\n" .. table.concat(stats, "\n")
         else
@@ -1841,4 +1845,4 @@ end)
 Window:SetIconSize(47)
 WindUI:SetTheme("dark")
 TabInfo:Select()
-WindUI:Notify({ Title = "👑 KING AKBAR V5.8 FINAL SIAP!", Content = "Webhook fix! Uang Awal & Profit akurat. Gas cuan!", Duration = 5 })
+WindUI:Notify({ Title = "👑 KING AKBAR V5.8 FINAL SIAP!", Content = "Webhook fix! Aktivitas tetap muncul walau job distop.", Duration = 5 })
