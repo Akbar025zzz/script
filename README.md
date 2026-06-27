@@ -159,12 +159,40 @@ local function rWait(minSec, maxSec)
 end
 
 -- ============================================================================
--- // 4. WEBHOOK & GetPlayerMoney (FIX: FLEKSIBEL SCAN UANG)
+-- // 4. WEBHOOK & GetPlayerMoney (FIX: AUTO-SCAN UI + CACHE)
 -- ============================================================================
+-- Cache label uang untuk webhook & monitoring
+local CachedMoneyLabel = nil
+
+local function parseNumber(val)
+    if not val then return 0 end
+    local cleanString = string.gsub(tostring(val), "[^%d%-]", "")
+    return tonumber(cleanString) or 0
+end
+
+-- Cari label UI yang menampilkan uang (teks mengandung "Rp")
+local function cariLabelUangDiUI()
+    for _, guiObj in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
+        if (guiObj:IsA("TextLabel") or guiObj:IsA("TextButton")) and guiObj.Visible then
+            local txt = string.lower(guiObj.Text)
+            if txt:find("rp") and string.match(guiObj.Text, "%d+") then
+                return guiObj
+            end
+        end
+    end
+    return nil
+end
+
 local function GetPlayerMoney()
     local money = 0
     pcall(function()
-        -- 1. Cek leaderstats / Data (cara paling akurat)
+        -- 1. Pakai cache kalau masih valid
+        if CachedMoneyLabel and CachedMoneyLabel.Parent then
+            money = parseNumber(CachedMoneyLabel.Text)
+            if money > 0 then return end
+        end
+
+        -- 2. Cek leaderstats / Data
         local ls = LocalPlayer:FindFirstChild("leaderstats")
         if ls then
             for _, v in pairs(ls:GetChildren()) do
@@ -184,24 +212,19 @@ local function GetPlayerMoney()
             end
         end
 
-        -- 2. Kalau masih 0, scan semua UI yang mengandung "Rp"
+        -- 3. Kalau masih 0, scan UI + update cache
         if money == 0 then
-            for _, v in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
-                if (v:IsA("TextLabel") or v:IsA("TextButton")) and v.Visible then
-                    local txt = string.lower(v.Text)
-                    if txt:find("rp") then  -- cocokkan "Rp", "RP", "rp", dll
-                        local cleaned = string.gsub(v.Text, "[^%d]", "")
-                        local val = tonumber(cleaned)
-                        if val and val > money then money = val end
-                    end
-                end
+            local label = cariLabelUangDiUI()
+            if label then
+                CachedMoneyLabel = label
+                money = parseNumber(label.Text)
             end
         end
     end)
     return money
 end
 
--- FIX: FormatMoney aman dari nil/0
+-- Format uang ke "Rp. xxx.xxx"
 local function FormatMoney(amount)
     local num = tonumber(amount) or 0
     local f = tostring(math.floor(num))
@@ -219,7 +242,6 @@ end
 -- FIX: SendDiscordReport - aman dari UangAwal nil & cek URL valid
 local function SendDiscordReport()
     if not State.WebhookEnabled or not State.WebhookURL or State.WebhookURL == "" then return end
-    -- Validasi format URL webhook
     if not string.find(State.WebhookURL, "https://discord.com/api/webhooks/") then
         warn("[King Akbar] URL webhook tidak valid")
         return
@@ -290,7 +312,6 @@ end
 -- ============================================================================
 -- // FINAL SESSION REPORT KE DEV
 -- ============================================================================
--- FIX: SendDevFinalReport aman dari nilai awal yang belum ada
 local function SendDevFinalReport(stopReason)
     pcall(function()
         local req = GetReq()
@@ -1299,57 +1320,15 @@ local Players = game:GetService("Players")
 local LocalPlayer2 = Players.LocalPlayer
 local TrackerGui = nil
 
-local CachedMoneyLabel = nil
-
-local function parseNumber(val)
-    if not val then return 0 end
-    local cleanString = string.gsub(tostring(val), "[^%d%-]", "")
-    return tonumber(cleanString) or 0
-end
-
-local function formatNumber(num)
-    local formatted = tostring(math.floor(tonumber(num) or 0))
-    local k
-    while true do
-        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1.%2')
-        if k == 0 then break end
-    end
-    return formatted
-end
-
-local function formatTime(seconds)
-    seconds = tonumber(seconds) or 0
-    local h = math.floor(seconds / 3600)
-    local m = math.floor((seconds % 3600) / 60)
-    local s = math.floor(seconds % 60)
-    return string.format("%02d:%02d:%02d", h, m, s)
-end
-
-local function CariLabelUang()
-    local playerGui = LocalPlayer2:FindFirstChild("PlayerGui")
-    if not playerGui then return nil end
-
-    for _, guiObject in ipairs(playerGui:GetDescendants()) do
-        if guiObject:IsA("TextLabel") or guiObject:IsA("TextButton") then
-            local text = guiObject.Text
-            if text and string.find(text, "Rp%.") and string.match(text, "%d+") then
-                return guiObject
-            end
-        end
-    end
-    return nil
-end
-
+-- Fungsi DapatkanUangPemain juga pakai cache & logika yang sama
 local function DapatkanUangPemain()
     if CachedMoneyLabel and CachedMoneyLabel.Parent then
         return parseNumber(CachedMoneyLabel.Text)
     end
-
-    CachedMoneyLabel = CariLabelUang()
+    CachedMoneyLabel = cariLabelUangDiUI()
     if CachedMoneyLabel then
         return parseNumber(CachedMoneyLabel.Text)
     end
-    
     return GetPlayerMoney()
 end
 
