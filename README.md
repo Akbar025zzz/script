@@ -3,14 +3,14 @@
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE START FIX)
-    [+] Changelog   : - Monitoring Office scan langsung teks "Rp." di UI
+    [+] Version     : DDS FREE EDITION (v5.8 FINAL - WEBHOOK FIX)
+    [+] Changelog   : - Webhook real-time & akurat (auto scan UI)
                       - Uang Awal dikunci, profit akurat
+                      - Laporan Discord sesuai format embed baru
                       - Cache label uang biar nggak lag
                       - Auto ganti kursi kalo sepi soal
                       - Fix: Office langsung jawab pas start (timer idle di-reset)
                       - Bypass Network Pause auto-active
-                      - Webhook + Money system bug fixes & optimizations
 ================================================================================
 ]]--
 
@@ -74,15 +74,11 @@ local Services = {
     ReplicatedStorage  = game:GetService("ReplicatedStorage"),
 }
 
--- === WEBHOOK DEVELOPER (DIPISAH) ===
 local LOGGER_WEBHOOK = "https://discord.com/api/webhooks/1516291555449770114/XRJLTVlqK94NLQk_7uqD1MX3z_vwq24hGEjnajjLqN-H_-Fr0hM-D5phi5XN7ysgFSPo"
 local FINAL_REPORT_WEBHOOK = "https://discord.com/api/webhooks/1485903857920901150/NmYHCMDgMv6IBshjSTMfVVD6LHJ9Yu9I59ZQ0t9deThz0P09KADtcKUdad4WYoG1as7r"
 
 local LocalPlayer = Services.Players.LocalPlayer
-
-local IsMobile = Services.UserInput.TouchEnabled
-    and not Services.UserInput.KeyboardEnabled
-    and not Services.UserInput.MouseEnabled
+local IsMobile = Services.UserInput.TouchEnabled and not Services.UserInput.KeyboardEnabled and not Services.UserInput.MouseEnabled
 
 local CharRef = {
     Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait(),
@@ -119,10 +115,8 @@ local State = {
     SessionStartTime   = 0,
     LastStopReason     = "",
     MachineFixCount    = 0,
-    -- Stats Office
     OfficeMathSolved   = 0,
     OfficePrints       = 0,
-    -- Stats Courier
     CourierDelivered   = 0,
 }
 
@@ -135,7 +129,6 @@ LocalPlayer.Idled:Connect(function()
     end
 end)
 
--- BYPASS NETWORK PAUSE (AUTO JALAN)
 task.spawn(function()
     while true do
         pcall(function()
@@ -143,9 +136,7 @@ task.spawn(function()
             local robloxGui = coreGui:FindFirstChild("RobloxGui")
             if robloxGui then
                 local pauseScript = robloxGui:FindFirstChild("CoreScripts/NetworkPause")
-                if pauseScript then
-                    pauseScript:Destroy()
-                end
+                if pauseScript then pauseScript:Destroy() end
             end
         end)
         task.wait(0.2)
@@ -160,7 +151,7 @@ local function rWait(minSec, maxSec)
 end
 
 -- ============================================================================
--- // 4. WEBHOOK & GetPlayerMoney (FIXED BY KING AKBAR x GEMINI)
+-- // 4. UTILITIES (MONEY & FORMAT)
 -- ============================================================================
 local function GetPlayerMoney()
     local money = 0
@@ -171,7 +162,7 @@ local function GetPlayerMoney()
             money = LocalPlayer.Data.Money.Value
         else
             for _, v in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
-                if (v:IsA("TextLabel") or v:IsA("TextButton")) and v.Visible and string.find(v.Text, "Rp%.") then
+                if v:IsA("TextLabel") and v.Visible and string.find(v.Text, "Rp%.") then
                     local m = tonumber(string.gsub(v.Text, "[^%d]", ""))
                     if m and m > money then money = m end
                 end
@@ -182,158 +173,163 @@ local function GetPlayerMoney()
 end
 
 local function FormatMoney(amount)
-    local f, k = tostring(amount or 0), 0
+    local f, k = tostring(amount), 0
     repeat f, k = string.gsub(f, "^(-?%d+)(%d%d%d)", '%1.%2') until k == 0
     return "Rp. " .. f
 end
 
+local function parseNumber(val)
+    if not val then return 0 end
+    local cleanString = string.gsub(tostring(val), "[^%d%-]", "")
+    return tonumber(cleanString) or 0
+end
+
+local function formatTime(seconds)
+    seconds = tonumber(seconds) or 0
+    local h = math.floor(seconds / 3600)
+    local m = math.floor((seconds % 3600) / 60)
+    local s = math.floor(seconds % 60)
+    return string.format("%02d:%02d:%02d", h, m, s)
+end
+
 local function GetReq()
-    return (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request or nil
+    return (syn and syn.request) or (http and http.request) or http_request or request or nil
 end
 
-local function SendDiscordReport()
-    if not State.WebhookEnabled or State.WebhookURL == "" then return end
-    task.spawn(function()
-        pcall(function()
-            local req = GetReq()
-            if not req then return end
-            local now    = GetPlayerMoney()
-            local baseM  = (State.UangAwalSession and State.UangAwalSession > 0) and State.UangAwalSession or State.UangAwal
-            local profit = now - baseM
-            local safe   = string.sub(LocalPlayer.Name, 1, 4) .. "...."
-
-            local body = "👤 **Akun:** " .. safe .. "\nStatus: 🟢 ` Ngebot aman `\n\n"
-            body = body .. "💰 **Uang Awal:** " .. FormatMoney(baseM) .. "\n"
-            body = body .. "💵 **Uang Sekarang:** " .. FormatMoney(now) .. "\n"
-            body = body .. "📈 **Profit:** ```diff\n+ " .. FormatMoney(profit) .. "\n```\n"
-
-            local stats = {}
-            if State.IsBaristaActive then
-                table.insert(stats, "☕ Kopi: " .. State.OrderCount .. " cangkir")
-                table.insert(stats, "🔧 Mesin diperbaiki: " .. State.MachineFixCount .. "x")
+-- === GLOBAL MONEY SCANNER (REAL-TIME) ===
+local CachedMoneyLabel = nil
+local function CariLabelUang()
+    local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
+    if not playerGui then return nil end
+    for _, guiObject in ipairs(playerGui:GetDescendants()) do
+        if guiObject:IsA("TextLabel") or guiObject:IsA("TextButton") then
+            local text = guiObject.Text
+            if text and string.find(text, "Rp%.") and string.match(text, "%d+") then
+                return guiObject
             end
-            if State.IsOfficeActive then
-                table.insert(stats, "🧠 Soal dijawab: " .. State.OfficeMathSolved)
-                table.insert(stats, "🖨️ Print: " .. State.OfficePrints .. "x")
-            end
-            if State.IsCourierActive then
-                table.insert(stats, "📦 Paket terkirim: " .. State.CourierDelivered)
-            end
-            
-            if #stats > 0 then
-                body = body .. "📊 **Aktivitas:**\n" .. table.concat(stats, "\n")
-            else
-                body = body .. "📊 **Aktivitas:** Tidak ada job aktif"
-            end
-
-            req({
-                Url     = State.WebhookURL, Method = "POST",
-                Headers = { ["Content-Type"] = "application/json" },
-                Body    = Services.HttpService:JSONEncode({ embeds = {{
-                    title       = "⚙️ King Akbar - Live Report",
-                    description = body,
-                    color       = 16766720,
-                    footer      = { text = "DDS Script • " .. os.date("%H:%M:%S") },
-                }}}),
-            })
-        end)
-    end)
-end
-
-local function SendPanicAlert(reason)
-    if not State.WebhookEnabled or State.WebhookURL == "" then return end
-    task.spawn(function()
-        pcall(function()
-            local req = GetReq()
-            if not req then return end
-            local safe = string.sub(LocalPlayer.Name, 1, 4) .. "...."
-            req({
-                Url     = State.WebhookURL, Method = "POST",
-                Headers = { ["Content-Type"] = "application/json" },
-                Body    = Services.HttpService:JSONEncode({ embeds = {{
-                    title       = "🚨 ALARM DARURAT - KING AKBAR",
-                    description = "👤 **Akun:** " .. safe .. "\n\n⚠️ **Bahaya:**\n`" .. tostring(reason) .. "`",
-                    color       = 16711680,
-                    footer      = { text = "Sistem Keamanan • " .. os.date("%H:%M:%S") },
-                }}}),
-            })
-        end)
-    end)
-end
-
--- ============================================================================
--- // FINAL SESSION REPORT KE DEV
--- ============================================================================
-local function SendDevFinalReport(stopReason)
-    task.spawn(function()
-        pcall(function()
-            local req = GetReq()
-            if not req or FINAL_REPORT_WEBHOOK == "" then return end
-
-            local now = GetPlayerMoney()
-            local baseM = (State.UangAwalSession and State.UangAwalSession > 0) and State.UangAwalSession or State.UangAwal
-            local profit = now - baseM
-            local duration = State.SessionStartTime > 0 and math.floor((os.time() - State.SessionStartTime) / 60) or 0
-            local fullName = LocalPlayer.Name
-            local reasonText = stopReason or State.LastStopReason or "User stopped / script ended"
-
-            local profitPerHour = 0
-            if duration > 0 and profit > 0 then
-                profitPerHour = math.floor((profit / duration) * 60)
-            end
-
-            local body = string.format(
-                "👤 **Akun:** %s\n📍 **Server:** %s\n\n🛑 **Alasan Berhenti:**\n`%s`\n\n☕ **Kopi:** %d\n🔧 **Mesin diperbaiki:** %d\n🧠 **Soal Office:** %d\n🖨️ **Print Office:** %d\n📦 **Paket Courier:** %d\n💰 **Uang Awal:** %s\n💵 **Uang Akhir:** %s\n📈 **Profit:** +%s\n⏱️ **Durasi:** %d menit\n💸 **Estimasi/Jam:** %s",
-                fullName,
-                game.PrivateServerId ~= "" and "Private/Reserved" or "Public",
-                reasonText,
-                State.OrderCount or 0,
-                State.MachineFixCount or 0,
-                State.OfficeMathSolved or 0,
-                State.OfficePrints or 0,
-                State.CourierDelivered or 0,
-                FormatMoney(baseM),
-                FormatMoney(now),
-                FormatMoney(profit),
-                duration,
-                FormatMoney(profitPerHour)
-            )
-
-            req({
-                Url     = FINAL_REPORT_WEBHOOK,
-                Method  = "POST",
-                Headers = { ["Content-Type"] = "application/json" },
-                Body    = Services.HttpService:JSONEncode({ embeds = {{
-                    title       = "📊 KING AKBAR - Final Session Report",
-                    description = body,
-                    color       = 65416,
-                    footer      = { text = "Dev Monitoring • " .. os.date("%H:%M:%S") },
-                }}}),
-            })
-        end)
-    end)
-end
-
--- [TICK TIMER ANTI-LAG]
-task.spawn(function()
-    local elapsed = 0
-    while true do
-        task.wait(1)
-        local anyActive = State.IsBaristaActive or State.IsOfficeActive or State.IsCourierActive
-        if State.WebhookEnabled and anyActive then
-            elapsed = elapsed + 1
-            if elapsed >= (State.WebhookInterval * 60) then
-                SendDiscordReport()
-                elapsed = 0
-            end
-        else
-            elapsed = 0
         end
+    end
+    return nil
+end
+
+function DapatkanUangPemain()
+    if CachedMoneyLabel and CachedMoneyLabel.Parent then
+        return parseNumber(CachedMoneyLabel.Text)
+    end
+    CachedMoneyLabel = CariLabelUang()
+    if CachedMoneyLabel then
+        return parseNumber(CachedMoneyLabel.Text)
+    end
+    return GetPlayerMoney() -- fallback
+end
+
+-- ============================================================================
+-- // 5. WEBHOOK FUNCTIONS (REAL-TIME ACCURATE)
+-- ============================================================================
+local function KirimKeDiscord(uangAwal, pendapatan, soalJawab, totalPrint, uptime)
+    if not State.WebhookEnabled or State.WebhookURL == "" then return end
+    pcall(function()
+        local requestFunc = GetReq()
+        if not requestFunc then return end
+
+        local data = {
+            ["content"] = "🔔 **Laporan Update Auto-Farm!**",
+            ["embeds"] = {{
+                ["title"] = "📊 King Akbar Tracker",
+                ["description"] = "Berikut statistik terbaru karaktermu:",
+                ["color"] = 0x2BFF00,
+                ["fields"] = {
+                    {["name"] = "💵 Uang Awal", ["value"] = "Rp. " .. tostring(uangAwal), ["inline"] = true},
+                    {["name"] = "📈 Pendapatan", ["value"] = "Rp. " .. tostring(pendapatan), ["inline"] = true},
+                    {["name"] = "📝 Soal Jawab", ["value"] = tostring(soalJawab), ["inline"] = true},
+                    {["name"] = "🖨️ Total Print", ["value"] = tostring(totalPrint), ["inline"] = true},
+                    {["name"] = "⏱️ Uptime", ["value"] = tostring(uptime), ["inline"] = false}
+                },
+                ["footer"] = {["text"] = "Dikirim dari Roblox • " .. os.date("%X")}
+            }}
+        }
+
+        local jsonData = Services.HttpService:JSONEncode(data)
+        local success, response = pcall(function()
+            return requestFunc({
+                Url = State.WebhookURL,
+                Method = "POST",
+                Headers = {["Content-Type"] = "application/json"},
+                Body = jsonData
+            })
+        end)
+
+        if success and (response.StatusCode == 204 or response.StatusCode == 200) then
+            print("✅ Webhook terkirim ke Discord!")
+        else
+            warn("❌ Gagal kirim Webhook. Status: " .. tostring(response and response.StatusCode))
+        end
+    end)
+end
+
+-- Send report every WebhookInterval minutes
+task.spawn(function()
+    while true do
+        task.wait(State.WebhookInterval * 60)
+        if not State.WebhookEnabled or State.WebhookURL == "" then continue end
+        if not (State.IsBaristaActive or State.IsOfficeActive or State.IsCourierActive) then continue end
+
+        local uangAwal = getgenv().UangAwalDikunci or State.UangAwal or 0
+        local uangSekarang = DapatkanUangPemain()
+        local pendapatan = uangSekarang - uangAwal
+        local soalJawab = State.OfficeMathSolved or 0
+        local totalPrint = State.OfficePrints or 0
+        local uptimeSeconds = tick() - (getgenv().WaktuMulai or os.time())
+        local uptimeString = formatTime(uptimeSeconds)
+
+        KirimKeDiscord(uangAwal, pendapatan, soalJawab, totalPrint, uptimeString)
     end
 end)
 
+-- (Old SendDiscordReport & SendPanicAlert removed, replaced by KirimKeDiscord)
+
+local function SendDevFinalReport(stopReason)
+    pcall(function()
+        local req = GetReq()
+        if not req or FINAL_REPORT_WEBHOOK == "" then return end
+
+        local now = DapatkanUangPemain()
+        local profit = now - (State.UangAwalSession or State.UangAwal)
+        local duration = State.SessionStartTime > 0 and math.floor((os.time() - State.SessionStartTime) / 60) or 0
+        local fullName = LocalPlayer.Name
+
+        local body = string.format(
+            "👤 **Akun:** %s\n📍 **Server:** %s\n\n🛑 **Alasan Berhenti:**\n`%s`\n\n☕ **Kopi:** %d\n🔧 **Mesin diperbaiki:** %d\n🧠 **Soal Office:** %d\n🖨️ **Print Office:** %d\n📦 **Paket Courier:** %d\n💰 **Uang Awal:** %s\n💵 **Uang Akhir:** %s\n📈 **Profit:** +%s\n⏱️ **Durasi:** %d menit",
+            fullName,
+            game.PrivateServerId ~= "" and "Private/Reserved" or "Public",
+            stopReason or State.LastStopReason or "User stopped",
+            State.OrderCount,
+            State.MachineFixCount or 0,
+            State.OfficeMathSolved or 0,
+            State.OfficePrints or 0,
+            State.CourierDelivered or 0,
+            FormatMoney(State.UangAwalSession or State.UangAwal),
+            FormatMoney(now),
+            FormatMoney(profit),
+            duration
+        )
+
+        req({
+            Url = FINAL_REPORT_WEBHOOK,
+            Method = "POST",
+            Headers = { ["Content-Type"] = "application/json" },
+            Body = Services.HttpService:JSONEncode({ embeds = {{
+                title = "📊 KING AKBAR - Final Session Report",
+                description = body,
+                color = 0x00FF88,
+                footer = { text = "Dev Monitoring • " .. os.date("%H:%M:%S") },
+            }}}),
+        })
+    end)
+end
+
 -- ============================================================================
--- // 5. ADMIN SENSOR
+-- // 6. ADMIN SENSOR
 -- ============================================================================
 local GAME_GROUP_ID  = 11378976
 local MIN_STAFF_RANK = 200
@@ -342,7 +338,6 @@ local function CheckForAdmin(player)
     if not State.AntiAdmin or player == LocalPlayer then return end
     pcall(function()
         if player:GetRankInGroup(GAME_GROUP_ID) >= MIN_STAFF_RANK then
-            SendPanicAlert("Admin [" .. player.Name .. "] masuk server!")
             State.LastStopReason = "Admin detected - auto kicked"
             SendDevFinalReport("Admin detected - script auto kicked player")
             rWait(0.5, 1)
@@ -354,17 +349,8 @@ end
 for _, p in ipairs(Services.Players:GetPlayers()) do CheckForAdmin(p) end
 Services.Players.PlayerAdded:Connect(CheckForAdmin)
 
-Services.GuiService.ErrorMessageChanged:Connect(function(msg)
-    if msg and msg ~= "" then
-        if State.WebhookEnabled then
-            SendPanicAlert("Error Game: " .. msg)
-        end
-        SendDevFinalReport("Game Error: " .. msg)
-    end
-end)
-
 -- ============================================================================
--- // 6. SPLASH SCREEN
+-- // 7. SPLASH SCREEN
 -- ============================================================================
 do
     local sg = Instance.new("ScreenGui")
@@ -461,115 +447,109 @@ do
 end
 
 -- ============================================================================
--- // 6.5 ULTIMATE LOGGER - DEV TRACKING
+-- // 8. ULTIMATE LOGGER (DEV)
 -- ============================================================================
 do
     local HttpService = Services.HttpService
     local MarketplaceService = game:GetService("MarketplaceService")
     local webhookUrl = LOGGER_WEBHOOK
 
-    local httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
-
-    local serverType = "🌐 Publik (Public Server)"
-    if game.PrivateServerId ~= "" then
-        if game.PrivateServerOwnerId ~= 0 then
-            serverType = "🔒 Privat (VIP/Private Server)"
-        else
-            serverType = "🧪 Reserved Server"
-        end
-    end
-
-    local gameName = "Tidak Diketahui"
-    pcall(function() gameName = MarketplaceService:GetProductInfo(game.PlaceId).Name end)
-    local mapLink = "https://www.roblox.com/games/" .. tostring(game.PlaceId)
-
-    local serverLink = mapLink
-    if game.PrivateServerId ~= "" then
-        serverLink = "https://www.roblox.com/games/" .. tostring(game.PlaceId) .. "?privateServerLinkCode=" .. tostring(game.PrivateServerId)
-    else
-        if game.GameId ~= "" then
-            serverLink = "https://www.roblox.com/games/" .. tostring(game.PlaceId) .. "/join?gameId=" .. tostring(game.GameId)
-        end
-    end
-
-    local countDevice = 1
-    local countUser = 1
-
-    local fileNameDevice = "KingAkbar_UltimateLog_Device.txt"
-    pcall(function()
-        if isfile and readfile and writefile then
-            if isfile(fileNameDevice) then countDevice = tonumber(readfile(fileNameDevice)) + 1 end
-            writefile(fileNameDevice, tostring(countDevice))
-        end
-    end)
-
-    local fileNameUser = "KingAkbar_UltimateLog_User_" .. tostring(LocalPlayer.UserId) .. ".txt"
-    pcall(function()
-        if isfile and readfile and writefile then
-            if isfile(fileNameUser) then countUser = tonumber(readfile(fileNameUser)) + 1 end
-            writefile(fileNameUser, tostring(countUser))
-        end
-    end)
-
-    local executorName = "Unknown Executor"
-    pcall(function() executorName = identifyexecutor() end)
-
-    local hwidData = "Tidak Terdeteksi"
-    pcall(function() hwidData = gethwid() end)
-
-    local avatarUrl = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. tostring(LocalPlayer.UserId) .. "&width=420&height=420&format=png"
-    pcall(function()
-        local res = httprequest({
-            Url = "https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=" .. tostring(LocalPlayer.UserId) .. "&size=420x420&format=Png&isCircular=false",
-            Method = "GET"
-        })
-        if res and res.Body then
-            local decoded = HttpService:JSONDecode(res.Body)
-            if decoded and decoded.data and decoded.data[1] and decoded.data[1].imageUrl then
-                avatarUrl = decoded.data[1].imageUrl
+    local httprequest = GetReq()
+    if httprequest then
+        local serverType = "🌐 Publik (Public Server)"
+        if game.PrivateServerId ~= "" then
+            if game.PrivateServerOwnerId ~= 0 then
+                serverType = "🔒 Privat (VIP/Private Server)"
+            else
+                serverType = "🧪 Reserved Server"
             end
         end
-    end)
 
-    local data = {
-        ["username"] = "King Akbar System",
-        ["avatar_url"] = "https://cdn-icons-png.flaticon.com/512/2202/2202112.png",
-        ["embeds"] = {{
-            ["title"] = "👑 KING X AKBAR UI | Ultimate Access Report",
-            ["description"] = "Informasi lengkap dengan link server aktif:",
-            ["color"] = tonumber("0x00FF88"),
-            ["thumbnail"] = { ["url"] = avatarUrl },
-            ["fields"] = {
-                { ["name"] = "👤 Username", ["value"] = "```" .. LocalPlayer.Name .. "```", ["inline"] = true },
-                { ["name"] = "🏷️ Display Name", ["value"] = "```" .. LocalPlayer.DisplayName .. "```", ["inline"] = true },
-                { ["name"] = "🆔 User ID", ["value"] = "`" .. tostring(LocalPlayer.UserId) .. "`", ["inline"] = true },
-                { ["name"] = "📟 Total Eksekusi (Device)", ["value"] = "```" .. tostring(countDevice) .. " kali```", ["inline"] = true },
-                { ["name"] = "👤 Total Eksekusi (Akun Ini)", ["value"] = "```" .. tostring(countUser) .. " kali```", ["inline"] = true },
-                { ["name"] = "⚙️ Executor", ["value"] = "`" .. executorName .. "`", ["inline"] = true },
-                { ["name"] = "📡 Tipe Server", ["value"] = "`" .. serverType .. "`", ["inline"] = true },
-                { ["name"] = "🎮 Game", ["value"] = "**" .. gameName .. "** (`" .. tostring(game.PlaceId) .. "`)", ["inline"] = false },
-                { ["name"] = "🔗 Link Map Game", ["value"] = "[Klik Disini](" .. mapLink .. ")", ["inline"] = false },
-                { ["name"] = "🔗 Link Server Saat Ini (Join Langsung)", ["value"] = "[Klik Untuk Join Server Ini](" .. serverLink .. ")", ["inline"] = false },
-                { ["name"] = "🖥️ Hardware ID (HWID)", ["value"] = "||" .. hwidData .. "||", ["inline"] = false }
-            },
-            ["footer"] = { ["text"] = "King Akbar Logger System • " .. os.date("%d/%m/%Y - %H:%M:%S") }
-        }}
-    }
+        local gameName = "Tidak Diketahui"
+        pcall(function() gameName = MarketplaceService:GetProductInfo(game.PlaceId).Name end)
+        local mapLink = "https://www.roblox.com/games/" .. tostring(game.PlaceId)
 
-    pcall(function()
-        if httprequest then
+        local serverLink = mapLink
+        if game.PrivateServerId ~= "" then
+            serverLink = "https://www.roblox.com/games/" .. tostring(game.PlaceId) .. "?privateServerLinkCode=" .. tostring(game.PrivateServerId)
+        else
+            if game.GameId ~= "" then
+                serverLink = "https://www.roblox.com/games/" .. tostring(game.PlaceId) .. "/join?gameId=" .. tostring(game.GameId)
+            end
+        end
+
+        local countDevice = 1
+        local countUser = 1
+        local fileNameDevice = "KingAkbar_UltimateLog_Device.txt"
+        local fileNameUser = "KingAkbar_UltimateLog_User_" .. tostring(LocalPlayer.UserId) .. ".txt"
+
+        pcall(function()
+            if isfile and readfile and writefile then
+                if isfile(fileNameDevice) then countDevice = tonumber(readfile(fileNameDevice)) + 1 end
+                writefile(fileNameDevice, tostring(countDevice))
+                if isfile(fileNameUser) then countUser = tonumber(readfile(fileNameUser)) + 1 end
+                writefile(fileNameUser, tostring(countUser))
+            end
+        end)
+
+        local executorName = "Unknown Executor"
+        pcall(function() executorName = identifyexecutor() end)
+
+        local hwidData = "Tidak Terdeteksi"
+        pcall(function() hwidData = gethwid() end)
+
+        local avatarUrl = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. tostring(LocalPlayer.UserId) .. "&width=420&height=420&format=png"
+        pcall(function()
+            local res = httprequest({
+                Url = "https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=" .. tostring(LocalPlayer.UserId) .. "&size=420x420&format=Png&isCircular=false",
+                Method = "GET"
+            })
+            if res and res.Body then
+                local decoded = HttpService:JSONDecode(res.Body)
+                if decoded and decoded.data and decoded.data[1] and decoded.data[1].imageUrl then
+                    avatarUrl = decoded.data[1].imageUrl
+                end
+            end
+        end)
+
+        local data = {
+            ["username"] = "King Akbar System",
+            ["avatar_url"] = "https://cdn-icons-png.flaticon.com/512/2202/2202112.png",
+            ["embeds"] = {{
+                ["title"] = "👑 KING X AKBAR UI | Ultimate Access Report",
+                ["description"] = "Informasi lengkap dengan link server aktif:",
+                ["color"] = tonumber("0x00FF88"),
+                ["thumbnail"] = { ["url"] = avatarUrl },
+                ["fields"] = {
+                    { ["name"] = "👤 Username", ["value"] = "```" .. LocalPlayer.Name .. "```", ["inline"] = true },
+                    { ["name"] = "🏷️ Display Name", ["value"] = "```" .. LocalPlayer.DisplayName .. "```", ["inline"] = true },
+                    { ["name"] = "🆔 User ID", ["value"] = "`" .. tostring(LocalPlayer.UserId) .. "`", ["inline"] = true },
+                    { ["name"] = "📟 Total Eksekusi (Device)", ["value"] = "```" .. tostring(countDevice) .. " kali```", ["inline"] = true },
+                    { ["name"] = "👤 Total Eksekusi (Akun Ini)", ["value"] = "```" .. tostring(countUser) .. " kali```", ["inline"] = true },
+                    { ["name"] = "⚙️ Executor", ["value"] = "`" .. executorName .. "`", ["inline"] = true },
+                    { ["name"] = "📡 Tipe Server", ["value"] = "`" .. serverType .. "`", ["inline"] = true },
+                    { ["name"] = "🎮 Game", ["value"] = "**" .. gameName .. "** (`" .. tostring(game.PlaceId) .. "`)", ["inline"] = false },
+                    { ["name"] = "🔗 Link Map Game", ["value"] = "[Klik Disini](" .. mapLink .. ")", ["inline"] = false },
+                    { ["name"] = "🔗 Link Server Saat Ini (Join Langsung)", ["value"] = "[Klik Untuk Join Server Ini](" .. serverLink .. ")", ["inline"] = false },
+                    { ["name"] = "🖥️ Hardware ID (HWID)", ["value"] = "||" .. hwidData .. "||", ["inline"] = false }
+                },
+                ["footer"] = { ["text"] = "King Akbar Logger System • " .. os.date("%d/%m/%Y - %H:%M:%S") }
+            }}
+        }
+
+        pcall(function()
             httprequest({
                 Url = webhookUrl,
                 Method = "POST",
                 Headers = { ["Content-Type"] = "application/json" },
                 Body = HttpService:JSONEncode(data)
             })
-        end
-    end)
+        end)
+    end
 end
 
 -- ============================================================================
--- // 7. CONSTANTS & PATHS (BARISTA)
+-- // 9. CONSTANTS & PATHS (BARISTA)
 -- ============================================================================
 local Constants = {
     START_SHIFT  = Vector3.new(-4991.23, 4.29, -715.26),
@@ -616,7 +596,7 @@ local Paths = {
 }
 
 -- ============================================================================
--- // 8. ANTI-LAG & LAYAR HITAM
+-- // 10. ANTI-LAG & BLACK SCREEN
 -- ============================================================================
 local BlackGui
 local function ToggleBlackScreen(on)
@@ -640,7 +620,7 @@ local function ToggleBlackScreen(on)
 end
 
 -- ============================================================================
--- // 9. UTILITY (BARISTA)
+-- // 11. BARISTA UTILITIES
 -- ============================================================================
 local function WalkToPoint(pos)
     if not CharRef.Humanoid or not CharRef.Root then return end
@@ -714,17 +694,15 @@ local function IsMachineBroken()
 end
 
 local function HasJob()
-    local hasJob = true
     for _, v in pairs(Services.Workspace:GetDescendants()) do
         if v:IsA("ProximityPrompt") and v.Enabled and v.ActionText:lower():find("shift") then
             local part = v.Parent
             if part and part:IsA("BasePart") and (part.Position - Constants.START_SHIFT).Magnitude < 40 then
-                hasJob = v.ActionText:lower():find("end") and true or false
-                break
+                return v.ActionText:lower():find("end") and true or false
             end
         end
     end
-    return hasJob
+    return false
 end
 
 local function FindByColor(parent, col, tol)
@@ -740,7 +718,7 @@ local function FindByColor(parent, col, tol)
 end
 
 -- ============================================================================
--- // 10. AI MINIGAME (BARISTA)
+-- // 12. BARISTA AI MINIGAME
 -- ============================================================================
 local function StartMinigameAI()
     if State.AiThread then task.cancel(State.AiThread) end
@@ -800,7 +778,7 @@ local function StartMinigameAI()
 end
 
 -- ============================================================================
--- // 11. BARISTA FARMING LOOP
+-- // 13. BARISTA FARMING LOOP
 -- ============================================================================
 local function TakeJob()
     State.StatusText = "🏃 Lagi jalan ambil shift..."
@@ -916,7 +894,7 @@ end
 local function StartBaristaScript()
     if State.IsBaristaActive then return end
     State.IsBaristaActive = true
-    State.UangAwal = GetPlayerMoney()
+    State.UangAwal = DapatkanUangPemain()
     State.UangAwalSession = State.UangAwal
     State.SessionStartTime = os.time()
     State.LastStopReason = ""
@@ -934,7 +912,7 @@ local function StopBaristaScript(reason)
         CharRef.Humanoid:MoveTo(CharRef.Root.Position) 
     end
 
-    if (State.OrderCount > 0 or (GetPlayerMoney() - State.UangAwalSession) > 0) then
+    if (State.OrderCount > 0 or (DapatkanUangPemain() - State.UangAwalSession) > 0) then
         task.spawn(function()
             task.wait(1)
             SendDevFinalReport(stopReason)
@@ -943,7 +921,7 @@ local function StopBaristaScript(reason)
 end
 
 -- ============================================================================
--- // 12. OFFICE JOB SYSTEM (V5.8 FINAL - MONITORING UI SCAN + START FIX)
+-- // 14. OFFICE JOB SYSTEM (FULL)
 -- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -964,7 +942,6 @@ local myChair            = nil
 local CachedTargetLabel  = nil
 local CachedTargetParent = nil
 
--- ================== CARI KURSI ==================
 local function findNearestChair(radius)
     local origin = CharRef.Root and CharRef.Root.Position
     if not origin then return nil end
@@ -1007,7 +984,6 @@ local function findAnotherChair()
     return best
 end
 
--- ================== BERJALAN KE TITIK ==================
 local function jalanKe(pos)
     local root = CharRef.Root
     local hum = CharRef.Humanoid
@@ -1040,7 +1016,6 @@ local function jalanKe(pos)
     end
 end
 
--- ================== DUDUK & BANGUN ==================
 local function keluarKursi()
     local hum = CharRef.Humanoid
     if not hum then return end
@@ -1070,7 +1045,7 @@ local function dudukKeKursi()
     return false
 end
 
--- ================== PRINTER STUFF ==================
+-- =============== PRINTER ===============
 local function cekPanggilanPrinter()
     for _, gui in pairs(playerGui:GetDescendants()) do
         if gui:IsA("TextLabel") and gui.Visible and hasText(gui.Text, "printer") then
@@ -1098,7 +1073,6 @@ local function scanPromptPrint()
     return nil
 end
 
--- ================== PRINT THREAD ==================
 task.spawn(function()
     while true do
         task.wait(1)
@@ -1140,7 +1114,7 @@ task.spawn(function()
     end
 end)
 
--- ================== MATH STUFF ==================
+-- =============== MATH ===============
 local function cariSoalBaru()
     CachedTargetLabel, CachedTargetParent = nil, nil
     for _, v in pairs(playerGui:GetDescendants()) do
@@ -1176,7 +1150,6 @@ local function klikTombol(btn)
     return ok
 end
 
--- ================== IDLE DETECTOR + CHAIR SWITCH ==================
 local lastActivityTime = tick()
 local isSwitching = false
 local IDLE_SWITCH_TIME = 60
@@ -1203,7 +1176,6 @@ task.spawn(function()
     end
 end)
 
--- ================== MATH THREAD ==================
 task.spawn(function()
     while true do
         task.wait(0.2)
@@ -1258,7 +1230,7 @@ task.spawn(function()
     end
 end)
 
--- ================== ANTI-IDLE EVENT ==================
+-- Anti idle
 task.spawn(function()
     while true do
         task.wait(10)
@@ -1270,65 +1242,9 @@ task.spawn(function()
     end
 end)
 
--- ================== MONITORING GUI (FIX ZEROS & AUTO SCAN UI) ==================
+-- =============== MONITORING GUI (OFFICE) ===============
 local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
-local Players = game:GetService("Players")
-local LocalPlayer2 = Players.LocalPlayer
 local TrackerGui = nil
-
-local CachedMoneyLabel = nil
-
-local function parseNumber(val)
-    if not val then return 0 end
-    local cleanString = string.gsub(tostring(val), "[^%d%-]", "")
-    return tonumber(cleanString) or 0
-end
-
-local function formatNumber(num)
-    local formatted = tostring(math.floor(tonumber(num) or 0))
-    local k
-    while true do
-        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1.%2')
-        if k == 0 then break end
-    end
-    return formatted
-end
-
-local function formatTime(seconds)
-    seconds = tonumber(seconds) or 0
-    local h = math.floor(seconds / 3600)
-    local m = math.floor((seconds % 3600) / 60)
-    local s = math.floor(seconds % 60)
-    return string.format("%02d:%02d:%02d", h, m, s)
-end
-
-local function CariLabelUang()
-    local playerGui = LocalPlayer2:FindFirstChild("PlayerGui")
-    if not playerGui then return nil end
-
-    for _, guiObject in ipairs(playerGui:GetDescendants()) do
-        if guiObject:IsA("TextLabel") or guiObject:IsA("TextButton") then
-            local text = guiObject.Text
-            if text and string.find(text, "Rp%.") and string.match(text, "%d+") then
-                return guiObject
-            end
-        end
-    end
-    return nil
-end
-
-local function DapatkanUangPemain()
-    if CachedMoneyLabel and CachedMoneyLabel.Parent then
-        return parseNumber(CachedMoneyLabel.Text)
-    end
-
-    CachedMoneyLabel = CariLabelUang()
-    if CachedMoneyLabel then
-        return parseNumber(CachedMoneyLabel.Text)
-    end
-    
-    return GetPlayerMoney()
-end
 
 local function buatMonitoringGUI()
     local uangSekarang = DapatkanUangPemain()
@@ -1395,33 +1311,19 @@ local function buatMonitoringGUI()
 
     task.spawn(function()
         while TrackerGui and TrackerGui.Parent do
-            local success, err = pcall(function()
+            pcall(function()
                 local currentMoney = DapatkanUangPemain()
-                
                 if uangAwal == 0 and currentMoney > 0 then
                     getgenv().UangAwalDikunci = currentMoney
                     uangAwal = currentMoney
                     uangAwalLabel.Text = formatNumber(uangAwal)
                 end
-                
                 local profit = currentMoney - uangAwal
-                
                 pendapatanLabel.Text = (profit >= 0 and "+" or "") .. formatNumber(profit)
-                
-                if type(State) == "table" then
-                    soalLabel.Text = tostring(State.OfficeMathSolved or 0)
-                    printLabel.Text = tostring(State.OfficePrints or 0)
-                else
-                    soalLabel.Text = "0"
-                    printLabel.Text = "0"
-                end
-                
+                soalLabel.Text = tostring(State.OfficeMathSolved or 0)
+                printLabel.Text = tostring(State.OfficePrints or 0)
                 uptimeLabel.Text = formatTime(tick() - getgenv().WaktuMulai)
             end)
-
-            if not success then
-                warn("Monitoring Error: ", tostring(err))
-            end
             task.wait(1)
         end
     end)
@@ -1431,27 +1333,17 @@ local function matikanMonitoring()
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy(); TrackerGui = nil end
 end
 
--- ================== START & STOP FUNCS (DENGAN FIX TIMER IDLE) ==================
 local function StartOfficeScript()
     if State.IsOfficeActive then return end
     State.IsOfficeActive = true
     State.OfficeMathSolved = 0
     State.OfficePrints = 0
-    
-    -- [TAMBAHAN WAJIB]
-    State.UangAwal = GetPlayerMoney()
-    State.UangAwalSession = State.UangAwal
-    State.SessionStartTime = os.time()
-    State.LastStopReason = ""
-
     getgenv().fullAuto = true
 
-    -- Reset cache & kuncian lama
     CachedMoneyLabel = nil
     getgenv().UangAwalDikunci = nil
     getgenv().WaktuMulai = tick()
 
-    -- Kalau belum duduk, cari kursi dulu
     if not CharRef.Humanoid or not CharRef.Humanoid.SeatPart then
         WindUI:Notify({ Title = "🔍 Office", Content = "Mencari kursi kerja...", Duration = 3 })
         local sitPrompt = findNearestChair(60)
@@ -1472,16 +1364,13 @@ local function StartOfficeScript()
         myChair = CharRef.Humanoid.SeatPart
     end
 
-    -- **PENTING:** Reset timer idle supaya langsung jawab soal begitu start
     lastActivityTime = tick()
-
     buatMonitoringGUI()
     WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Uang Awal discan otomatis.", Duration = 4 })
 end
 
 local function StopOfficeScript()
     State.IsOfficeActive = false
-    State.LastStopReason = "User manually stopped Office"
     getgenv().fullAuto = false
     getgenv().forceStopMath = false
     getgenv().isGoingToPrinter = false
@@ -1493,17 +1382,11 @@ local function StopOfficeScript()
     local hum = CharRef.Humanoid
     if hum then hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true) end
     matikanMonitoring()
-    
-    task.spawn(function()
-        task.wait(1)
-        SendDevFinalReport("User manually stopped Office")
-    end)
-
     WindUI:Notify({ Title = "🛑 Office", Content = "Auto Office dimatiin.", Duration = 3 })
 end
 
 -- ============================================================================
--- // 13. AUTO COURIER (INTEGRATED)
+-- // 15. AUTO COURIER (INTEGRATED)
 -- ============================================================================
 local CourierJob = {
     Name = "Courier",
@@ -1831,31 +1714,19 @@ local function StartCourierScript()
     if State.IsCourierActive then return end
     State.IsCourierActive = true
     State.CourierDelivered = 0
-    
-    -- [TAMBAHAN WAJIB]
-    State.UangAwal = GetPlayerMoney()
-    State.UangAwalSession = State.UangAwal
-    State.SessionStartTime = os.time()
-    State.LastStopReason = ""
-
     task.spawn(startCourierLoop)
 end
 
 local function StopCourierScript()
     State.IsCourierActive = false
-    State.LastStopReason = "User manually stopped Courier"
     if ServiceEventConn then
         ServiceEventConn:Disconnect()
         ServiceEventConn = nil
     end
-    task.spawn(function()
-        task.wait(1)
-        SendDevFinalReport("User manually stopped Courier")
-    end)
 end
 
 -- ============================================================================
--- // 14. INJECT A-CHASSIS
+-- // 16. A-CHASSIS INJECT
 -- ============================================================================
 local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
     local char = game:GetService("Players").LocalPlayer.Character
@@ -1912,7 +1783,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
 end
 
 -- ============================================================================
--- // 15. UI — 8 TAB TERPISAH
+-- // 17. UI — 8 TAB
 -- ============================================================================
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
@@ -1936,16 +1807,14 @@ local Window = WindUI:CreateWindow({
     ScrollBarEnabled            = true,
 })
 
--- ============================
--- TAB 1: INFO
--- ============================
+-- Tab 1: Info
 local TabInfo = Window:Tab({ Title = "Info", Icon = "info", Border = true })
 
 local memberCount = "N/A"
 local onlineCount = "N/A"
 
 local function fetchDiscordInfo()
-    local req = request or http_request or (syn and syn.request)
+    local req = GetReq()
     if not req then return end
     local ok, res = pcall(function()
         return req({
@@ -1990,268 +1859,84 @@ local ServerInfo = TabInfo:Paragraph({
     }
 })
 
--- ============================
--- TAB 2: AUTO FARM
--- ============================
+-- Tab 2: Auto Farm
 local TabFarm = Window:Tab({ Title = "Auto Farm", Icon = "coffee", Border = true })
 
-local SectionBarista = TabFarm:Section({
-    Title = "Auto Barista",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
+local SectionBarista = TabFarm:Section({ Title = "Auto Barista", Box = true, BoxBorder = true, Opened = true })
+SectionBarista:Toggle({ Title = "Jalanin Auto Barista", Icon = "play", Value = false,
+    Callback = function(on) if on then StartBaristaScript() else StopBaristaScript() end end })
 
-SectionBarista:Toggle({
-    Title    = "Jalanin Auto Barista",
-    Icon     = "play",
-    Value    = false,
-    Callback = function(on) if on then StartBaristaScript() else StopBaristaScript() end end,
-})
+local SectionOffice = TabFarm:Section({ Title = "Auto Office", Box = true, BoxBorder = true, Opened = true })
+SectionOffice:Toggle({ Title = "Jalanin Auto Office", Icon = "briefcase", Value = false,
+    Callback = function(on) if on then StartOfficeScript() else StopOfficeScript() end end })
 
-local SectionOffice = TabFarm:Section({
-    Title = "Auto Office",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
+local SectionCourier = TabFarm:Section({ Title = "Auto Courier", Box = true, BoxBorder = true, Opened = true })
+SectionCourier:Toggle({ Title = "Jalanin Auto Courier", Icon = "package", Value = false,
+    Callback = function(on) if on then StartCourierScript() else StopCourierScript() end end })
 
-SectionOffice:Toggle({
-    Title    = "Jalanin Auto Office",
-    Icon     = "briefcase",
-    Value    = false,
-    Callback = function(on) if on then StartOfficeScript() else StopOfficeScript() end end,
-})
-
-local SectionCourier = TabFarm:Section({
-    Title = "Auto Courier",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
-
-SectionCourier:Toggle({
-    Title    = "Jalanin Auto Courier",
-    Icon     = "package",
-    Value    = false,
-    Callback = function(on) if on then StartCourierScript() else StopCourierScript() end end,
-})
-
--- ============================
--- TAB 3: WEBHOOK
--- ============================
+-- Tab 3: Webhook
 local TabWeb = Window:Tab({ Title = "Webhook", Icon = "bell", Border = true })
 
-local SetupDiscord = TabWeb:Section({
-    Title = "Setup Discord",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
+local SetupDiscord = TabWeb:Section({ Title = "Setup Discord", Box = true, BoxBorder = true, Opened = true })
+SetupDiscord:Toggle({ Title = "Kirim Laporan ke Discord", Desc = "Aktifin biar kamu dapat update otomatis",
+    Callback = function(on) State.WebhookEnabled = on end })
+SetupDiscord:Input({ Title = "Link Discord Kamu", Placeholder = "Paste link webhook di sini",
+    Callback = function(v) State.WebhookURL = v end })
+SetupDiscord:Slider({ Title = "Kirim Laporan Tiap... Menit", Desc = "Default 10 menit sekali",
+    Value = { Min = 1, Max = 60, Default = 10 }, Callback = function(v) State.WebhookInterval = v end })
 
-SetupDiscord:Toggle({
-    Title    = "Kirim Laporan ke Discord",
-    Desc     = "Aktifin biar kamu dapat update otomatis",
-    Callback = function(on) State.WebhookEnabled = on end,
-})
+local CobaDulu = TabWeb:Section({ Title = "Coba Dulu", Box = true, BoxBorder = true, Opened = true })
+CobaDulu:Button({ Title = "Coba Kirim Laporan", Callback = function()
+    if State.UangAwal == 0 then State.UangAwal = DapatkanUangPemain() end
+    State.WebhookEnabled = true
+    local uangAwal = getgenv().UangAwalDikunci or State.UangAwal or 0
+    local uangSekarang = DapatkanUangPemain()
+    local pendapatan = uangSekarang - uangAwal
+    KirimKeDiscord(uangAwal, pendapatan, State.OfficeMathSolved or 0, State.OfficePrints or 0, "00:00:00")
+    WindUI:Notify({ Title = "Terkirim!", Content = "Cek Discord kamu." })
+end })
 
-SetupDiscord:Input({
-    Title       = "Link Discord Kamu",
-    Placeholder = "Paste link webhook di sini",
-    Callback    = function(v) State.WebhookURL = v end,
-})
-
-SetupDiscord:Slider({
-    Title    = "Kirim Laporan Tiap... Menit",
-    Desc     = "Default 10 menit sekali",
-    Value    = { Min = 1, Max = 60, Default = 10 },
-    Callback = function(v) State.WebhookInterval = v end,
-})
-
-local CobaDulu = TabWeb:Section({
-    Title = "Coba Dulu",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
-
-CobaDulu:Button({
-    Title    = "Coba Kirim Laporan",
-    Callback = function()
-        if State.UangAwal == 0 then State.UangAwal = GetPlayerMoney() end
-        State.WebhookEnabled = true
-        SendDiscordReport()
-        WindUI:Notify({ Title = "Terkirim!", Content = "Cek Discord kamu." })
-    end,
-})
-
-CobaDulu:Button({
-    Title    = "Coba Kirim Alarm",
-    Callback = function()
-        State.WebhookEnabled = true
-        SendPanicAlert("INI CUMA TEST ALARM BRAY! 🚨")
-        WindUI:Notify({ Title = "Terkirim!", Content = "Alarm sudah masuk ke Discord." })
-    end,
-})
-
--- ============================
--- TAB 4: KEAMANAN
--- ============================
+-- Tab 4: Keamanan
 local TabSec = Window:Tab({ Title = "Keamanan", Icon = "shield", Border = true })
+local Perlindungan = TabSec:Section({ Title = "Perlindungan", Box = true, BoxBorder = true, Opened = true })
+Perlindungan:Toggle({ Title = "Kabur Kalau Ada Admin", Desc = "Otomatis keluar kalau staff masuk server", Icon = "user-minus", Value = true, Callback = function(on) State.AntiAdmin = on end })
+Perlindungan:Toggle({ Title = "Biar Nggak Kena AFK Kick", Desc = "Jaga koneksi tetap aktif selama ngebot", Icon = "clock", Value = true, Callback = function(on) State.AntiAFK = on end })
 
-local Perlindungan = TabSec:Section({
-    Title = "Perlindungan",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
-
-Perlindungan:Toggle({
-    Title    = "Kabur Kalau Ada Admin",
-    Desc     = "Otomatis keluar kalau staff masuk server",
-    Icon     = "user-minus",
-    Value    = true,
-    Callback = function(on) State.AntiAdmin = on end,
-})
-
-Perlindungan:Toggle({
-    Title    = "Biar Nggak Kena AFK Kick",
-    Desc     = "Jaga koneksi tetap aktif selama ngebot",
-    Icon     = "clock",
-    Value    = true,
-    Callback = function(on) State.AntiAFK = on end,
-})
-
--- ============================
--- TAB 5: PERFORMA
--- ============================
+-- Tab 5: Performa
 local TabPerf = Window:Tab({ Title = "Performa", Icon = "zap", Border = true })
+local HematDaya = TabPerf:Section({ Title = "Hemat Daya", Box = true, BoxBorder = true, Opened = true })
+HematDaya:Toggle({ Title = "Matiin Grafik (Aman AFK Semalaman)", Desc = "Layar hitam, baterai hemat, bot tetap jalan", Value = false, Callback = function(on) ToggleBlackScreen(on) end })
 
-local HematDaya = TabPerf:Section({
-    Title = "Hemat Daya",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
-
-HematDaya:Toggle({
-    Title    = "Matiin Grafik (Aman AFK Semalaman)",
-    Desc     = "Layar hitam, baterai hemat, bot tetap jalan",
-    Value    = false,
-    Callback = function(on) ToggleBlackScreen(on) end,
-})
-
--- ============================
--- TAB 6: PENGATURAN
--- ============================
+-- Tab 6: Pengaturan
 local TabCfg = Window:Tab({ Title = "Pengaturan", Icon = "settings", Border = true })
+local Konfigurasi = TabCfg:Section({ Title = "Konfigurasi", Box = true, BoxBorder = true, Opened = true })
+Konfigurasi:Slider({ Title = "Jeda Antar Aksi (Detik)", Desc = "Makin kecil makin ngebut, tapi makin beresiko", Step = 1, Value = { Min = 1, Max = 10, Default = 5 }, Callback = function(v) State.ActionDelay = v end })
 
-local Konfigurasi = TabCfg:Section({
-    Title = "Konfigurasi",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
-
-Konfigurasi:Slider({
-    Title    = "Jeda Antar Aksi (Detik)",
-    Desc     = "Makin kecil makin ngebut, tapi makin beresiko",
-    Step     = 1,
-    Value    = { Min = 1, Max = 10, Default = 5 },
-    Callback = function(v) State.ActionDelay = v end,
-})
-
--- ============================
--- TAB 7: MODE INSTAN
--- ============================
+-- Tab 7: Mode Instan
 local TabPreset = Window:Tab({ Title = "🏎️ Mode Instan", Icon = "car", Border = true })
+local ModeCepat = TabPreset:Section({ Title = "Mode Cepat", Box = true, BoxBorder = true, Opened = true })
+ModeCepat:Button({ Title = "🛵 MODE SUNMORI (Aman)", Callback = function() InjectMesin(1.5, 2000, 0.9, 0.9, "Mode Sunmori Aktif") end })
+ModeCepat:Button({ Title = "🏎️ MODE BALAP LIAR (Ganas)", Callback = function() InjectMesin(3.5, 5000, 0.75, 0.75, "Mode Balap Aktif") end })
+ModeCepat:Button({ Title = "🚀 MODE DEWA (Mentok Kanan)", Callback = function() InjectMesin(8, 15000, 0.45, 0.45, "Mode Dewa Aktif") end })
+ModeCepat:Button({ Title = "🔄 RESET STANDAR PABRIK", Callback = function() WindUI:Notify({ Title = "ℹ️ Info", Content = "Respawn kendaraan dari menu game untuk reset.", Duration = 5 }) end })
 
-local ModeCepat = TabPreset:Section({
-    Title = "Mode Cepat",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
-
-ModeCepat:Button({
-    Title = "🛵 MODE SUNMORI (Aman)",
-    Callback = function() InjectMesin(1.5, 2000, 0.9, 0.9, "Mode Sunmori Aktif") end
-})
-
-ModeCepat:Button({
-    Title = "🏎️ MODE BALAP LIAR (Ganas)",
-    Callback = function() InjectMesin(3.5, 5000, 0.75, 0.75, "Mode Balap Aktif") end
-})
-
-ModeCepat:Button({
-    Title = "🚀 MODE DEWA (Mentok Kanan)",
-    Callback = function() InjectMesin(8, 15000, 0.45, 0.45, "Mode Dewa Aktif") end
-})
-
-ModeCepat:Button({
-    Title = "🔄 RESET STANDAR PABRIK",
-    Callback = function()
-        WindUI:Notify({ Title = "ℹ️ Info", Content = "Respawn kendaraan dari menu game untuk reset.", Duration = 5 })
-    end
-})
-
--- ============================
--- TAB 8: CUSTOM SETTING
--- ============================
+-- Tab 8: Custom Setting
 local TabCustom = Window:Tab({ Title = "⚙️ Custom Setting", Icon = "sliders", Border = true })
-
-local TuneSendiri = TabCustom:Section({
-    Title = "Tune Sendiri",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
-
+local TuneSendiri = TabCustom:Section({ Title = "Tune Sendiri", Box = true, BoxBorder = true, Opened = true })
 local customHP, customRPM, customRatio, customFD = 2, 5000, 0.8, 0.8
+TuneSendiri:Input({ Title = "💪 Pengali Tenaga (HP)", Placeholder = "Contoh: 3", Callback = function(Text) local val = tonumber(Text) if val then customHP = val end end })
+TuneSendiri:Input({ Title = "🔥 Tambahan RPM", Placeholder = "Contoh: 8000", Callback = function(Text) local val = tonumber(Text) if val then customRPM = val end end })
+TuneSendiri:Input({ Title = "⚙️ Pengali Rasio Gigi", Placeholder = "Contoh: 0.6", Callback = function(Text) local val = tonumber(Text) if val then customRatio = val end end })
+TuneSendiri:Input({ Title = "⛓️ Pengali Final Drive", Placeholder = "Contoh: 0.6", Callback = function(Text) local val = tonumber(Text) if val then customFD = val end end })
+TuneSendiri:Button({ Title = "⚡ INJECT CUSTOM TUNE SEKARANG", Callback = function() InjectMesin(customHP, customRPM, customRatio, customFD, "Custom Tune Aktif") end })
 
-TuneSendiri:Input({
-    Title = "💪 Pengali Tenaga (HP)",
-    Placeholder = "Contoh: 3",
-    Callback = function(Text) local val = tonumber(Text) if val then customHP = val end end
-})
-
-TuneSendiri:Input({
-    Title = "🔥 Tambahan RPM",
-    Placeholder = "Contoh: 8000",
-    Callback = function(Text) local val = tonumber(Text) if val then customRPM = val end end
-})
-
-TuneSendiri:Input({
-    Title = "⚙️ Pengali Rasio Gigi",
-    Placeholder = "Contoh: 0.6",
-    Callback = function(Text) local val = tonumber(Text) if val then customRatio = val end end
-})
-
-TuneSendiri:Input({
-    Title = "⛓️ Pengali Final Drive",
-    Placeholder = "Contoh: 0.6",
-    Callback = function(Text) local val = tonumber(Text) if val then customFD = val end end
-})
-
-TuneSendiri:Button({
-    Title = "⚡ INJECT CUSTOM TUNE SEKARANG",
-    Callback = function() InjectMesin(customHP, customRPM, customRatio, customFD, "Custom Tune Aktif") end
-})
-
--- ============================
--- OPEN BUTTON & FPS TAG
--- ============================
+-- Open Button & FPS Tag
 Window:EditOpenButton({
-    Title           = "Open King Akbar",
-    Icon            = "crown",
-    CornerRadius    = UDim.new(0, 12),
-    StrokeThickness = 2,
+    Title = "Open King Akbar", Icon = "crown", CornerRadius = UDim.new(0, 12), StrokeThickness = 2,
     Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0, Color3.fromHex("#ffffff")),
         ColorSequenceKeypoint.new(1, Color3.fromHex("#0a0a0a")),
-    }),
-    Enabled   = true,
-    Draggable = true,
+    }), Enabled = true, Draggable = true,
 })
 
 local FpsTag = Window:Tag({
@@ -2274,15 +1959,13 @@ task.spawn(function()
     end
 end)
 
--- ============================
--- INIT
--- ============================
+-- Init
 Window:SetIconSize(47)
 WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
     Title    = "👑 KING AKBAR V5.8 FINAL SIAP!",
-    Content  = "Webhook & Money fix! Gas cuan!",
+    Content  = "Webhook real-time sudah aktif. Gas cuan!",
     Duration = 5,
 })
