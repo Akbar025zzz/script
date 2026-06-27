@@ -3,9 +3,10 @@
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE MONITOR FIX)
-    [+] Changelog   : - Monitoring Office: uang awal dikunci, profit akurat
-                      - GetPlayerMoney(): scan teks Rp di GUI
+    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE UI SCAN)
+    [+] Changelog   : - Monitoring Office scan langsung teks "Rp." di UI
+                      - Uang Awal dikunci, profit akurat
+                      - Cache label uang biar nggak lag
                       - Auto ganti kursi kalo sepi soal
                       - Bypass Network Pause auto-active
 ================================================================================
@@ -157,50 +158,24 @@ local function rWait(minSec, maxSec)
 end
 
 -- ============================================================================
--- // 4. WEBHOOK (FIXED) & GetPlayerMoney UPGRADE
+-- // 4. WEBHOOK & GetPlayerMoney (standar, tetap dipakai untuk webhook/barista)
 -- ============================================================================
 local function GetPlayerMoney()
     local money = 0
-
-    -- 1. Cek leaderstats (cara paling akurat)
     pcall(function()
-        if LocalPlayer:FindFirstChild("leaderstats") then
-            local moneyObj = LocalPlayer.leaderstats:FindFirstChild("Money") or LocalPlayer.leaderstats:FindFirstChild("Cash") or LocalPlayer.leaderstats:FindFirstChild("Uang")
-            if moneyObj and (moneyObj:IsA("IntValue") or moneyObj:IsA("DoubleValue")) then
-                money = moneyObj.Value
-                return
-            end
-        end
-        if LocalPlayer:FindFirstChild("Data") then
-            local moneyObj = LocalPlayer.Data:FindFirstChild("Money") or LocalPlayer.Data:FindFirstChild("Cash")
-            if moneyObj and (moneyObj:IsA("IntValue") or moneyObj:IsA("DoubleValue")) then
-                money = moneyObj.Value
-                return
-            end
-        end
-    end)
-
-    -- 2. Scan teks "Rp" di seluruh PlayerGui (termasuk pojok kiri bawah)
-    pcall(function()
-        for _, gui in ipairs(LocalPlayer.PlayerGui:GetDescendants()) do
-            if gui:IsA("TextLabel") or gui:IsA("TextButton") then
-                if gui.Visible and string.find(gui.Text, "Rp") then
-                    local numStr = string.match(gui.Text, "Rp[%s]*:?[%s]*([%d%,%.]+)")
-                    if not numStr then
-                        numStr = string.match(gui.Text, "([%d%,%.]+)")
-                    end
-                    if numStr then
-                        local clean = string.gsub(numStr, "[^%d]", "")
-                        local val = tonumber(clean)
-                        if val and val > money then
-                            money = val
-                        end
-                    end
+        if LocalPlayer:FindFirstChild("leaderstats") and LocalPlayer.leaderstats:FindFirstChild("Money") then
+            money = LocalPlayer.leaderstats.Money.Value
+        elseif LocalPlayer:FindFirstChild("Data") and LocalPlayer.Data:FindFirstChild("Money") then
+            money = LocalPlayer.Data.Money.Value
+        else
+            for _, v in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
+                if v:IsA("TextLabel") and v.Visible and string.find(v.Text, "Rp%.") then
+                    local m = tonumber(string.gsub(v.Text, "[^%d]", ""))
+                    if m and m > money then money = m end
                 end
             end
         end
     end)
-
     return money
 end
 
@@ -980,7 +955,7 @@ local function StopBaristaScript(reason)
 end
 
 -- ============================================================================
--- // 12. OFFICE JOB SYSTEM (V5.8 FINAL - MONITOR FIX)
+-- // 12. OFFICE JOB SYSTEM (V5.8 FINAL - MONITORING UI SCAN)
 -- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -1307,9 +1282,21 @@ task.spawn(function()
     end
 end)
 
--- ================== MONITORING GUI (UANG AWAL DIKUNCI) ==================
+-- ================== MONITORING GUI (FIX ZEROS & AUTO SCAN UI) ==================
 local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local LocalPlayer2 = Players.LocalPlayer  -- gunakan alias beda biar aman
 local TrackerGui = nil
+
+-- Variabel untuk menyimpan label Uang biar nggak berat nyari terus-terusan
+local CachedMoneyLabel = nil
+
+-- Fungsi untuk mengambil angka dari teks (contoh: "Rp. 202 364 017" jadi 202364017)
+local function parseNumber(val)
+    if not val then return 0 end
+    local cleanString = string.gsub(tostring(val), "[^%d%-]", "")
+    return tonumber(cleanString) or 0
+end
 
 local function formatNumber(num)
     local formatted = tostring(math.floor(tonumber(num) or 0))
@@ -1329,7 +1316,52 @@ local function formatTime(seconds)
     return string.format("%02d:%02d:%02d", h, m, s)
 end
 
-local function buatMonitoringGUI(uangAwal)
+-- ================== AUTO-SCAN UI ==================
+local function CariLabelUang()
+    local playerGui = LocalPlayer2:FindFirstChild("PlayerGui")
+    if not playerGui then return nil end
+
+    for _, guiObject in ipairs(playerGui:GetDescendants()) do
+        if guiObject:IsA("TextLabel") or guiObject:IsA("TextButton") then
+            local text = guiObject.Text
+            -- Cari teks yang punya tulisan "Rp." dan ada angkanya
+            if text and string.find(text, "Rp%.") and string.match(text, "%d+") then
+                return guiObject
+            end
+        end
+    end
+    return nil
+end
+
+local function DapatkanUangPemain()
+    -- Gunakan label yang sudah ketemu sebelumnya (Cache) biar nggak bikin lag game
+    if CachedMoneyLabel and CachedMoneyLabel.Parent then
+        return parseNumber(CachedMoneyLabel.Text)
+    end
+
+    -- Kalau belum ketemu atau karakter baru mati/reset, scan ulang UI-nya
+    CachedMoneyLabel = CariLabelUang()
+    if CachedMoneyLabel then
+        return parseNumber(CachedMoneyLabel.Text)
+    end
+    
+    -- Fallback jika gagal scan UI, pakai GetPlayerMoney() biasa
+    return GetPlayerMoney()
+end
+
+-- ================== MAIN GUI ==================
+local function buatMonitoringGUI()
+    -- Ambil uang sekarang. Jangan dikunci kalau hasilnya masih 0 (misal UI telat load)
+    local uangSekarang = DapatkanUangPemain()
+    
+    if not getgenv().UangAwalDikunci or getgenv().UangAwalDikunci == 0 then
+        getgenv().UangAwalDikunci = uangSekarang
+    end
+    
+    getgenv().WaktuMulai = getgenv().WaktuMulai or tick()
+    
+    local uangAwal = getgenv().UangAwalDikunci
+
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy() end
     TrackerGui = Instance.new("ScreenGui")
     TrackerGui.Name = "KingAkbarTracker"
@@ -1383,15 +1415,35 @@ local function buatMonitoringGUI(uangAwal)
     uangAwalLabel.Text = formatNumber(uangAwal)
 
     task.spawn(function()
-        while TrackerGui and TrackerGui.Parent and State.IsOfficeActive do
-            pcall(function()
-                local nowMoney = GetPlayerMoney()
-                local profit = nowMoney - uangAwal
+        while TrackerGui and TrackerGui.Parent do
+            local success, err = pcall(function()
+                local currentMoney = DapatkanUangPemain()
+                
+                -- Update Uang Awal kalau tiba-tiba dari 0 jadi ada saldonya
+                if uangAwal == 0 and currentMoney > 0 then
+                    getgenv().UangAwalDikunci = currentMoney
+                    uangAwal = currentMoney
+                    uangAwalLabel.Text = formatNumber(uangAwal)
+                end
+                
+                local profit = currentMoney - uangAwal
+                
                 pendapatanLabel.Text = (profit >= 0 and "+" or "") .. formatNumber(profit)
-                soalLabel.Text = tostring(State.OfficeMathSolved or 0)
-                printLabel.Text = tostring(State.OfficePrints or 0)
-                uptimeLabel.Text = formatTime(tick() - (getgenv().waktuMulai or tick()))
+                
+                if type(State) == "table" then
+                    soalLabel.Text = tostring(State.OfficeMathSolved or 0)
+                    printLabel.Text = tostring(State.OfficePrints or 0)
+                else
+                    soalLabel.Text = "0"
+                    printLabel.Text = "0"
+                end
+                
+                uptimeLabel.Text = formatTime(tick() - getgenv().WaktuMulai)
             end)
+
+            if not success then
+                warn("Monitoring Error: ", tostring(err))
+            end
             task.wait(1)
         end
     end)
@@ -1408,20 +1460,13 @@ local function StartOfficeScript()
     State.OfficeMathSolved = 0
     State.OfficePrints = 0
     getgenv().fullAuto = true
-    getgenv().waktuMulai = tick()
 
-    local uangAwal = 0
-    local waited = 0
-    while waited < 10 do
-        uangAwal = GetPlayerMoney()
-        if uangAwal > 0 then break end
-        task.wait(0.5)
-        waited = waited + 0.5
-    end
-    if uangAwal == 0 then
-        WindUI:Notify({ Title = "⚠️ Office", Content = "Gagal baca uang, profit mungkin nggak akurat.", Duration = 5 })
-    end
+    -- Reset cache & kuncian lama
+    CachedMoneyLabel = nil
+    getgenv().UangAwalDikunci = nil
+    getgenv().WaktuMulai = tick()
 
+    -- Kalau belum duduk, cari kursi dulu
     if not CharRef.Humanoid or not CharRef.Humanoid.SeatPart then
         WindUI:Notify({ Title = "🔍 Office", Content = "Mencari kursi kerja...", Duration = 3 })
         local sitPrompt = findNearestChair(60)
@@ -1442,8 +1487,8 @@ local function StartOfficeScript()
         myChair = CharRef.Humanoid.SeatPart
     end
 
-    buatMonitoringGUI(uangAwal)
-    WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Uang awal terkunci.", Duration = 4 })
+    buatMonitoringGUI()  -- PANGGIL TANPA PARAMETER
+    WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Uang Awal discan otomatis.", Duration = 4 })
 end
 
 local function StopOfficeScript()
@@ -1452,6 +1497,11 @@ local function StopOfficeScript()
     getgenv().forceStopMath = false
     getgenv().isGoingToPrinter = false
     CachedTargetLabel, CachedTargetParent = nil, nil
+
+    -- Reset cache uang & kuncian
+    CachedMoneyLabel = nil
+    getgenv().UangAwalDikunci = nil
+
     local hum = CharRef.Humanoid
     if hum then hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true) end
     matikanMonitoring()
@@ -2227,6 +2277,6 @@ TabInfo:Select()
 
 WindUI:Notify({
     Title    = "👑 KING AKBAR V5.8 FINAL SIAP!",
-    Content  = "Office fix: uang awal dikunci, profit real-time. Scan Rp ready.",
+    Content  = "Office monitoring discan langsung dari UI. Gas cuan!",
     Duration = 5,
 })
