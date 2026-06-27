@@ -159,20 +159,41 @@ local function rWait(minSec, maxSec)
 end
 
 -- ============================================================================
--- // 4. WEBHOOK & GetPlayerMoney (standar, untuk webhook/barista)
+-- // 4. WEBHOOK & GetPlayerMoney (FIX: FLEKSIBEL SCAN UANG)
 -- ============================================================================
 local function GetPlayerMoney()
     local money = 0
     pcall(function()
-        if LocalPlayer:FindFirstChild("leaderstats") and LocalPlayer.leaderstats:FindFirstChild("Money") then
-            money = LocalPlayer.leaderstats.Money.Value
-        elseif LocalPlayer:FindFirstChild("Data") and LocalPlayer.Data:FindFirstChild("Money") then
-            money = LocalPlayer.Data.Money.Value
-        else
+        -- 1. Cek leaderstats / Data (cara paling akurat)
+        local ls = LocalPlayer:FindFirstChild("leaderstats")
+        if ls then
+            for _, v in pairs(ls:GetChildren()) do
+                if v:IsA("IntValue") or v:IsA("NumberValue") or v:IsA("DoubleConstrainedValue") then
+                    local val = tonumber(v.Value)
+                    if val and val > money then money = val end
+                end
+            end
+        end
+        local data = LocalPlayer:FindFirstChild("Data")
+        if data then
+            for _, v in pairs(data:GetChildren()) do
+                if v:IsA("IntValue") or v:IsA("NumberValue") then
+                    local val = tonumber(v.Value)
+                    if val and val > money then money = val end
+                end
+            end
+        end
+
+        -- 2. Kalau masih 0, scan semua UI yang mengandung "Rp"
+        if money == 0 then
             for _, v in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
-                if v:IsA("TextLabel") and v.Visible and string.find(v.Text, "Rp%.") then
-                    local m = tonumber(string.gsub(v.Text, "[^%d]", ""))
-                    if m and m > money then money = m end
+                if (v:IsA("TextLabel") or v:IsA("TextButton")) and v.Visible then
+                    local txt = string.lower(v.Text)
+                    if txt:find("rp") then  -- cocokkan "Rp", "RP", "rp", dll
+                        local cleaned = string.gsub(v.Text, "[^%d]", "")
+                        local val = tonumber(cleaned)
+                        if val and val > money then money = val end
+                    end
                 end
             end
         end
@@ -2051,7 +2072,6 @@ local CobaDulu = TabWeb:Section({
     Opened = true,
 })
 
--- FIX: Tombol "Coba Kirim Laporan" dengan validasi
 CobaDulu:Button({
     Title    = "Coba Kirim Laporan",
     Callback = function()
