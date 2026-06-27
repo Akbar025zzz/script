@@ -3,9 +3,9 @@
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 - OFFICE CHAIR SWITCH)
-    [+] Changelog   : - Fixed Office monitoring uang awal & profit
-                      - Added auto kursi ganti kalo sepi soal
+    [+] Version     : DDS FREE EDITION (v5.8 - INFO TAB)
+    [+] Changelog   : - Ganti Menu Utama jadi Info Discord + Credits
+                      - Office: Fix uang awal & auto ganti kursi kalo sepi
                       - Bypass Network Pause auto-active
 ================================================================================
 ]]--
@@ -996,7 +996,6 @@ local function findNearestChair(radius)
     return best
 end
 
--- Fungsi untuk cari kursi LAIN (selain myChair)
 local function findAnotherChair()
     local origin = CharRef.Root and CharRef.Root.Position
     if not origin then return nil end
@@ -1229,7 +1228,6 @@ task.spawn(function()
         local soalLabel = soalCacheValid() and CachedTargetLabel or cariSoalBaru()
         if not soalLabel then task.wait(0.8) continue end
 
-        -- Setiap nemu soal (atau mau jawab), reset timer idle
         lastActivityTime = tick()
 
         local text = soalLabel.Text
@@ -1259,7 +1257,7 @@ task.spawn(function()
                     if getgenv().forceStopMath or not State.IsOfficeActive then break end
                     if klikTombol(btn) then
                         State.OfficeMathSolved = (State.OfficeMathSolved or 0) + 1
-                        lastActivityTime = tick() -- reset lagi setelah berhasil jawab
+                        lastActivityTime = tick()
                     end
                     task.wait(math.random(4,12)/10)
                     break
@@ -1386,7 +1384,6 @@ local function StartOfficeScript()
     getgenv().fullAuto = true
     getgenv().waktuMulai = tick()
 
-    -- NUNGGU UANG BENERAN ADA
     local initialMoney = 0
     local waited = 0
     while waited < 10 do
@@ -1400,7 +1397,6 @@ local function StartOfficeScript()
     end
     getgenv().uangAwal = initialMoney
 
-    -- Auto cari kursi kalau belum duduk
     if not CharRef.Humanoid or not CharRef.Humanoid.SeatPart then
         WindUI:Notify({ Title = "🔍 Office", Content = "Mencari kursi kerja...", Duration = 3 })
         local sitPrompt = findNearestChair(60)
@@ -1835,7 +1831,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
 end
 
 -- ============================================================================
--- // 15. UI — 8 TAB TERPISAH
+-- // 15. UI — 8 TAB TERPISAH (DENGAN INFO TAB)
 -- ============================================================================
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
@@ -1860,40 +1856,58 @@ local Window = WindUI:CreateWindow({
 })
 
 -- ============================
--- TAB 1: MENU UTAMA
+-- TAB 1: INFO (MENU UTAMA BARU)
 -- ============================
-local TabMenu = Window:Tab({ Title = "Menu Utama", Icon = "home", Border = true })
+local TabInfo = Window:Tab({ Title = "Info", Icon = "info", Border = true })
 
-local StatusPanel = TabMenu:Section({
-    Title = "Status Panel",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
+local memberCount = "N/A"
+local onlineCount = "N/A"
 
-local ParaStatus = StatusPanel:Paragraph({
-    Title       = "Status Sekarang",
-    Desc        = State.StatusText,
-    Transparent = true,
-})
-
-local ParaOrder = StatusPanel:Paragraph({
-    Title       = "Total Kopi Kejual",
-    Desc        = "0 cangkir terjual",
-    Transparent = true,
-})
-
-task.spawn(function()
-    while task.wait(0.5) do
-        pcall(function()
-            ParaStatus:Set({ Title = "Status Sekarang", Desc = State.StatusText })
-            ParaOrder:Set({
-                Title = "Total Kopi Kejual",
-                Desc  = State.OrderCount .. " cangkir terjual",
-            })
-        end)
+local function fetchDiscordInfo()
+    local req = request or http_request or (syn and syn.request)
+    if not req then return end
+    local ok, res = pcall(function()
+        return req({
+            Url     = "https://discord.com/api/v9/invites/XmWf3YQPpZ?with_counts=true",
+            Method  = "GET",
+            Headers = { ["User-Agent"] = "Mozilla/5.0" }
+        })
+    end)
+    if ok and res and res.StatusCode == 200 then
+        local ok2, data = pcall(function() return game:GetService("HttpService"):JSONDecode(res.Body) end)
+        if ok2 and data then
+            memberCount = tostring(data.approximate_member_count   or "N/A")
+            onlineCount = tostring(data.approximate_presence_count or "N/A")
+        end
     end
-end)
+end
+fetchDiscordInfo()
+
+local ServerInfo = TabInfo:Paragraph({
+    Title         = "King Vypers | Official",
+    Desc          = "• Member Count: " .. memberCount .. "\n• Online Count: " .. onlineCount,
+    Image         = "rbxassetid://107726435417936",
+    Thumbnail     = "rbxassetid://83197533072664",
+    ThumbnailSize = 80,
+    Buttons = {
+        {
+            Title    = "Copy Discord Invite",
+            Color    = Color3.fromHex("#5707AB"),
+            Icon     = "link",
+            Callback = function()
+                if setclipboard then setclipboard("https://discord.gg/XmWf3YQPpZ") end
+            end
+        },
+        {
+            Title    = "Update Info",
+            Icon     = "refresh-cw",
+            Callback = function()
+                fetchDiscordInfo()
+                ServerInfo:SetDesc("• Member Count: " .. memberCount .. "\n• Online Count: " .. onlineCount)
+            end
+        }
+    }
+})
 
 -- ============================
 -- TAB 2: AUTO FARM
@@ -2184,10 +2198,10 @@ end)
 -- ============================
 Window:SetIconSize(47)
 WindUI:SetTheme("dark")
-TabMenu:Select()
+TabInfo:Select()  -- Buka Info Tab duluan
 
 WindUI:Notify({
     Title    = "👑 KING AKBAR V5.8 SIAP!",
-    Content  = "Office fix: uang akurat + auto ganti kursi kalo sepi soal.",
+    Content  = "Info Tab + Office fix + auto kursi siap cuan!",
     Duration = 5,
 })
