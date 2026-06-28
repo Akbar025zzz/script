@@ -10,7 +10,6 @@
                       - Auto ganti kursi kalo sepi soal
                       - Fix: Office langsung jawab pas start (timer idle di-reset)
                       - Bypass Network Pause auto-active
-                      - UPDATE: Auto Courier FULL FIXED (Ghost Glide + Safe Landing)
 ================================================================================
 ]]--
 
@@ -112,8 +111,10 @@ local State = {
     SessionStartTime   = 0,
     LastStopReason     = "",
     MachineFixCount    = 0,
+    -- Stats Office
     OfficeMathSolved   = 0,
     OfficePrints       = 0,
+    -- Stats Courier
     CourierDelivered   = 0,
 }
 
@@ -126,6 +127,7 @@ LocalPlayer.Idled:Connect(function()
     end
 end)
 
+-- BYPASS NETWORK PAUSE (AUTO JALAN)
 task.spawn(function()
     while true do
         pcall(function()
@@ -133,7 +135,9 @@ task.spawn(function()
             local robloxGui = coreGui:FindFirstChild("RobloxGui")
             if robloxGui then
                 local pauseScript = robloxGui:FindFirstChild("CoreScripts/NetworkPause")
-                if pauseScript then pauseScript:Destroy() end
+                if pauseScript then
+                    pauseScript:Destroy()
+                end
             end
         end)
         task.wait(0.2)
@@ -148,7 +152,7 @@ local function rWait(minSec, maxSec)
 end
 
 -- ============================================================================
--- // 4. GetPlayerMoney
+-- // 4. GetPlayerMoney (untuk monitoring & barista)
 -- ============================================================================
 local function GetPlayerMoney()
     local money = 0
@@ -170,7 +174,7 @@ local function GetPlayerMoney()
 end
 
 -- ============================================================================
--- // 5. ADMIN SENSOR
+-- // 5. ADMIN SENSOR (tanpa webhook)
 -- ============================================================================
 local GAME_GROUP_ID  = 11378976
 local MIN_STAFF_RANK = 200
@@ -663,13 +667,18 @@ end
 
 local function eksekusiPromptTahan(pp)
     if not pp then return end
-    if (pp.HoldDuration or 0) > 0 then DoHold(pp) else DoTap(pp) end
+    if (pp.HoldDuration or 0) > 0 then
+        DoHold(pp)
+    else
+        DoTap(pp)
+    end
 end
 
 local myChair            = nil
 local CachedTargetLabel  = nil
 local CachedTargetParent = nil
 
+-- ================== CARI KURSI ==================
 local function findNearestChair(radius)
     local origin = CharRef.Root and CharRef.Root.Position
     if not origin then return nil end
@@ -712,6 +721,7 @@ local function findAnotherChair()
     return best
 end
 
+-- ================== BERJALAN KE TITIK ==================
 local function jalanKe(pos)
     local root = CharRef.Root
     local hum = CharRef.Humanoid
@@ -744,6 +754,7 @@ local function jalanKe(pos)
     end
 end
 
+-- ================== DUDUK & BANGUN ==================
 local function keluarKursi()
     local hum = CharRef.Humanoid
     if not hum then return end
@@ -773,13 +784,18 @@ local function dudukKeKursi()
     return false
 end
 
+-- ================== PRINTER STUFF ==================
 local function cekPanggilanPrinter()
     for _, gui in pairs(playerGui:GetDescendants()) do
-        if gui:IsA("TextLabel") and gui.Visible and hasText(gui.Text, "printer") then return true end
+        if gui:IsA("TextLabel") and gui.Visible and hasText(gui.Text, "printer") then
+            return true
+        end
     end
     for _, obj in pairs(workspace:GetDescendants()) do
         if obj:IsA("ProximityPrompt") and obj.Enabled then
-            if hasText(obj.ActionText, "printer") or hasText(obj.ObjectText, "printer") then return true end
+            if hasText(obj.ActionText, "printer") or hasText(obj.ObjectText, "printer") then
+                return true
+            end
         end
     end
     return false
@@ -788,12 +804,15 @@ end
 local function scanPromptPrint()
     for _, obj in pairs(workspace:GetDescendants()) do
         if obj:IsA("ProximityPrompt") and obj.Enabled then
-            if hasText(obj.ActionText, "print") or hasText(obj.ObjectText, "print") then return obj end
+            if hasText(obj.ActionText, "print") or hasText(obj.ObjectText, "print") then
+                return obj
+            end
         end
     end
     return nil
 end
 
+-- ================== PRINT THREAD ==================
 task.spawn(function()
     while true do
         task.wait(1)
@@ -835,6 +854,7 @@ task.spawn(function()
     end
 end)
 
+-- ================== MATH STUFF ==================
 local function cariSoalBaru()
     CachedTargetLabel, CachedTargetParent = nil, nil
     for _, v in pairs(playerGui:GetDescendants()) do
@@ -870,6 +890,7 @@ local function klikTombol(btn)
     return ok
 end
 
+-- ================== IDLE DETECTOR + CHAIR SWITCH ==================
 local lastActivityTime = tick()
 local isSwitching = false
 local IDLE_SWITCH_TIME = 60
@@ -885,7 +906,9 @@ task.spawn(function()
             WindUI:Notify({ Title = "🔄 Office", Content = "Sepi soal, ganti kursi dulu...", Duration = 3 })
             keluarKursi()
             local newChair = findAnotherChair()
-            if newChair then myChair = newChair end
+            if newChair then
+                myChair = newChair
+            end
             dudukKeKursi()
             getgenv().forceStopMath = false
             isSwitching = false
@@ -894,6 +917,7 @@ task.spawn(function()
     end
 end)
 
+-- ================== MATH THREAD ==================
 task.spawn(function()
     while true do
         task.wait(0.2)
@@ -904,12 +928,16 @@ task.spawn(function()
             task.wait(1)
             continue
         end
+
         local soalLabel = soalCacheValid() and CachedTargetLabel or cariSoalBaru()
         if not soalLabel then task.wait(0.8) continue end
+
         lastActivityTime = tick()
+
         local text = soalLabel.Text
         local a, op, b = string.match(text, "(%d+)%s*([%+%-%*/])%s*(%d+)")
         if not a then CachedTargetLabel, CachedTargetParent = nil, nil continue end
+
         local n1, n2 = tonumber(a), tonumber(b)
         local jawaban
         if     op == "+" then jawaban = n1 + n2
@@ -917,6 +945,7 @@ task.spawn(function()
         elseif op == "*" then jawaban = n1 * n2
         elseif op == "/" and n2 ~= 0 then jawaban = n1 / n2
         else CachedTargetLabel, CachedTargetParent = nil, nil continue end
+
         local ditemukan = false
         for _, btn in pairs(playerGui:GetDescendants()) do
             if getgenv().forceStopMath or not State.IsOfficeActive then break end
@@ -943,6 +972,7 @@ task.spawn(function()
     end
 end)
 
+-- ================== ANTI-IDLE EVENT ==================
 task.spawn(function()
     while true do
         task.wait(10)
@@ -954,10 +984,12 @@ task.spawn(function()
     end
 end)
 
+-- ================== MONITORING GUI (FIX ZEROS & AUTO SCAN UI) ==================
 local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer2 = Players.LocalPlayer
 local TrackerGui = nil
+
 local CachedMoneyLabel = nil
 
 local function parseNumber(val)
@@ -987,6 +1019,7 @@ end
 local function CariLabelUang()
     local playerGui = LocalPlayer2:FindFirstChild("PlayerGui")
     if not playerGui then return nil end
+
     for _, guiObject in ipairs(playerGui:GetDescendants()) do
         if guiObject:IsA("TextLabel") or guiObject:IsA("TextButton") then
             local text = guiObject.Text
@@ -1002,19 +1035,24 @@ local function DapatkanUangPemain()
     if CachedMoneyLabel and CachedMoneyLabel.Parent then
         return parseNumber(CachedMoneyLabel.Text)
     end
+
     CachedMoneyLabel = CariLabelUang()
     if CachedMoneyLabel then
         return parseNumber(CachedMoneyLabel.Text)
     end
+    
     return GetPlayerMoney()
 end
 
 local function buatMonitoringGUI()
     local uangSekarang = DapatkanUangPemain()
+    
     if not getgenv().UangAwalDikunci or getgenv().UangAwalDikunci == 0 then
         getgenv().UangAwalDikunci = uangSekarang
     end
+    
     getgenv().WaktuMulai = getgenv().WaktuMulai or tick()
+    
     local uangAwal = getgenv().UangAwalDikunci
 
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy() end
@@ -1066,19 +1104,24 @@ local function buatMonitoringGUI()
     local uangAwalLabel, pendapatanLabel = baris("Uang Awal", "Pendapatan", 4)
     local soalLabel, printLabel = baris("Soal Jawab", "Total Print", 5)
     local uptimeLabel = barisTunggal("Uptime", 6)
+
     uangAwalLabel.Text = formatNumber(uangAwal)
 
     task.spawn(function()
         while TrackerGui and TrackerGui.Parent do
             local success, err = pcall(function()
                 local currentMoney = DapatkanUangPemain()
+                
                 if uangAwal == 0 and currentMoney > 0 then
                     getgenv().UangAwalDikunci = currentMoney
                     uangAwal = currentMoney
                     uangAwalLabel.Text = formatNumber(uangAwal)
                 end
+                
                 local profit = currentMoney - uangAwal
+                
                 pendapatanLabel.Text = (profit >= 0 and "+" or "") .. formatNumber(profit)
+                
                 if type(State) == "table" then
                     soalLabel.Text = tostring(State.OfficeMathSolved or 0)
                     printLabel.Text = tostring(State.OfficePrints or 0)
@@ -1086,9 +1129,13 @@ local function buatMonitoringGUI()
                     soalLabel.Text = "0"
                     printLabel.Text = "0"
                 end
+                
                 uptimeLabel.Text = formatTime(tick() - getgenv().WaktuMulai)
             end)
-            if not success then warn("Monitoring Error: ", tostring(err)) end
+
+            if not success then
+                warn("Monitoring Error: ", tostring(err))
+            end
             task.wait(1)
         end
     end)
@@ -1098,12 +1145,14 @@ local function matikanMonitoring()
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy(); TrackerGui = nil end
 end
 
+-- ================== START & STOP FUNCS (DENGAN FIX TIMER IDLE) ==================
 local function StartOfficeScript()
     if State.IsOfficeActive then return end
     State.IsOfficeActive = true
     State.OfficeMathSolved = 0
     State.OfficePrints = 0
     getgenv().fullAuto = true
+
     CachedMoneyLabel = nil
     getgenv().UangAwalDikunci = nil
     getgenv().WaktuMulai = tick()
@@ -1129,6 +1178,7 @@ local function StartOfficeScript()
     end
 
     lastActivityTime = tick()
+
     buatMonitoringGUI()
     WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Uang Awal discan otomatis.", Duration = 4 })
 end
@@ -1139,8 +1189,10 @@ local function StopOfficeScript()
     getgenv().forceStopMath = false
     getgenv().isGoingToPrinter = false
     CachedTargetLabel, CachedTargetParent = nil, nil
+
     CachedMoneyLabel = nil
     getgenv().UangAwalDikunci = nil
+
     local hum = CharRef.Humanoid
     if hum then hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true) end
     matikanMonitoring()
@@ -1148,28 +1200,22 @@ local function StopOfficeScript()
 end
 
 -- ============================================================================
--- // 13. AUTO COURIER (NEW FULL FIXED) -- DIGANTI
+-- // 13. AUTO COURIER (V2 – SELFCONTAINED & LANDING FIX)
 -- ============================================================================
-local SpawnCar = { SelectedCar = "Yamahax-MioSporty" }
+local CourierJob = {
+    Name = "Courier",
+    TeamId = 11378976,
+    X = -5158.57,
+    Y = 4.41,
+    Z = -3757.87
+}
 
-local function walkTo(humanoid, point, timeout)
-    timeout = timeout or 10
-    local root = humanoid.Parent and humanoid.Parent:FindFirstChild("HumanoidRootPart")
-    if not root then return end
-    local t = tick()
-    while tick() - t < timeout and State.IsCourierActive do
-        if (root.Position - point).Magnitude < 5 then break end
-        humanoid:MoveTo(point)
-        task.wait(0.5)
-    end
-end
+local SELECTED_CAR = "Yamahax-MioSporty"  -- bisa diganti manual
+local ServiceEventConn = nil
 
-local function setJob(job)
-    pcall(function()
-        Services.ReplicatedStorage:WaitForChild("JobEvents"):WaitForChild("TeamChangeRequest")
-            :FireServer(job.Name, job.TeamId, 1, 0, "Detector")
-    end)
-end
+-- ======================
+--  FUNGSI BANTUAN
+-- ======================
 
 local function findMyMotor()
     local myName = LocalPlayer.Name
@@ -1225,16 +1271,37 @@ local function exitMotor()
         task.wait(0.3)
     end
     local humanoid = char:FindFirstChildOfClass("Humanoid")
-    if humanoid then pcall(function() humanoid.Jump = true end) end
+    if humanoid then
+        pcall(function() humanoid.Jump = true end)
+    end
     return true
 end
 
-local function forceDismount()
+local function walkTo(humanoid, point, timeout)
+    timeout = timeout or 10
+    local t = tick()
+    while tick() - t < timeout and State.IsCourierActive do
+        local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if hrp and (hrp.Position - point).Magnitude < 5 then break end
+        humanoid:MoveTo(point)
+        task.wait(0.5)
+    end
+end
+
+local function setJob(job)
+    pcall(function()
+        Services.ReplicatedStorage:WaitForChild("JobEvents"):WaitForChild("TeamChangeRequest")
+            :FireServer(job.Name, job.TeamId, 1, 0, "Detector")
+    end)
+end
+
+local function forceDismount(targetPackagePos)
     local char = LocalPlayer.Character
     if not char then return end
     local hum = char:FindFirstChild("Humanoid")
     if not hum then return end
-    for attempt = 1, 5 do
+
+    for _ = 1, 5 do
         if not hum.Sit and not hum.SeatPart then break end
         hum.Sit = false
         hum.Jump = true
@@ -1245,12 +1312,10 @@ local function forceDismount()
         end
         task.wait(0.15)
     end
+
     if hum.Sit or hum.SeatPart then
-        print("Force dismount gagal, teleport paksa...")
-        if State.IsCourierActive then
-            char:PivotTo(CFrame.new(Vector3.new(0, 5, 0))) -- fallback, seharusnya tidak terjadi
-        else
-            char:PivotTo(char:GetPivot() * CFrame.new(0, 5, 0))
+        if targetPackagePos then
+            char:PivotTo(CFrame.new(targetPackagePos + Vector3.new(0, 3, 0)))
         end
         task.wait(0.2)
         hum.Sit = false
@@ -1258,40 +1323,179 @@ local function forceDismount()
     end
 end
 
-local CourierJob = { Name = "Courier", TeamId = 11378976, X = -5158.57, Y = 4.41, Z = -3757.87 }
-local courierRunning = false
-local ServiceEventConn = nil
+local function findSafeLandingNear(targetPos, vehicle, char)
+    local searchRadius = 20
+    local bestPos = nil
+    local bestDist = math.huge
+
+    local rayParams = RaycastParams.new()
+    rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+    rayParams.FilterDescendantsInstances = { vehicle, char }
+
+    for angle = 0, 330, 30 do
+        local rad = math.rad(angle)
+        for r = 5, searchRadius, 5 do
+            local offsetX = math.cos(rad) * r
+            local offsetZ = math.sin(rad) * r
+            local checkPos = Vector3.new(targetPos.X + offsetX, targetPos.Y + 30, targetPos.Z + offsetZ)
+            local rayResult = workspace:Raycast(checkPos, Vector3.new(0, -50, 0), rayParams)
+            if rayResult then
+                local part = rayResult.Instance
+                if part.CanCollide and
+                   (part.Material == Enum.Material.Asphalt or
+                    part.Material == Enum.Material.Concrete or
+                    part.Material == Enum.Material.Ground or
+                    part.Material == Enum.Material.Grass or
+                    part.Material == Enum.Material.Sand) then
+                    if not part:IsDescendantOf(workspace.Livrason.Location) then
+                        local dist = (Vector3.new(targetPos.X,0,targetPos.Z) - Vector3.new(part.Position.X,0,part.Position.Z)).Magnitude
+                        if dist < bestDist then
+                            bestDist = dist
+                            local groundY = rayResult.Position.Y + 1.5
+                            bestPos = Vector3.new(part.Position.X, groundY, part.Position.Z)
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    if not bestPos then
+        local backDir = (targetPos - Vector3.new(CourierJob.X, targetPos.Y, CourierJob.Z)).Unit
+        local fallbackPoint = targetPos + backDir * 15
+        local ray = workspace:Raycast(Vector3.new(fallbackPoint.X, 100, fallbackPoint.Z), Vector3.new(0, -150, 0), rayParams)
+        if ray then
+            bestPos = Vector3.new(fallbackPoint.X, ray.Position.Y + 1.5, fallbackPoint.Z)
+        else
+            bestPos = targetPos + Vector3.new(0, 0, 15)
+        end
+    end
+
+    return bestPos
+end
+
+local function ghostGlideMotor(targetPackagePos)
+    local char = LocalPlayer.Character
+    local hum = char and char:FindFirstChild("Humanoid")
+    local seat = hum and hum.SeatPart
+    local vehicle = seat and seat:FindFirstAncestorOfClass("Model")
+    if not (vehicle and vehicle.PrimaryPart) then return end
+
+    local pp = vehicle.PrimaryPart
+    local speed = 150
+
+    local safeLanding = findSafeLandingNear(targetPackagePos, vehicle, char)
+
+    local posAbovePackage = Vector3.new(targetPackagePos.X, targetPackagePos.Y + 30, targetPackagePos.Z)
+
+    -- Setup penggerak
+    local virtualAnchor = Instance.new("BodyVelocity")
+    virtualAnchor.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    virtualAnchor.Velocity = Vector3.new(0, 0, 0)
+    virtualAnchor.Parent = pp
+
+    local virtualGyro = Instance.new("BodyGyro")
+    virtualGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+    virtualGyro.P = 100000
+    virtualGyro.Parent = pp
+
+    local noclip = Services.RunService.Stepped:Connect(function()
+        if not State.IsCourierActive then return end
+        for _, v in pairs(vehicle:GetDescendants()) do
+            if v:IsA("BasePart") then v.CanCollide = false end
+        end
+        for _, v in pairs(char:GetDescendants()) do
+            if v:IsA("BasePart") then v.CanCollide = false end
+        end
+    end)
+
+    local _, currentYRot, _ = pp.CFrame:ToEulerAnglesYXZ()
+
+    local function glideTo(targetVector, faceForward)
+        if not State.IsCourierActive then return end
+        local dist = (pp.Position - targetVector).Magnitude
+        local timeToMove = dist / speed
+        if timeToMove > 0 then
+            local startTime = tick()
+            while tick() - startTime < timeToMove and State.IsCourierActive do
+                if not hum.SeatPart then break end
+                local alpha = (tick() - startTime) / timeToMove
+                local currentPos = pp.Position:Lerp(targetVector, alpha)
+                if faceForward then
+                    local dir = (targetVector - pp.Position).Unit
+                    local flatDir = Vector3.new(dir.X, 0, dir.Z).Unit
+                    if flatDir.Magnitude > 0.001 then
+                        local newCFrame = CFrame.lookAt(currentPos, currentPos + flatDir)
+                        virtualGyro.CFrame = newCFrame
+                        vehicle:PivotTo(newCFrame)
+                    end
+                else
+                    local newCFrame = CFrame.new(currentPos) * CFrame.Angles(0, currentYRot, 0)
+                    virtualGyro.CFrame = newCFrame
+                    vehicle:PivotTo(newCFrame)
+                end
+                Services.RunService.Heartbeat:Wait()
+            end
+        end
+    end
+
+    -- Terbang ke atas paket
+    glideTo(posAbovePackage, true)
+    task.wait(0.2)
+
+    -- Ke titik aman
+    local posAboveSafe = Vector3.new(safeLanding.X, posAbovePackage.Y, safeLanding.Z)
+    glideTo(posAboveSafe, true)
+    task.wait(0.2)
+
+    -- Turun ke titik aman
+    glideTo(safeLanding, false)
+
+    -- Bersihkan
+    virtualAnchor:Destroy()
+    virtualGyro:Destroy()
+    noclip:Disconnect()
+    pp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+    pp.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+
+    for _, v in pairs(vehicle:GetDescendants()) do
+        if v:IsA("BasePart") then v.CanCollide = true end
+    end
+    task.wait(0.3)
+
+    forceDismount(safeLanding)
+end
+
+-- ======================
+--  LOOP UTAMA COURIER
+-- ======================
 
 local function startCourierLoop()
-    local job = CourierJob
-    if courierRunning then return end
-    if not SpawnCar.SelectedCar or SpawnCar.SelectedCar == "Refresh dulu..." then return end
-    courierRunning = true
+    if State.IsCourierActive then return end
+    State.IsCourierActive = true
+    State.CourierDelivered = 0
 
     local activePackageLoc = nil
     local activePackageNum = nil
 
-    local serviceEvent = ReplicatedStorage:FindFirstChild("ServiceEvent", true)
+    -- Deteksi event paket
+    local serviceEvent = Services.ReplicatedStorage:FindFirstChild("ServiceEvent", true)
     if serviceEvent then
         ServiceEventConn = serviceEvent.OnClientEvent:Connect(function(eventName, action, paketNum)
+            if not State.IsCourierActive then return end
             if action == "Create" then
                 local Location = workspace:FindFirstChild("Livrason") and workspace.Livrason:FindFirstChild("Location")
                 if Location then
                     local paket = Location:FindFirstChild(tostring(paketNum))
                     if paket then
-                        local point = paket:FindFirstChild("POINT")
                         local block = paket:FindFirstChild("Block")
-                        if point and block then
+                        if block then
                             activePackageLoc = block.Position
                             activePackageNum = paketNum
-                            print("=== AMBIL PAKET ===")
-                            print("Paket #" .. tostring(paketNum))
-                            print("Position: " .. tostring(activePackageLoc))
                         end
                     end
                 end
             elseif action == "Remove" then
-                print("Paket #" .. tostring(paketNum) .. " selesai!")
                 if activePackageNum == paketNum then
                     activePackageLoc = nil
                     activePackageNum = nil
@@ -1300,13 +1504,10 @@ local function startCourierLoop()
         end)
     end
 
-    setJob(job)
+    setJob(CourierJob)
     task.wait(1.5)
 
-    pcall(function()
-        ReplicatedStorage:WaitForChild("SpawnCarEvents"):WaitForChild("SpawnCar"):FireServer(SpawnCar.SelectedCar)
-    end)
-
+    Services.ReplicatedStorage:WaitForChild("SpawnCarEvents"):WaitForChild("SpawnCar"):FireServer(SELECTED_CAR)
     task.wait(6)
     rideMotor()
     task.wait(3.5)
@@ -1314,10 +1515,12 @@ local function startCourierLoop()
     local char = LocalPlayer.Character
     local hrp = char and char:FindFirstChild("HumanoidRootPart")
     local motor = findMyMotor()
+    if not (motor and hrp and State.IsCourierActive) then
+        State.IsCourierActive = false
+        return
+    end
 
-    if not (motor and hrp) then courierRunning = false return end
-
-    local target = CFrame.new(job.X, job.Y, job.Z)
+    local target = CFrame.new(CourierJob.X, CourierJob.Y, CourierJob.Z)
     pcall(function()
         motor:SetPrimaryPartCFrame(target)
         task.wait(0.3)
@@ -1328,12 +1531,13 @@ local function startCourierLoop()
     exitMotor()
     task.wait(1.5)
 
-    local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-    if not humanoid then courierRunning = false return end
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if not humanoid then State.IsCourierActive = false return end
 
     walkTo(humanoid, Vector3.new(-5109.06, 5.18, -3758.69), 10)
     task.wait(1.5)
 
+    -- Ambil paket di titik awal
     pcall(function()
         local prompt = workspace.Livrason.Take1.Take.ProximityPrompt
         if prompt then
@@ -1344,181 +1548,36 @@ local function startCourierLoop()
     end)
     task.wait(1.5)
 
-    -- =========================================================
-    -- FUNGSI BANTUAN UNTUK GHOST GLIDE & PENDARATAN AMAN
-    -- =========================================================
-    local function findSafeLandingNear(targetPos, vehicle, char)
-        local searchRadius = 20
-        local bestPos = nil
-        local bestDist = math.huge
-
-        local rayParams = RaycastParams.new()
-        rayParams.FilterType = Enum.RaycastFilterType.Blacklist
-        rayParams.FilterDescendantsInstances = { vehicle, char }
-
-        for angle = 0, 330, 30 do
-            local rad = math.rad(angle)
-            for r = 5, searchRadius, 5 do
-                local offsetX = math.cos(rad) * r
-                local offsetZ = math.sin(rad) * r
-                local checkPos = Vector3.new(targetPos.X + offsetX, targetPos.Y + 30, targetPos.Z + offsetZ)
-                local rayResult = workspace:Raycast(checkPos, Vector3.new(0, -50, 0), rayParams)
-                if rayResult then
-                    local part = rayResult.Instance
-                    if part.CanCollide and
-                       (part.Material == Enum.Material.Asphalt or
-                        part.Material == Enum.Material.Concrete or
-                        part.Material == Enum.Material.Ground or
-                        part.Material == Enum.Material.Grass or
-                        part.Material == Enum.Material.Sand) then
-                        if not part:IsDescendantOf(workspace.Livrason.Location) then
-                            local dist = (Vector3.new(targetPos.X,0,targetPos.Z) - Vector3.new(part.Position.X,0,part.Position.Z)).Magnitude
-                            if dist < bestDist then
-                                bestDist = dist
-                                local groundY = rayResult.Position.Y + 1.5
-                                bestPos = Vector3.new(part.Position.X, groundY, part.Position.Z)
-                            end
-                        end
-                    end
-                end
-            end
-        end
-
-        if not bestPos then
-            local backDir = (targetPos - Vector3.new(-5158.57, targetPos.Y, -3757.87)).Unit
-            local fallbackPoint = targetPos + backDir * 15
-            local ray = workspace:Raycast(Vector3.new(fallbackPoint.X, 100, fallbackPoint.Z), Vector3.new(0, -150, 0), rayParams)
-            if ray then
-                bestPos = Vector3.new(fallbackPoint.X, ray.Position.Y + 1.5, fallbackPoint.Z)
-            else
-                bestPos = targetPos + Vector3.new(0, 0, 15)
-            end
-        end
-
-        return bestPos
-    end
-
-    local function ghostGlideMotor(targetPackagePos)
-        local char = LocalPlayer.Character
-        local hum = char and char:FindFirstChild("Humanoid")
-        local seat = hum and hum.SeatPart
-        local vehicle = seat and seat:FindFirstAncestorOfClass("Model")
-        if not (vehicle and vehicle.PrimaryPart) then return end
-
-        local pp = vehicle.PrimaryPart
-        local speed = 150
-
-        local safeLanding = findSafeLandingNear(targetPackagePos, vehicle, char)
-        print("Titik pendaratan aman:", safeLanding)
-
-        local posAbovePackage = Vector3.new(targetPackagePos.X, targetPackagePos.Y + 30, targetPackagePos.Z)
-
-        local virtualAnchor = Instance.new("BodyVelocity")
-        virtualAnchor.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-        virtualAnchor.Velocity = Vector3.new(0, 0, 0)
-        virtualAnchor.Parent = pp
-
-        local virtualGyro = Instance.new("BodyGyro")
-        virtualGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-        virtualGyro.P = 100000
-        virtualGyro.Parent = pp
-
-        local noclip = RunService.Stepped:Connect(function()
-            for _, v in pairs(vehicle:GetDescendants()) do
-                if v:IsA("BasePart") then v.CanCollide = false end
-            end
-            for _, v in pairs(char:GetDescendants()) do
-                if v:IsA("BasePart") then v.CanCollide = false end
-            end
-        end)
-
-        local _, currentYRot, _ = pp.CFrame:ToEulerAnglesYXZ()
-
-        local function glideTo(targetVector, faceForward)
-            local dist = (pp.Position - targetVector).Magnitude
-            local timeToMove = dist / speed
-            if timeToMove > 0 then
-                local startTime = tick()
-                while tick() - startTime < timeToMove do
-                    if not hum.SeatPart then break end
-                    local alpha = (tick() - startTime) / timeToMove
-                    local currentPos = pp.Position:Lerp(targetVector, alpha)
-                    if faceForward then
-                        local dir = (targetVector - pp.Position).Unit
-                        local flatDir = Vector3.new(dir.X, 0, dir.Z).Unit
-                        if flatDir.Magnitude > 0.001 then
-                            local newCFrame = CFrame.lookAt(currentPos, currentPos + flatDir)
-                            virtualGyro.CFrame = newCFrame
-                            vehicle:PivotTo(newCFrame)
-                        end
-                    else
-                        local newCFrame = CFrame.new(currentPos) * CFrame.Angles(0, currentYRot, 0)
-                        virtualGyro.CFrame = newCFrame
-                        vehicle:PivotTo(newCFrame)
-                    end
-                    RunService.Heartbeat:Wait()
-                end
-            end
-        end
-
-        print("Terbang ke atas paket...")
-        glideTo(posAbovePackage, true)
-        task.wait(0.2)
-
-        local posAboveSafe = Vector3.new(safeLanding.X, posAbovePackage.Y, safeLanding.Z)
-        print("Terbang ke titik aman...")
-        glideTo(posAboveSafe, true)
-        task.wait(0.2)
-
-        print("Mendarat di titik aman...")
-        glideTo(safeLanding, false)
-
-        virtualAnchor:Destroy()
-        virtualGyro:Destroy()
-        noclip:Disconnect()
-        pp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
-        pp.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
-
-        for _, v in pairs(vehicle:GetDescendants()) do
-            if v:IsA("BasePart") then v.CanCollide = true end
-        end
-        task.wait(0.3)
-
-        forceDismount()
-    end
-    -- =========================================================
-
-    while courierRunning do
+    -- Loop antar paket
+    while State.IsCourierActive do
         local t = tick()
-        while courierRunning and not activePackageLoc and tick() - t < 20 do
+        while State.IsCourierActive and not activePackageLoc and tick() - t < 20 do
             task.wait(0.4)
         end
-        if not activePackageLoc then
-            print("Tidak ada paket baru dalam 20 detik. Auto Courier berhenti.")
-            break
-        end
 
-        print("Despawn motor lama...")
+        if not State.IsCourierActive or not activePackageLoc then break end
+
+        -- Despawn motor lama
         pcall(function()
-            ReplicatedStorage:WaitForChild("SpawnCarEvents"):WaitForChild("DespawnCar"):FireServer()
+            Services.ReplicatedStorage:WaitForChild("SpawnCarEvents"):WaitForChild("DespawnCar"):FireServer()
         end)
         task.wait(0.5)
 
-        print("Spawn motor...")
+        -- Spawn motor baru
         pcall(function()
-            ReplicatedStorage:WaitForChild("SpawnCarEvents"):WaitForChild("SpawnCar"):FireServer(SpawnCar.SelectedCar)
+            Services.ReplicatedStorage:WaitForChild("SpawnCarEvents"):WaitForChild("SpawnCar"):FireServer(SELECTED_CAR)
         end)
         task.wait(4)
         rideMotor()
         task.wait(3.5)
 
-        print("Ghost Glide ke lokasi paket #" .. tostring(activePackageNum) .. "...")
+        -- Terbang ke dekat paket
         ghostGlideMotor(activePackageLoc)
 
-        print("Menunggu turun dari motor...")
+        -- Tunggu sampai benar-benar turun
         local waitTurun = tick() + 4
         local sudahTurun = false
-        while tick() < waitTurun do
+        while tick() < waitTurun and State.IsCourierActive do
             local charNow = LocalPlayer.Character
             local humNow = charNow and charNow:FindFirstChild("Humanoid")
             if humNow and not humNow.Sit and not humNow.SeatPart then
@@ -1528,8 +1587,7 @@ local function startCourierLoop()
             task.wait(0.2)
         end
 
-        if not sudahTurun then
-            print("Gagal turun normal, teleport paksa ke paket...")
+        if not sudahTurun and State.IsCourierActive then
             local charNow = LocalPlayer.Character
             if charNow then
                 charNow:PivotTo(CFrame.new(activePackageLoc + Vector3.new(0, 3, 0)))
@@ -1545,14 +1603,13 @@ local function startCourierLoop()
         local curChar = LocalPlayer.Character
         local curHum = curChar and curChar:FindFirstChildOfClass("Humanoid")
 
-        print("Berjalan kaki ke paket...")
-        local walkHum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-        if walkHum then
-            walkTo(walkHum, activePackageLoc, 20)
-            task.wait(2.0)
+        -- Jalan ke paket
+        if curHum and State.IsCourierActive then
+            walkTo(curHum, activePackageLoc, 20)
+            task.wait(2)
         end
 
-        print("Sampai! Mengambil/Menaruh paket...")
+        -- Letakkan paket
         local targetNum = activePackageNum
         pcall(function()
             local LocationFolder = workspace.Livrason.Location
@@ -1561,12 +1618,10 @@ local function startCourierLoop()
                 local block = paketModel:FindFirstChild("Block")
                 local prompt = block and block:FindFirstChild("ProximityPrompt")
                 if prompt and prompt.Enabled then
-                    local box = LocalPlayer.Backpack:FindFirstChild("Box")
-                        or curChar:FindFirstChild("Box")
-                        or curChar:FindFirstChildWhichIsA("Tool")
+                    local box = LocalPlayer.Backpack:FindFirstChild("Box") or curChar:FindFirstChild("Box") or curChar:FindFirstChildWhichIsA("Tool")
                     if box and curHum then
                         curHum:EquipTool(box)
-                        task.wait(1.0)
+                        task.wait(1)
                     end
                     prompt:InputHoldBegin()
                     task.wait(prompt.HoldDuration + 0.2)
@@ -1575,48 +1630,44 @@ local function startCourierLoop()
                     task.wait(2.5)
                 end
             else
+                -- Fallback kalau model beda nama
                 for _, p in ipairs(LocationFolder:GetChildren()) do
                     local b = p:FindFirstChild("Block")
                     local pr = b and b:FindFirstChild("ProximityPrompt")
                     if pr and pr.Enabled then
-                        local box = LocalPlayer.Backpack:FindFirstChild("Box")
-                            or curChar:FindFirstChild("Box")
-                            or curChar:FindFirstChildWhichIsA("Tool")
+                        local box = LocalPlayer.Backpack:FindFirstChild("Box") or curChar:FindFirstChild("Box") or curChar:FindFirstChildWhichIsA("Tool")
                         if box and curHum then
                             curHum:EquipTool(box)
-                            task.wait(1.0)
+                            task.wait(1)
                         end
                         pr:InputHoldBegin()
                         task.wait(pr.HoldDuration + 0.2)
                         pr:InputHoldEnd()
                         State.CourierDelivered = (State.CourierDelivered or 0) + 1
                         task.wait(2.5)
+                        break
                     end
                 end
             end
         end)
 
-        print("Paket #" .. tostring(targetNum) .. " selesai! Cek paket berikutnya...")
-        task.wait(2.0)
+        task.wait(2)
     end
 
+    -- Bersihkan
     if ServiceEventConn then
         ServiceEventConn:Disconnect()
         ServiceEventConn = nil
     end
-    print("Auto Courier dihentikan.")
 end
 
 local function StartCourierScript()
     if State.IsCourierActive then return end
-    State.IsCourierActive = true
-    State.CourierDelivered = 0
     task.spawn(startCourierLoop)
 end
 
 local function StopCourierScript()
     State.IsCourierActive = false
-    courierRunning = false
     if ServiceEventConn then
         ServiceEventConn:Disconnect()
         ServiceEventConn = nil
@@ -1705,8 +1756,11 @@ local Window = WindUI:CreateWindow({
     ScrollBarEnabled            = true,
 })
 
+-- ============================
 -- TAB 1: INFO
+-- ============================
 local TabInfo = Window:Tab({ Title = "Info", Icon = "info", Border = true })
+
 local memberCount = "N/A"
 local onlineCount = "N/A"
 
@@ -1756,84 +1810,211 @@ local ServerInfo = TabInfo:Paragraph({
     }
 })
 
+-- ============================
 -- TAB 2: AUTO FARM
+-- ============================
 local TabFarm = Window:Tab({ Title = "Auto Farm", Icon = "coffee", Border = true })
 
-local SectionBarista = TabFarm:Section({ Title = "Auto Barista", Box = true, BoxBorder = true, Opened = true })
+local SectionBarista = TabFarm:Section({
+    Title = "Auto Barista",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
 SectionBarista:Toggle({
-    Title = "Jalanin Auto Barista", Icon = "play", Value = false,
+    Title    = "Jalanin Auto Barista",
+    Icon     = "play",
+    Value    = false,
     Callback = function(on) if on then StartBaristaScript() else StopBaristaScript() end end,
 })
 
-local SectionOffice = TabFarm:Section({ Title = "Auto Office", Box = true, BoxBorder = true, Opened = true })
+local SectionOffice = TabFarm:Section({
+    Title = "Auto Office",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
 SectionOffice:Toggle({
-    Title = "Jalanin Auto Office", Icon = "briefcase", Value = false,
+    Title    = "Jalanin Auto Office",
+    Icon     = "briefcase",
+    Value    = false,
     Callback = function(on) if on then StartOfficeScript() else StopOfficeScript() end end,
 })
 
-local SectionCourier = TabFarm:Section({ Title = "Auto Courier", Box = true, BoxBorder = true, Opened = true })
+local SectionCourier = TabFarm:Section({
+    Title = "Auto Courier",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
 SectionCourier:Toggle({
-    Title = "Jalanin Auto Courier", Icon = "package", Value = false,
+    Title    = "Jalanin Auto Courier",
+    Icon     = "package",
+    Value    = false,
     Callback = function(on) if on then StartCourierScript() else StopCourierScript() end end,
 })
 
+-- ============================
 -- TAB 3: KEAMANAN
+-- ============================
 local TabSec = Window:Tab({ Title = "Keamanan", Icon = "shield", Border = true })
-local Perlindungan = TabSec:Section({ Title = "Perlindungan", Box = true, BoxBorder = true, Opened = true })
+
+local Perlindungan = TabSec:Section({
+    Title = "Perlindungan",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
 Perlindungan:Toggle({
-    Title = "Kabur Kalau Ada Admin", Desc = "Otomatis keluar kalau staff masuk server", Icon = "user-minus", Value = true,
+    Title    = "Kabur Kalau Ada Admin",
+    Desc     = "Otomatis keluar kalau staff masuk server",
+    Icon     = "user-minus",
+    Value    = true,
     Callback = function(on) State.AntiAdmin = on end,
 })
+
 Perlindungan:Toggle({
-    Title = "Biar Nggak Kena AFK Kick", Desc = "Jaga koneksi tetap aktif selama ngebot", Icon = "clock", Value = true,
+    Title    = "Biar Nggak Kena AFK Kick",
+    Desc     = "Jaga koneksi tetap aktif selama ngebot",
+    Icon     = "clock",
+    Value    = true,
     Callback = function(on) State.AntiAFK = on end,
 })
 
+-- ============================
 -- TAB 4: PERFORMA
+-- ============================
 local TabPerf = Window:Tab({ Title = "Performa", Icon = "zap", Border = true })
-local HematDaya = TabPerf:Section({ Title = "Hemat Daya", Box = true, BoxBorder = true, Opened = true })
+
+local HematDaya = TabPerf:Section({
+    Title = "Hemat Daya",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
 HematDaya:Toggle({
-    Title = "Matiin Grafik (Aman AFK Semalaman)", Desc = "Layar hitam, baterai hemat, bot tetap jalan", Value = false,
+    Title    = "Matiin Grafik (Aman AFK Semalaman)",
+    Desc     = "Layar hitam, baterai hemat, bot tetap jalan",
+    Value    = false,
     Callback = function(on) ToggleBlackScreen(on) end,
 })
 
+-- ============================
 -- TAB 5: PENGATURAN
+-- ============================
 local TabCfg = Window:Tab({ Title = "Pengaturan", Icon = "settings", Border = true })
-local Konfigurasi = TabCfg:Section({ Title = "Konfigurasi", Box = true, BoxBorder = true, Opened = true })
+
+local Konfigurasi = TabCfg:Section({
+    Title = "Konfigurasi",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
 Konfigurasi:Slider({
-    Title = "Jeda Antar Aksi (Detik)", Desc = "Makin kecil makin ngebut, tapi makin beresiko",
-    Step = 1, Value = { Min = 1, Max = 10, Default = 5 },
+    Title    = "Jeda Antar Aksi (Detik)",
+    Desc     = "Makin kecil makin ngebut, tapi makin beresiko",
+    Step     = 1,
+    Value    = { Min = 1, Max = 10, Default = 5 },
     Callback = function(v) State.ActionDelay = v end,
 })
 
+-- ============================
 -- TAB 6: MODE INSTAN
+-- ============================
 local TabPreset = Window:Tab({ Title = "🏎️ Mode Instan", Icon = "car", Border = true })
-local ModeCepat = TabPreset:Section({ Title = "Mode Cepat", Box = true, BoxBorder = true, Opened = true })
-ModeCepat:Button({ Title = "🛵 MODE SUNMORI (Aman)", Callback = function() InjectMesin(1.5, 2000, 0.9, 0.9, "Mode Sunmori Aktif") end })
-ModeCepat:Button({ Title = "🏎️ MODE BALAP LIAR (Ganas)", Callback = function() InjectMesin(3.5, 5000, 0.75, 0.75, "Mode Balap Aktif") end })
-ModeCepat:Button({ Title = "🚀 MODE DEWA (Mentok Kanan)", Callback = function() InjectMesin(8, 15000, 0.45, 0.45, "Mode Dewa Aktif") end })
-ModeCepat:Button({ Title = "🔄 RESET STANDAR PABRIK", Callback = function()
-    WindUI:Notify({ Title = "ℹ️ Info", Content = "Respawn kendaraan dari menu game untuk reset.", Duration = 5 })
-end })
 
+local ModeCepat = TabPreset:Section({
+    Title = "Mode Cepat",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+ModeCepat:Button({
+    Title = "🛵 MODE SUNMORI (Aman)",
+    Callback = function() InjectMesin(1.5, 2000, 0.9, 0.9, "Mode Sunmori Aktif") end
+})
+
+ModeCepat:Button({
+    Title = "🏎️ MODE BALAP LIAR (Ganas)",
+    Callback = function() InjectMesin(3.5, 5000, 0.75, 0.75, "Mode Balap Aktif") end
+})
+
+ModeCepat:Button({
+    Title = "🚀 MODE DEWA (Mentok Kanan)",
+    Callback = function() InjectMesin(8, 15000, 0.45, 0.45, "Mode Dewa Aktif") end
+})
+
+ModeCepat:Button({
+    Title = "🔄 RESET STANDAR PABRIK",
+    Callback = function()
+        WindUI:Notify({ Title = "ℹ️ Info", Content = "Respawn kendaraan dari menu game untuk reset.", Duration = 5 })
+    end
+})
+
+-- ============================
 -- TAB 7: CUSTOM SETTING
+-- ============================
 local TabCustom = Window:Tab({ Title = "⚙️ Custom Setting", Icon = "sliders", Border = true })
-local TuneSendiri = TabCustom:Section({ Title = "Tune Sendiri", Box = true, BoxBorder = true, Opened = true })
-local customHP, customRPM, customRatio, customFD = 2, 5000, 0.8, 0.8
-TuneSendiri:Input({ Title = "💪 Pengali Tenaga (HP)", Placeholder = "Contoh: 3", Callback = function(Text) local val = tonumber(Text) if val then customHP = val end end })
-TuneSendiri:Input({ Title = "🔥 Tambahan RPM", Placeholder = "Contoh: 8000", Callback = function(Text) local val = tonumber(Text) if val then customRPM = val end end })
-TuneSendiri:Input({ Title = "⚙️ Pengali Rasio Gigi", Placeholder = "Contoh: 0.6", Callback = function(Text) local val = tonumber(Text) if val then customRatio = val end end })
-TuneSendiri:Input({ Title = "⛓️ Pengali Final Drive", Placeholder = "Contoh: 0.6", Callback = function(Text) local val = tonumber(Text) if val then customFD = val end end })
-TuneSendiri:Button({ Title = "⚡ INJECT CUSTOM TUNE SEKARANG", Callback = function() InjectMesin(customHP, customRPM, customRatio, customFD, "Custom Tune Aktif") end })
 
+local TuneSendiri = TabCustom:Section({
+    Title = "Tune Sendiri",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+local customHP, customRPM, customRatio, customFD = 2, 5000, 0.8, 0.8
+
+TuneSendiri:Input({
+    Title = "💪 Pengali Tenaga (HP)",
+    Placeholder = "Contoh: 3",
+    Callback = function(Text) local val = tonumber(Text) if val then customHP = val end end
+})
+
+TuneSendiri:Input({
+    Title = "🔥 Tambahan RPM",
+    Placeholder = "Contoh: 8000",
+    Callback = function(Text) local val = tonumber(Text) if val then customRPM = val end end
+})
+
+TuneSendiri:Input({
+    Title = "⚙️ Pengali Rasio Gigi",
+    Placeholder = "Contoh: 0.6",
+    Callback = function(Text) local val = tonumber(Text) if val then customRatio = val end end
+})
+
+TuneSendiri:Input({
+    Title = "⛓️ Pengali Final Drive",
+    Placeholder = "Contoh: 0.6",
+    Callback = function(Text) local val = tonumber(Text) if val then customFD = val end end
+})
+
+TuneSendiri:Button({
+    Title = "⚡ INJECT CUSTOM TUNE SEKARANG",
+    Callback = function() InjectMesin(customHP, customRPM, customRatio, customFD, "Custom Tune Aktif") end
+})
+
+-- ============================
 -- OPEN BUTTON & FPS TAG
+-- ============================
 Window:EditOpenButton({
-    Title = "Open King Akbar", Icon = "crown", CornerRadius = UDim.new(0, 12), StrokeThickness = 2,
+    Title           = "Open King Akbar",
+    Icon            = "crown",
+    CornerRadius    = UDim.new(0, 12),
+    StrokeThickness = 2,
     Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0, Color3.fromHex("#ffffff")),
         ColorSequenceKeypoint.new(1, Color3.fromHex("#0a0a0a")),
     }),
-    Enabled = true, Draggable = true,
+    Enabled   = true,
+    Draggable = true,
 })
 
 local FpsTag = Window:Tag({
@@ -1856,12 +2037,15 @@ task.spawn(function()
     end
 end)
 
+-- ============================
+-- INIT
+-- ============================
 Window:SetIconSize(47)
 WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
     Title    = "👑 KING AKBAR V5.8 FINAL SIAP!",
-    Content  = "Office langsung jawab soal pas start. Auto Courier FULL FIXED. Gas cuan!",
+    Content  = "Office langsung jawab soal pas start. Gas cuan!",
     Duration = 5,
 })
