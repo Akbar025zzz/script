@@ -1527,7 +1527,7 @@ local function StopCourierScript()
 end
 
 -- ============================================================================
--- // 14. AUTO MANDALIKA (BALAP SIRKUIT) – VERSION FINAL FIX
+-- // 14. AUTO MANDALIKA (BALAP SIRKUIT) – VERSION FINAL (USER SUBMITTED)
 -- ============================================================================
 local checkpointBalap = {
     Vector3.new(-392, 7, -1615),   -- 1. Start
@@ -1568,7 +1568,7 @@ local checkpointBalap = {
     Vector3.new(-1090, 7, -1972),  -- 36.
     Vector3.new(-1124, 7, -1892),  -- 37.
     Vector3.new(-1153, 7, -1668),  -- 38.
-    Vector3.new(-142, 7, -1616)    -- 39. Finish
+    Vector3.new(-220, 7, -1617)    -- 39. Finish
 }
 
 local MANDALIKA_CAR = "Yamahax-MioSporty"
@@ -1664,7 +1664,7 @@ local function matikanMonitoringMandalika()
     end
 end
 
--- ===================== MANDALIKA LOOP (FINAL FIX – FINISH → BALIK → TUNGGU GO) =====================
+-- ===================== MANDALIKA LOOP (USER FINAL VERSION) =====================
 local noclipConnMandalika
 
 local function StartMandalikaLoop(speed)
@@ -1673,7 +1673,10 @@ local function StartMandalikaLoop(speed)
     local root = character:WaitForChild("HumanoidRootPart")
     local humanoid = character:WaitForChild("Humanoid")
 
-    -- Noclip global (hanya selama Mandalika aktif)
+    local kecepatanAwal = 70
+    local kecepatanBalap = speed
+
+    -- Noclip global
     noclipConnMandalika = Services.RunService.Stepped:Connect(function()
         if not State.IsMandalikaActive then
             noclipConnMandalika:Disconnect()
@@ -1705,140 +1708,154 @@ local function StartMandalikaLoop(speed)
     root.CFrame = CFrame.new(startPos + Vector3.new(0, 3, 0))
     task.wait(1.5)
 
-    -- Pertama kali, spawn motor dan naik (hanya sekali)
-    while State.IsMandalikaActive and not humanoid.SeatPart do
-        print("🔄 Spawning motor pertama...")
-        pcall(function()
-            Services.ReplicatedStorage:WaitForChild("SpawnCarEvents"):WaitForChild("SpawnCar"):FireServer(MANDALIKA_CAR)
-        end)
-        task.wait(2.5)
+    while State.IsMandalikaActive do
+        if not humanoid.SeatPart then
+            print("🔄 Spawning motor baru...")
+            pcall(function()
+                game:GetService("ReplicatedStorage"):WaitForChild("SpawnCarEvents"):WaitForChild("SpawnCar"):FireServer(MANDALIKA_CAR)
+            end)
 
-        local ridePrompt = nil
-        local t = 0
-        while not ridePrompt and t < 4 do
-            local closestDist = math.huge
-            for _, v in pairs(workspace:GetDescendants()) do
-                if v:IsA("ProximityPrompt") and v.Enabled and v.ActionText == "Ride" then
-                    local part = v.Parent
-                    if part and part:IsA("BasePart") then
-                        local d = (part.Position - root.Position).Magnitude
-                        if d < closestDist and d < 35 then
-                            closestDist = d
-                            ridePrompt = v
+            local targetPrompt = nil
+            local waktuMencari = 0
+
+            while not targetPrompt and waktuMencari < 4 do
+                local jarakTerdekat = math.huge
+                for _, v in pairs(workspace:GetDescendants()) do
+                    if v:IsA("ProximityPrompt") and v.ActionText == "Ride" and v.Enabled then
+                        local part = v.Parent
+                        if part and part:IsA("BasePart") then
+                            local jarak = (part.Position - root.Position).Magnitude
+                            if jarak < jarakTerdekat and jarak < 30 then
+                                jarakTerdekat = jarak
+                                targetPrompt = v
+                            end
                         end
                     end
                 end
+                if not targetPrompt then task.wait(0.25); waktuMencari += 0.25 end
             end
-            if not ridePrompt then task.wait(0.25); t += 0.25 end
+
+            if targetPrompt then
+                task.wait(0.3)
+                root.Velocity = Vector3.zero
+                root.CFrame = CFrame.new(targetPrompt.Parent.Position + Vector3.new(0, 2, 0))
+                task.wait(0.3)
+                DoTap(targetPrompt)  -- gunakan DoTap dari script utama
+            else
+                print("❌ Motor tidak muncul. Retrying...")
+                task.wait(2)
+                continue
+            end
+
+            local waitTime = 0
+            while not humanoid.SeatPart and waitTime < 5 do
+                task.wait(0.2); waitTime += 0.2
+            end
         end
 
-        if ridePrompt then
-            task.wait(0.3)
-            root.Velocity = Vector3.zero
-            root.CFrame = CFrame.new(ridePrompt.Parent.Position + Vector3.new(0, 2, 0))
-            task.wait(0.3)
-            DoTap(ridePrompt)
-        else
-            print("❌ Motor tidak muncul. Retrying...")
-            task.wait(2)
+        if not humanoid.SeatPart then
+            task.wait(1)
             continue
         end
 
-        local waitTime = 0
-        while not humanoid.SeatPart and waitTime < 5 do
-            task.wait(0.2); waitTime += 0.2
-        end
-    end
+        local seat = humanoid.SeatPart
+        local motorModel = seat:FindFirstAncestorOfClass("Model") or seat.Parent
 
-    if not humanoid.SeatPart then
-        print("Gagal naik motor. Hentikan.")
-        return
-    end
+        -- Hover mode
+        local bv = seat:FindFirstChild("Jet_BV") or Instance.new("BodyVelocity")
+        bv.Name = "Jet_BV"
+        bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bv.Velocity = Vector3.zero
+        bv.Parent = seat
 
-    local seat = humanoid.SeatPart
-    local motorModel = seat:FindFirstAncestorOfClass("Model") or seat.Parent
+        local bg = seat:FindFirstChild("Jet_BG") or Instance.new("BodyGyro")
+        bg.Name = "Jet_BG"
+        bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bg.P = 100000; bg.D = 1000
+        bg.Parent = seat
 
-    -- Pasang BodyVelocity & BodyGyro (hover) sekali saja
-    local bv = Instance.new("BodyVelocity")
-    bv.Name = "Jet_BV"
-    bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-    bv.Velocity = Vector3.zero
-    bv.Parent = seat
+        local nextPos = checkpointBalap[2]
+        local cframeMelayang = CFrame.lookAt(
+            Vector3.new(startPos.X, startPos.Y + 3.5, startPos.Z),
+            Vector3.new(nextPos.X, startPos.Y + 3.5, nextPos.Z)
+        )
 
-    local bg = Instance.new("BodyGyro")
-    bg.Name = "Jet_BG"
-    bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-    bg.P = 100000; bg.D = 1000
-    bg.Parent = seat
+        motorModel:PivotTo(cframeMelayang)
+        bg.CFrame = cframeMelayang
 
-    -- Fungsi untuk bergerak ke suatu titik
-    local function moveTo(targetPos)
-        while State.IsMandalikaActive do
-            local currentPos = seat.Position
-            local flatDist = (Vector3.new(targetPos.X, 0, targetPos.Z) - Vector3.new(currentPos.X, 0, currentPos.Z)).Magnitude
-            if flatDist < 15 then break end
+        -- Tunggu GO!!!
+        print("⏳ Motor aman melayang! Menunggu aba-aba GO!!!...")
+        local gasMulai = false
 
-            local dir = (targetPos - currentPos).Unit
-            bg.CFrame = CFrame.lookAt(currentPos, currentPos + dir)
-            bv.Velocity = dir * speed
-            seat.AssemblyLinearVelocity = bv.Velocity
-            seat.ThrottleFloat = 1
-            task.wait()
-        end
-    end
-
-    -- ===== LOOP UTAMA BALAP =====
-    while State.IsMandalikaActive do
-        -- 1. Tunggu GO!!! (setiap lap, termasuk lap pertama)
-        print("⏳ Motor melayang di start. Menunggu GO!!!...")
-        local goDetected = false
-        while not goDetected and State.IsMandalikaActive do
+        while not gasMulai and State.IsMandalikaActive do
             task.wait(0.1)
             for _, ui in pairs(player.PlayerGui:GetDescendants()) do
                 if ui:IsA("TextLabel") and ui.Visible then
-                    local txt = string.upper(ui.Text)
-                    if txt:find("GO!!!") or txt:find("GO!") then
-                        goDetected = true
+                    local teks = string.upper(ui.Text)
+                    if string.find(teks, "GO!!!") or string.find(teks, "GO!") then
+                        gasMulai = true
                         break
                     end
                 end
             end
         end
-        if not State.IsMandalikaActive then break end
-        print("🚀 GO!!! Meluncur!")
 
-        -- 2. Lintasan maju (checkpoint 2..39)
+        if not State.IsMandalikaActive then break end
+        print("🚀 GO!!! LUNCUR!")
+
+        -- Lintasan maju
         for i = 2, #checkpointBalap do
             local targetPos = checkpointBalap[i] + Vector3.new(0, 3.5, 0)
-            moveTo(targetPos)
+            local speedSaatIni = (i == 2) and kecepatanAwal or kecepatanBalap
+
+            while State.IsMandalikaActive do
+                local currentPos = seat.Position
+                local dist = (Vector3.new(targetPos.X, 0, targetPos.Z) - Vector3.new(currentPos.X, 0, currentPos.Z)).Magnitude
+                if dist < 15 then break end
+
+                local arahHadap = CFrame.lookAt(currentPos, targetPos)
+                bg.CFrame = arahHadap
+                bv.Velocity = arahHadap.LookVector * speedSaatIni
+
+                seat.AssemblyLinearVelocity = bv.Velocity
+                seat.ThrottleFloat = 1
+                task.wait()
+            end
         end
-        print("🏁 Finish!")
 
-        -- 3. Balik ke start
-        local startTarget = checkpointBalap[1] + Vector3.new(0, 3.5, 0)
-        print("🔄 Putar balik ke start...")
-        moveTo(startTarget)
+        print("🏁 Finish! Putar balik...")
 
-        -- 4. Berhenti total di start
+        -- Balik ke start
+        local targetStart = checkpointBalap[1] + Vector3.new(0, 3.5, 0)
+        while State.IsMandalikaActive do
+            local currentPos = seat.Position
+            local dist = (Vector3.new(targetStart.X, 0, targetStart.Z) - Vector3.new(currentPos.X, 0, currentPos.Z)).Magnitude
+            if dist < 15 then break end
+
+            local arahHadap = CFrame.lookAt(currentPos, targetStart)
+            bg.CFrame = arahHadap
+            bv.Velocity = arahHadap.LookVector * kecepatanBalap
+
+            seat.AssemblyLinearVelocity = bv.Velocity
+            seat.ThrottleFloat = 1
+            task.wait()
+        end
+
+        -- Rem total di start (BV & BG TIDAK DESTROY)
         bv.Velocity = Vector3.zero
         seat.ThrottleFloat = 0
         seat.AssemblyLinearVelocity = Vector3.zero
-        -- Arahkan hadap ke depan (ke checkpoint 2) untuk siap balap lagi
-        local nextPos = checkpointBalap[2]
-        local facingCFrame = CFrame.lookAt(startTarget, Vector3.new(nextPos.X, startTarget.Y, nextPos.Z))
-        bg.CFrame = facingCFrame
+
+        motorModel:PivotTo(cframeMelayang)
+        bg.CFrame = cframeMelayang
 
         -- Increment lap
         State.MandalikaLaps = (State.MandalikaLaps or 0) + 1
-        print("🔄 Lap " .. tostring(State.MandalikaLaps) .. " selesai. Istirahat sejenak...")
+        print("🔄 Tiba di Start! Istirahat melayang 2 detik...")
         task.wait(2)
-        -- Loop kembali ke atas -> otomatis menunggu GO lagi
     end
 
-    -- Cleanup saat berhenti total
-    if bv then bv:Destroy() end
-    if bg then bg:Destroy() end
-    print("🛑 Auto-Farm Mandalika dimatikan.")
+    print("🛑 Auto-Farm dimatikan.")
 end
 
 local function StartMandalikaScript()
