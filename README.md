@@ -1664,7 +1664,7 @@ local function matikanMonitoringMandalika()
     end
 end
 
--- ===================== MANDALIKA LOOP (UPDATED & AMAN) =====================
+-- ===================== MANDALIKA LOOP (FINAL – TETAP DI MOTOR, NUNGGU GO!!!) =====================
 local noclipConnMandalika
 
 local function StartMandalikaLoop(speed)
@@ -1706,7 +1706,7 @@ local function StartMandalikaLoop(speed)
     task.wait(1.5)
 
     while State.IsMandalikaActive do
-        -- Spawn motor jika belum naik
+        -- Spawn motor hanya jika benar-benar belum ada (pertama kali atau setelah disconnect)
         if not humanoid.SeatPart then
             print("🔄 Spawning motor baru...")
             pcall(function()
@@ -1759,7 +1759,7 @@ local function StartMandalikaLoop(speed)
         local seat = humanoid.SeatPart
         local motorModel = seat:FindFirstAncestorOfClass("Model") or seat.Parent
 
-        -- Setup BodyVelocity & BodyGyro (hover mode)
+        -- Buat BodyVelocity & BodyGyro (hover) hanya jika belum ada
         local bv = seat:FindFirstChild("Jet_BV") or Instance.new("BodyVelocity")
         bv.Name = "Jet_BV"
         bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
@@ -1781,7 +1781,7 @@ local function StartMandalikaLoop(speed)
         motorModel:PivotTo(cframeMelayang)
         bg.CFrame = cframeMelayang
 
-        -- Tunggu GO!!!
+        -- Tunggu GO!!! (pertama kali atau setelah istirahat)
         print("⏳ Motor aman melayang! Menunggu aba-aba GO!!!...")
         local goDetected = false
         while not goDetected and State.IsMandalikaActive do
@@ -1844,15 +1844,20 @@ local function StartMandalikaLoop(speed)
 
         -- Increment lap
         State.MandalikaLaps = (State.MandalikaLaps or 0) + 1
-
-        print("🔄 Tiba di Start! Istirahat melayang 2 detik...")
-        task.wait(2)
-
-        bv:Destroy()
-        bg:Destroy()
+        print("🔄 Tiba di Start! Istirahat melayang, nunggu GO!!! lagi...")
+        task.wait(2)  -- jeda sebentar, lalu loop akan kembali ke atas dan menunggu GO!!! lagi
+        -- Jangan hancurkan bv/bg, mereka tetap terpasang
     end
 
     print("🛑 Auto-Farm dimatikan.")
+    -- Hancurkan bv/bg hanya saat benar-benar berhenti
+    if humanoid and humanoid.SeatPart then
+        local seat = humanoid.SeatPart
+        local bv = seat:FindFirstChild("Jet_BV")
+        if bv then bv:Destroy() end
+        local bg = seat:FindFirstChild("Jet_BG")
+        if bg then bg:Destroy() end
+    end
 end
 
 local function StartMandalikaScript()
