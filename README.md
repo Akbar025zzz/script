@@ -1527,7 +1527,7 @@ local function StopCourierScript()
 end
 
 -- ============================================================================
--- // 14. AUTO MANDALIKA (BALAP SIRKUIT) + MONITORING
+-- // 14. AUTO MANDALIKA (BALAP SIRKUIT) – VERSION ANTI-BUG + MONITORING
 -- ============================================================================
 local checkpointBalap = {
     Vector3.new(-392, 7, -1615),   -- 1. Start
@@ -1568,7 +1568,7 @@ local checkpointBalap = {
     Vector3.new(-1090, 7, -1972),  -- 36.
     Vector3.new(-1124, 7, -1892),  -- 37.
     Vector3.new(-1153, 7, -1668),  -- 38.
-    Vector3.new(-142, 7, -1616)    -- 39. Finish (UPDATED)
+    Vector3.new(-142, 7, -1616)    -- 39. Finish
 }
 
 local MANDALIKA_CAR = "Yamahax-MioSporty"
@@ -1664,16 +1664,18 @@ local function matikanMonitoringMandalika()
     end
 end
 
--- ===================== MANDALIKA LOOP =====================
+-- ===================== MANDALIKA LOOP (UPDATED) =====================
+local noclipConnMandalika
+
 local function StartMandalikaLoop(speed)
     local player = game:GetService("Players").LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local root = character:WaitForChild("HumanoidRootPart")
     local humanoid = character:WaitForChild("Humanoid")
 
-    local noclipConn
-    noclipConn = Services.RunService.Stepped:Connect(function()
-        if not State.IsMandalikaActive then noclipConn:Disconnect(); return end
+    -- Noclip berjalan selama loop aktif
+    noclipConnMandalika = Services.RunService.Stepped:Connect(function()
+        if not State.IsMandalikaActive then return end
         for _, v in pairs(character:GetDescendants()) do
             if v:IsA("BasePart") and v.CanCollide then v.CanCollide = false end
         end
@@ -1693,15 +1695,16 @@ local function StartMandalikaLoop(speed)
     task.wait(1.5)
 
     while State.IsMandalikaActive do
+        -- Spawn motor jika belum naik
         if not humanoid.SeatPart then
             pcall(function()
                 Services.ReplicatedStorage:WaitForChild("SpawnCarEvents"):WaitForChild("SpawnCar"):FireServer(MANDALIKA_CAR)
             end)
-            task.wait(2.5)  -- jeda lebih sabar
+            task.wait(2.5)
 
             local ridePrompt = nil
             local t = 0
-            while not ridePrompt and t < 5 do
+            while not ridePrompt and t < 4 do
                 for _, v in pairs(workspace:GetDescendants()) do
                     if v:IsA("ProximityPrompt") and v.Enabled and v.ActionText == "Ride" then
                         local part = v.Parent
@@ -1716,7 +1719,7 @@ local function StartMandalikaLoop(speed)
                 task.wait(0.5)
                 root.CFrame = CFrame.new(ridePrompt.Parent.Position + Vector3.new(0, 2, 0))
                 task.wait(0.5)
-                DoTap(ridePrompt)
+                DoTap(ridePrompt)  -- gunakan DoTap yang sudah ada
             else
                 task.wait(2)
                 continue
@@ -1750,6 +1753,7 @@ local function StartMandalikaLoop(speed)
         motor:PivotTo(startCFrame)
         bg.CFrame = startCFrame
 
+        -- Tunggu GO!!!
         local goDetected = false
         while not goDetected and State.IsMandalikaActive do
             task.wait(0.1)
@@ -1765,6 +1769,7 @@ local function StartMandalikaLoop(speed)
 
         if not State.IsMandalikaActive then break end
 
+        -- Lintasan maju
         for i = 2, #checkpointBalap do
             local target = checkpointBalap[i] + Vector3.new(0, 3.5, 0)
             while State.IsMandalikaActive do
@@ -1779,6 +1784,7 @@ local function StartMandalikaLoop(speed)
             end
         end
 
+        -- Balik ke start
         local targetStart = checkpointBalap[1] + Vector3.new(0, 3.5, 0)
         while State.IsMandalikaActive do
             local currentPos = seat.Position
@@ -1791,12 +1797,12 @@ local function StartMandalikaLoop(speed)
             task.wait()
         end
 
+        -- Berhenti sejenak di start, lalu increment lap
         bv.Velocity = Vector3.zero
         seat.AssemblyLinearVelocity = Vector3.zero
         motor:PivotTo(startCFrame)
         bg.CFrame = startCFrame
 
-        -- TAMBAHAN: increment lap setiap kali tiba di start
         State.MandalikaLaps = (State.MandalikaLaps or 0) + 1
 
         task.wait(2)
@@ -1804,7 +1810,11 @@ local function StartMandalikaLoop(speed)
         bv:Destroy()
         bg:Destroy()
     end
-    if noclipConn then noclipConn:Disconnect() end
+
+    if noclipConnMandalika then
+        noclipConnMandalika:Disconnect()
+        noclipConnMandalika = nil
+    end
 end
 
 local function StartMandalikaScript()
@@ -1813,12 +1823,18 @@ local function StartMandalikaScript()
     State.MandalikaLaps = 0
     getgenv().UangAwalMandalika = nil
     getgenv().WaktuMulaiMandalika = nil
+    getgenv().AutoFarmBalap = true  -- sinyal untuk noclip global (jika dibutuhkan)
     buatMonitoringMandalika()
     task.spawn(function() StartMandalikaLoop(State.MandalikaSpeed) end)
 end
 
 local function StopMandalikaScript()
     State.IsMandalikaActive = false
+    getgenv().AutoFarmBalap = false
+    if noclipConnMandalika then
+        noclipConnMandalika:Disconnect()
+        noclipConnMandalika = nil
+    end
     matikanMonitoringMandalika()
 end
 
