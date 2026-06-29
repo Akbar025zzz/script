@@ -11,6 +11,7 @@
                       - Fix: Office langsung jawab pas start (timer idle di-reset)
                       - Bypass Network Pause auto-active
                       - Office regex support angka negatif & rounding
+                      - Tambah fitur Webhook per menit & per jam
 ================================================================================
 ]]--
 
@@ -1614,7 +1615,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
 end
 
 -- ============================================================================
--- // 15. UI — 7 TAB (Webhook dihapus)
+-- // 15. UI — 8 TAB (Webhook baru ditambahkan)
 -- ============================================================================
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
@@ -1884,6 +1885,130 @@ TuneSendiri:Button({
 })
 
 -- ============================
+-- TAB 8: WEBHOOK (BARU!)
+-- ============================
+local WebhookState = {
+    Enabled = false,
+    URL = "",
+    Interval = "Off", -- "Off", "Per Menit", "Per Jam"
+    LastSend = 0,
+}
+
+local function SendWebhook(isTest)
+    local url = WebhookState.URL
+    if url == "" or url == nil then
+        WindUI:Notify({ Title = "⚠️ Webhook", Content = "URL belum diisi!", Duration = 3 })
+        return
+    end
+
+    local player = LocalPlayer
+    local money = GetPlayerMoney() or 0
+    local profit = money - (State.UangAwalSession or money)
+    local uptime = os.time() - (State.SessionStartTime or os.time())
+    local activeJobs = {}
+    if State.IsBaristaActive then table.insert(activeJobs, "Barista") end
+    if State.IsOfficeActive then table.insert(activeJobs, "Office") end
+    if State.IsCourierActive then table.insert(activeJobs, "Courier") end
+    local jobStr = #activeJobs > 0 and table.concat(activeJobs, ", ") or "Tidak ada"
+
+    local embed = {
+        title = isTest and "🧪 Test Webhook - King Akbar" or "📊 Status Bot - King Akbar",
+        color = 0x7289DA,
+        fields = {
+            { name = "👤 Pemain", value = player.Name, inline = true },
+            { name = "🕒 Uptime", value = formatTime(uptime), inline = true },
+            { name = "💰 Uang Saat Ini", value = "Rp." .. formatNumber(money), inline = true },
+            { name = "📈 Profit", value = (profit>=0 and "+" or "") .. formatNumber(profit), inline = true },
+            { name = "⚙️ Job Aktif", value = jobStr, inline = true },
+            { name = "📊 Total Order (Barista)", value = tostring(State.OrderCount or 0), inline = true },
+            { name = "🧮 Soal Office Terjawab", value = tostring(State.OfficeMathSolved or 0), inline = true },
+            { name = "🖨️ Printer Diambil", value = tostring(State.OfficePrints or 0), inline = true },
+            { name = "📦 Courier Terkirim", value = tostring(State.CourierDelivered or 0), inline = true },
+        },
+        footer = { text = "King Akbar Ultimate Farm" },
+        timestamp = os.date("!%Y-%m-%dT%H:%M:%S.000Z"),
+    }
+
+    local payload = {
+        embeds = { embed },
+        username = "King Akbar Bot",
+        avatar_url = "https://cdn.discordapp.com/attachments/1158735493272588388/1244266037897928704/king_akbar.png"
+    }
+
+    local success = pcall(function()
+        local json = Services.HttpService:JSONEncode(payload)
+        local headers = { ["Content-Type"] = "application/json" }
+        local req = request or http_request or (syn and syn.request)
+        if req then
+            req({ Url = url, Method = "POST", Headers = headers, Body = json })
+        else
+            Services.HttpService:PostAsync(url, json, Enum.HttpContentType.ApplicationJson, false, headers)
+        end
+    end)
+
+    if success then
+        if isTest then
+            WindUI:Notify({ Title = "✅ Webhook", Content = "Test webhook terkirim!", Duration = 3 })
+        end
+    else
+        WindUI:Notify({ Title = "❌ Webhook", Content = "Gagal kirim, cek URL & koneksi.", Duration = 5 })
+    end
+end
+
+-- Kirim periodik
+task.spawn(function()
+    while true do
+        task.wait(5) -- cek tiap 5 detik
+        if WebhookState.Enabled and WebhookState.URL ~= "" and WebhookState.Interval ~= "Off" then
+            local now = tick()
+            local intervalSec = 0
+            if WebhookState.Interval == "Per Menit" then
+                intervalSec = 60
+            elseif WebhookState.Interval == "Per Jam" then
+                intervalSec = 3600
+            end
+            if intervalSec > 0 and now - WebhookState.LastSend >= intervalSec then
+                SendWebhook(false)
+                WebhookState.LastSend = now
+            end
+        end
+    end
+end)
+
+local TabWebhook = Window:Tab({ Title = "Webhook", Icon = "bell", Border = true })
+
+local WebhookSection = TabWebhook:Section({
+    Title = "Notifikasi Discord",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+WebhookSection:Input({
+    Title = "🔗 URL Webhook Discord",
+    Placeholder = "https://discord.com/api/webhooks/...",
+    Callback = function(text) WebhookState.URL = text end
+})
+
+WebhookSection:Select({
+    Title = "⏱️ Interval Kirim",
+    Values = {"Off", "Per Menit", "Per Jam"},
+    Default = "Off",
+    Callback = function(val) WebhookState.Interval = val end
+})
+
+WebhookSection:Toggle({
+    Title = "Aktifkan Webhook",
+    Value = false,
+    Callback = function(on) WebhookState.Enabled = on end
+})
+
+WebhookSection:Button({
+    Title = "📤 Kirim Test Webhook",
+    Callback = function() SendWebhook(true) end
+})
+
+-- ============================
 -- OPEN BUTTON & FPS TAG
 -- ============================
 Window:EditOpenButton({
@@ -1928,6 +2053,6 @@ TabInfo:Select()
 
 WindUI:Notify({
     Title    = "👑 KING AKBAR V5.8 FINAL SIAP!",
-    Content  = "Office langsung jawab soal pas start. Gas cuan!",
+    Content  = "Office langsung jawab soal pas start. Webhook siap kirim per menit/jam!",
     Duration = 5,
 })
