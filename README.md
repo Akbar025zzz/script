@@ -3,15 +3,10 @@
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE START FIX)
-    [+] Changelog   : - Monitoring Office scan langsung teks "Rp." di UI
-                      - Uang Awal dikunci, profit akurat
-                      - Cache label uang biar nggak lag
-                      - Auto ganti kursi kalo sepi soal
-                      - Fix: Office langsung jawab pas start (timer idle di-reset)
-                      - Bypass Network Pause auto-active
-                      - Office regex support angka negatif & rounding
-                      - Tambah fitur Webhook per menit & per jam
+    [+] Version     : DDS FREE EDITION (v6.0 – MONITORING MANDALIKA)
+    [+] Changelog   : - Monitoring Mandalika (kiri tengah)
+                      - Statistik: Uang Awal, Pendapatan, Lap, Kecepatan, Uptime
+                      - Fix jeda naik motor + koordinat finish -142
 ================================================================================
 ]]--
 
@@ -102,6 +97,7 @@ local State = {
     IsBaristaActive    = false,
     IsOfficeActive     = false,
     IsCourierActive    = false,
+    IsMandalikaActive  = false,
     AiThread           = nil,
     StatusText         = "Santai dulu...",
     OrderCount         = 0,
@@ -113,11 +109,11 @@ local State = {
     SessionStartTime   = 0,
     LastStopReason     = "",
     MachineFixCount    = 0,
-    -- Stats Office
     OfficeMathSolved   = 0,
     OfficePrints       = 0,
-    -- Stats Courier
     CourierDelivered   = 0,
+    MandalikaSpeed     = 180,
+    MandalikaLaps      = 0,   -- << tracking lap
 }
 
 LocalPlayer.Idled:Connect(function()
@@ -677,10 +673,7 @@ local function eksekusiPromptTahan(pp)
 end
 
 local myChair            = nil
-local CachedTargetLabel  = nil
-local CachedTargetParent = nil
 
--- ================== CARI KURSI ==================
 local function findNearestChair(radius)
     local origin = CharRef.Root and CharRef.Root.Position
     if not origin then return nil end
@@ -723,7 +716,6 @@ local function findAnotherChair()
     return best
 end
 
--- ================== BERJALAN KE TITIK ==================
 local function jalanKe(pos)
     local root = CharRef.Root
     local hum = CharRef.Humanoid
@@ -756,7 +748,6 @@ local function jalanKe(pos)
     end
 end
 
--- ================== DUDUK & BANGUN ==================
 local function keluarKursi()
     local hum = CharRef.Humanoid
     if not hum then return end
@@ -786,7 +777,6 @@ local function dudukKeKursi()
     return false
 end
 
--- ================== PRINTER STUFF ==================
 local function cekPanggilanPrinter()
     for _, gui in pairs(playerGui:GetDescendants()) do
         if gui:IsA("TextLabel") and gui.Visible and hasText(gui.Text, "printer") then
@@ -814,7 +804,6 @@ local function scanPromptPrint()
     return nil
 end
 
--- ================== PRINT THREAD ==================
 task.spawn(function()
     while true do
         task.wait(1)
@@ -849,31 +838,27 @@ task.spawn(function()
             end
             dudukKeKursi()
             task.wait(math.random(8,15)/10)
-            CachedTargetLabel, CachedTargetParent = nil, nil
             getgenv().isGoingToPrinter = false
             getgenv().forceStopMath = false
         end
     end
 end)
 
--- ================== MATH STUFF (UPDATED REGEX) ==================
-local function cariSoalBaru()
-    CachedTargetLabel, CachedTargetParent = nil, nil
+local function almostEqual(a, b)
+    local eps = 0.005
+    return math.abs(a - b) < eps
+end
+
+local function cariSoalDanTombolArea()
     for _, v in pairs(playerGui:GetDescendants()) do
         if v:IsA("TextLabel") and v.Visible and v.Text ~= "" then
-            -- Support baca angka minus
             local a, op, b = string.match(v.Text, "(%-?%d+)%s*([%+%-%*/])%s*(%-?%d+)")
             if a and op and b then
-                CachedTargetLabel, CachedTargetParent = v, v.Parent
-                return v
+                return v, v.Parent
             end
         end
     end
-    return nil
-end
-
-local function soalCacheValid()
-    return CachedTargetLabel and CachedTargetLabel.Parent and CachedTargetLabel.Visible
+    return nil, nil
 end
 
 local function klikTombol(btn)
@@ -893,7 +878,6 @@ local function klikTombol(btn)
     return ok
 end
 
--- ================== IDLE DETECTOR + CHAIR SWITCH ==================
 local lastActivityTime = tick()
 local isSwitching = false
 local IDLE_SWITCH_TIME = 60
@@ -920,10 +904,9 @@ task.spawn(function()
     end
 end)
 
--- ================== MATH THREAD (FIXED ACCURACY) ==================
 task.spawn(function()
     while true do
-        task.wait(0.2)
+        task.wait(0.3)
         if not State.IsOfficeActive or getgenv().forceStopMath or getgenv().isGoingToPrinter then continue end
         local hum = CharRef.Humanoid
         if not hum or not hum.SeatPart then
@@ -932,14 +915,14 @@ task.spawn(function()
             continue
         end
 
-        local soalLabel = soalCacheValid() and CachedTargetLabel or cariSoalBaru()
+        local soalLabel, areaTombol = cariSoalDanTombolArea()
         if not soalLabel then task.wait(0.8) continue end
 
         lastActivityTime = tick()
 
         local text = soalLabel.Text
         local a, op, b = string.match(text, "(%-?%d+)%s*([%+%-%*/])%s*(%-?%d+)")
-        if not a then CachedTargetLabel, CachedTargetParent = nil, nil continue end
+        if not a then continue end
 
         local n1, n2 = tonumber(a), tonumber(b)
         local jawaban
@@ -947,22 +930,13 @@ task.spawn(function()
         elseif op == "-" then jawaban = n1 - n2
         elseif op == "*" then jawaban = n1 * n2
         elseif op == "/" and n2 ~= 0 then jawaban = n1 / n2
-        else CachedTargetLabel, CachedTargetParent = nil, nil continue end
-
-        -- Jaga-jaga hasil pembagian angka desimal panjang
-        local jawabanDibulatkan = math.floor(jawaban + 0.5)
+        else continue end
 
         local ditemukan = false
-        
-        -- Kunci scan tombol cuma di dalam Frame mini-game tersebut (biar gak pencet tombol lain di layar)
-        local areaPencarian = (CachedTargetParent and CachedTargetParent.Parent) or playerGui
-
-        for _, btn in pairs(areaPencarian:GetDescendants()) do
+        for _, btn in pairs(areaTombol:GetDescendants()) do
             if getgenv().forceStopMath or not State.IsOfficeActive then break end
             if btn:IsA("TextButton") and btn.Visible then
                 local btnText = btn.Text
-                
-                -- Bongkar sampai ke anak terdalam kalau teks tombolnya di-hidden
                 if btnText == "" or tonumber(btnText) == nil then
                     for _, child in pairs(btn:GetDescendants()) do
                         if child:IsA("TextLabel") and child.Text ~= "" and tonumber(child.Text) ~= nil then
@@ -971,9 +945,8 @@ task.spawn(function()
                         end
                     end
                 end
-                
                 local valBtn = tonumber(btnText)
-                if valBtn and (valBtn == jawaban or valBtn == jawabanDibulatkan) then
+                if valBtn and (almostEqual(valBtn, jawaban) or math.abs(valBtn - math.floor(jawaban + 0.5)) < 0.001) then
                     ditemukan = true
                     task.wait(math.random(8,25)/10)
                     if getgenv().forceStopMath or not State.IsOfficeActive then break end
@@ -986,11 +959,10 @@ task.spawn(function()
                 end
             end
         end
-        if not ditemukan then CachedTargetLabel, CachedTargetParent = nil, nil end
+        if not ditemukan then task.wait(0.5) end
     end
 end)
 
--- ================== ANTI-IDLE EVENT ==================
 task.spawn(function()
     while true do
         task.wait(10)
@@ -1002,7 +974,6 @@ task.spawn(function()
     end
 end)
 
--- ================== MONITORING GUI (FIX ZEROS & AUTO SCAN UI) ==================
 local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer2 = Players.LocalPlayer
@@ -1163,7 +1134,6 @@ local function matikanMonitoring()
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy(); TrackerGui = nil end
 end
 
--- ================== START & STOP FUNCS ==================
 local function StartOfficeScript()
     if State.IsOfficeActive then return end
     State.IsOfficeActive = true
@@ -1206,7 +1176,6 @@ local function StopOfficeScript()
     getgenv().fullAuto = false
     getgenv().forceStopMath = false
     getgenv().isGoingToPrinter = false
-    CachedTargetLabel, CachedTargetParent = nil, nil
 
     CachedMoneyLabel = nil
     getgenv().UangAwalDikunci = nil
@@ -1558,7 +1527,303 @@ local function StopCourierScript()
 end
 
 -- ============================================================================
--- // 14. INJECT A-CHASSIS
+-- // 14. AUTO MANDALIKA (BALAP SIRKUIT) + MONITORING
+-- ============================================================================
+local checkpointBalap = {
+    Vector3.new(-392, 7, -1615),   -- 1. Start
+    Vector3.new(1102, 7, -1621),   -- 2.
+    Vector3.new(1420, 7, -1530),   -- 3.
+    Vector3.new(1389, 7, -1137),   -- 4.
+    Vector3.new(1375, 7, -1094),   -- 5.
+    Vector3.new(1271, 7, -748),    -- 6.
+    Vector3.new(1065, 7, -717),    -- 7.
+    Vector3.new(1031, 7, -728),    -- 8.
+    Vector3.new(889, 7, -446),     -- 9.
+    Vector3.new(920, 7, -398),     -- 10.
+    Vector3.new(1208, 7, 154),     -- 11.
+    Vector3.new(1183, 7, 283),     -- 12.
+    Vector3.new(979, 7, 849),      -- 13.
+    Vector3.new(862, 7, 939),      -- 14.
+    Vector3.new(537, 7, 1176),     -- 15.
+    Vector3.new(459, 7, 1222),     -- 16.
+    Vector3.new(-109, 7, 1228),    -- 17.
+    Vector3.new(-183, 7, 1278),    -- 18.
+    Vector3.new(-565, 7, 1515),    -- 19.
+    Vector3.new(-670, 7, 1550),    -- 20.
+    Vector3.new(-1531, 7, 1778),   -- 21.
+    Vector3.new(-1625, 7, 1798),   -- 22.
+    Vector3.new(-1574, 7, 959),    -- 23.
+    Vector3.new(-1547, 7, 870),    -- 24.
+    Vector3.new(-805, 7, 635),     -- 25.
+    Vector3.new(-774, 7, 571),     -- 26.
+    Vector3.new(-583, 7, -318),    -- 27.
+    Vector3.new(-577, 7, -382),    -- 28.
+    Vector3.new(-1147, 7, -820),   -- 29.
+    Vector3.new(-1185, 7, -902),   -- 30.
+    Vector3.new(-1453, 7, -1654),  -- 31.
+    Vector3.new(-1462, 7, -1731),  -- 32.
+    Vector3.new(-1344, 7, -2119),  -- 33.
+    Vector3.new(-1300, 7, -2167),  -- 34.
+    Vector3.new(-1133, 7, -2287),  -- 35.
+    Vector3.new(-1090, 7, -1972),  -- 36.
+    Vector3.new(-1124, 7, -1892),  -- 37.
+    Vector3.new(-1153, 7, -1668),  -- 38.
+    Vector3.new(-142, 7, -1616)    -- 39. Finish (UPDATED)
+}
+
+local MANDALIKA_CAR = "Yamahax-MioSporty"
+
+-- ===================== MONITORING MANDALIKA =====================
+local MandalikaTrackerGui = nil
+
+local function buatMonitoringMandalika()
+    local uangSekarang = DapatkanUangPemain()
+    
+    if not getgenv().UangAwalMandalika or getgenv().UangAwalMandalika == 0 then
+        getgenv().UangAwalMandalika = uangSekarang
+    end
+    
+    getgenv().WaktuMulaiMandalika = getgenv().WaktuMulaiMandalika or tick()
+    local uangAwal = getgenv().UangAwalMandalika
+
+    if MandalikaTrackerGui and MandalikaTrackerGui.Parent then
+        MandalikaTrackerGui:Destroy()
+    end
+
+    MandalikaTrackerGui = Instance.new("ScreenGui")
+    MandalikaTrackerGui.Name = "KingAkbarMandalikaTracker"
+    MandalikaTrackerGui.Parent = CoreGui
+
+    local Frame = Instance.new("Frame")
+    Frame.Size = UDim2.new(0, 190, 0, 0)
+    Frame.Position = UDim2.new(0, 16, 0.5, 0)  -- kiri tengah
+    Frame.AnchorPoint = Vector2.new(0, 0.5)
+    Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+    Frame.BackgroundTransparency = 0.25
+    Frame.BorderSizePixel = 0
+    Frame.Active = true
+    Frame.Draggable = true
+    Frame.AutomaticSize = Enum.AutomaticSize.Y
+    Frame.Parent = MandalikaTrackerGui
+
+    local Corner = Instance.new("UICorner"); Corner.CornerRadius = UDim.new(0,8); Corner.Parent = Frame
+    local Stroke = Instance.new("UIStroke"); Stroke.Color = Color3.fromRGB(70,70,75); Stroke.Thickness = 1; Stroke.Parent = Frame
+    local Padding = Instance.new("UIPadding"); Padding.PaddingTop = UDim.new(0,10); Padding.PaddingBottom = UDim.new(0,10); Padding.PaddingLeft = UDim.new(0,10); Padding.PaddingRight = UDim.new(0,10); Padding.Parent = Frame
+    local List = Instance.new("UIListLayout"); List.Padding = UDim.new(0,6); List.SortOrder = Enum.SortOrder.LayoutOrder; List.Parent = Frame
+
+    local H = Instance.new("Frame"); H.Size = UDim2.new(1,0,0,36); H.BackgroundTransparency = 1; H.LayoutOrder = 1; H.Parent = Frame
+    local Img = Instance.new("ImageLabel"); Img.Size = UDim2.new(0,36,0,36); Img.Position = UDim2.new(0,0,0.5,-18); Img.BackgroundTransparency = 1; Img.Image = "rbxassetid://84070081307966"; Img.ScaleType = Enum.ScaleType.Fit; Img.ZIndex = 2; Img.Parent = H
+    local ImgCorner = Instance.new("UICorner"); ImgCorner.CornerRadius = UDim.new(0,8); ImgCorner.Parent = Img
+    local Title = Instance.new("TextLabel"); Title.Size = UDim2.new(1,-42,0,24); Title.Position = UDim2.new(0,42,0.5,-12); Title.BackgroundTransparency = 1; Title.Text = "MANDALIKA RACE"; Title.TextColor3 = Color3.fromRGB(180,180,180); Title.Font = Enum.Font.GothamBold; Title.TextSize = 14; Title.TextXAlignment = Enum.TextXAlignment.Left; Title.Parent = H
+    local Div = Instance.new("Frame"); Div.Size = UDim2.new(1,0,0,1); Div.BackgroundColor3 = Color3.fromRGB(70,70,75); Div.BorderSizePixel = 0; Div.LayoutOrder = 2; Div.Parent = Frame
+
+    local function baris(labelKiri, labelKanan, order)
+        local R = Instance.new("Frame"); R.Size = UDim2.new(1,0,0,28); R.BackgroundTransparency = 1; R.LayoutOrder = order; R.Parent = Frame
+        local L = Instance.new("Frame"); L.Size = UDim2.new(0.5,-3,1,0); L.BackgroundTransparency = 1; L.Parent = R
+        local LLab = Instance.new("TextLabel"); LLab.Size = UDim2.new(1,0,0,12); LLab.BackgroundTransparency = 1; LLab.Text = labelKiri; LLab.TextColor3 = Color3.fromRGB(140,140,140); LLab.Font = Enum.Font.GothamMedium; LLab.TextSize = 10; LLab.TextXAlignment = Enum.TextXAlignment.Left; LLab.Parent = L
+        local LVal = Instance.new("TextLabel"); LVal.Size = UDim2.new(1,0,0,14); LVal.Position = UDim2.new(0,0,1,-14); LVal.BackgroundTransparency = 1; LVal.Text = "0"; LVal.TextColor3 = Color3.fromRGB(220,220,220); LVal.Font = Enum.Font.GothamBold; LVal.TextSize = 12; LVal.TextXAlignment = Enum.TextXAlignment.Left; LVal.Parent = L
+        local Ri = Instance.new("Frame"); Ri.Size = UDim2.new(0.5,-3,1,0); Ri.Position = UDim2.new(0.5,3,0,0); Ri.BackgroundTransparency = 1; Ri.Parent = R
+        local RLab = Instance.new("TextLabel"); RLab.Size = UDim2.new(1,0,0,12); RLab.BackgroundTransparency = 1; RLab.Text = labelKanan; RLab.TextColor3 = Color3.fromRGB(140,140,140); RLab.Font = Enum.Font.GothamMedium; RLab.TextSize = 10; RLab.TextXAlignment = Enum.TextXAlignment.Left; RLab.Parent = Ri
+        local RVal = Instance.new("TextLabel"); RVal.Size = UDim2.new(1,0,0,14); RVal.Position = UDim2.new(0,0,1,-14); RVal.BackgroundTransparency = 1; RVal.Text = "0"; RVal.TextColor3 = Color3.fromRGB(220,220,220); RVal.Font = Enum.Font.GothamBold; RVal.TextSize = 12; RVal.TextXAlignment = Enum.TextXAlignment.Left; RVal.Parent = Ri
+        return LVal, RVal
+    end
+
+    local function barisTunggal(label, order)
+        local R = Instance.new("Frame"); R.Size = UDim2.new(1,0,0,28); R.BackgroundTransparency = 1; R.LayoutOrder = order; R.Parent = Frame
+        local Lab = Instance.new("TextLabel"); Lab.Size = UDim2.new(0.4,0,0,12); Lab.BackgroundTransparency = 1; Lab.Text = label; Lab.TextColor3 = Color3.fromRGB(140,140,140); Lab.Font = Enum.Font.GothamMedium; Lab.TextSize = 10; Lab.TextXAlignment = Enum.TextXAlignment.Left; Lab.Parent = R
+        local Val = Instance.new("TextLabel"); Val.Size = UDim2.new(0.6,0,0,14); Val.Position = UDim2.new(0.4,0,1,-14); Val.BackgroundTransparency = 1; Val.Text = "00:00:00"; Val.TextColor3 = Color3.fromRGB(220,220,220); Val.Font = Enum.Font.GothamBold; Val.TextSize = 12; Val.TextXAlignment = Enum.TextXAlignment.Right; Val.Parent = R
+        return Val
+    end
+
+    local uangAwalLabel, pendapatanLabel = baris("Uang Awal", "Pendapatan", 4)
+    local lapLabel, speedLabel = baris("Lap Selesai", "Kecepatan", 5)
+    local uptimeLabel = barisTunggal("Uptime", 6)
+
+    uangAwalLabel.Text = formatNumber(uangAwal)
+
+    task.spawn(function()
+        while MandalikaTrackerGui and MandalikaTrackerGui.Parent do
+            local success, err = pcall(function()
+                local currentMoney = DapatkanUangPemain()
+                local profit = currentMoney - uangAwal
+                pendapatanLabel.Text = (profit >= 0 and "+" or "") .. formatNumber(profit)
+                lapLabel.Text = tostring(State.MandalikaLaps or 0)
+                speedLabel.Text = tostring(State.MandalikaSpeed or 0) .. " st/s"
+                uptimeLabel.Text = formatTime(tick() - getgenv().WaktuMulaiMandalika)
+            end)
+            if not success then warn("Monitoring Mandalika Error: ", tostring(err)) end
+            task.wait(1)
+        end
+    end)
+end
+
+local function matikanMonitoringMandalika()
+    if MandalikaTrackerGui and MandalikaTrackerGui.Parent then
+        MandalikaTrackerGui:Destroy()
+        MandalikaTrackerGui = nil
+    end
+end
+
+-- ===================== MANDALIKA LOOP =====================
+local function StartMandalikaLoop(speed)
+    local player = game:GetService("Players").LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local root = character:WaitForChild("HumanoidRootPart")
+    local humanoid = character:WaitForChild("Humanoid")
+
+    local noclipConn
+    noclipConn = Services.RunService.Stepped:Connect(function()
+        if not State.IsMandalikaActive then noclipConn:Disconnect(); return end
+        for _, v in pairs(character:GetDescendants()) do
+            if v:IsA("BasePart") and v.CanCollide then v.CanCollide = false end
+        end
+        if humanoid.SeatPart then
+            local motorModel = humanoid.SeatPart:FindFirstAncestorOfClass("Model")
+            if motorModel then
+                for _, v in pairs(motorModel:GetDescendants()) do
+                    if v:IsA("BasePart") and v.CanCollide then v.CanCollide = false end
+                end
+            end
+        end
+    end)
+
+    local startPos = checkpointBalap[1]
+    root.Velocity = Vector3.zero
+    root.CFrame = CFrame.new(startPos + Vector3.new(0, 3, 0))
+    task.wait(1.5)
+
+    while State.IsMandalikaActive do
+        if not humanoid.SeatPart then
+            pcall(function()
+                Services.ReplicatedStorage:WaitForChild("SpawnCarEvents"):WaitForChild("SpawnCar"):FireServer(MANDALIKA_CAR)
+            end)
+            task.wait(2.5)  -- jeda lebih sabar
+
+            local ridePrompt = nil
+            local t = 0
+            while not ridePrompt and t < 5 do
+                for _, v in pairs(workspace:GetDescendants()) do
+                    if v:IsA("ProximityPrompt") and v.Enabled and v.ActionText == "Ride" then
+                        local part = v.Parent
+                        if part and part:IsA("BasePart") and (part.Position - root.Position).Magnitude < 35 then
+                            ridePrompt = v; break
+                        end
+                    end
+                end
+                task.wait(0.3); t += 0.3
+            end
+            if ridePrompt then
+                task.wait(0.5)
+                root.CFrame = CFrame.new(ridePrompt.Parent.Position + Vector3.new(0, 2, 0))
+                task.wait(0.5)
+                DoTap(ridePrompt)
+            else
+                task.wait(2)
+                continue
+            end
+            local wt = 0
+            while not humanoid.SeatPart and wt < 8 do
+                task.wait(0.3); wt += 0.3
+            end
+        end
+
+        if not humanoid.SeatPart then task.wait(1); continue end
+
+        local seat = humanoid.SeatPart
+        local motor = seat:FindFirstAncestorOfClass("Model") or seat.Parent
+
+        local bv = Instance.new("BodyVelocity")
+        bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bv.Velocity = Vector3.zero
+        bv.Parent = seat
+
+        local bg = Instance.new("BodyGyro")
+        bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bg.P = 100000; bg.D = 1000
+        bg.Parent = seat
+
+        local nextPos = checkpointBalap[2]
+        local startCFrame = CFrame.lookAt(
+            Vector3.new(startPos.X, startPos.Y + 3.5, startPos.Z),
+            Vector3.new(nextPos.X, startPos.Y + 3.5, nextPos.Z)
+        )
+        motor:PivotTo(startCFrame)
+        bg.CFrame = startCFrame
+
+        local goDetected = false
+        while not goDetected and State.IsMandalikaActive do
+            task.wait(0.1)
+            for _, ui in pairs(player.PlayerGui:GetDescendants()) do
+                if ui:IsA("TextLabel") and ui.Visible then
+                    local txt = string.upper(ui.Text)
+                    if txt:find("GO!!!") or txt:find("GO!") then
+                        goDetected = true; break
+                    end
+                end
+            end
+        end
+
+        if not State.IsMandalikaActive then break end
+
+        for i = 2, #checkpointBalap do
+            local target = checkpointBalap[i] + Vector3.new(0, 3.5, 0)
+            while State.IsMandalikaActive do
+                local currentPos = seat.Position
+                local dist = (Vector3.new(target.X, 0, target.Z) - Vector3.new(currentPos.X, 0, currentPos.Z)).Magnitude
+                if dist < 15 then break end
+                local dir = (target - currentPos).Unit
+                bg.CFrame = CFrame.lookAt(currentPos, currentPos + dir)
+                bv.Velocity = dir * speed
+                seat.AssemblyLinearVelocity = bv.Velocity
+                task.wait()
+            end
+        end
+
+        local targetStart = checkpointBalap[1] + Vector3.new(0, 3.5, 0)
+        while State.IsMandalikaActive do
+            local currentPos = seat.Position
+            local dist = (Vector3.new(targetStart.X, 0, targetStart.Z) - Vector3.new(currentPos.X, 0, currentPos.Z)).Magnitude
+            if dist < 15 then break end
+            local dir = (targetStart - currentPos).Unit
+            bg.CFrame = CFrame.lookAt(currentPos, currentPos + dir)
+            bv.Velocity = dir * speed
+            seat.AssemblyLinearVelocity = bv.Velocity
+            task.wait()
+        end
+
+        bv.Velocity = Vector3.zero
+        seat.AssemblyLinearVelocity = Vector3.zero
+        motor:PivotTo(startCFrame)
+        bg.CFrame = startCFrame
+
+        -- TAMBAHAN: increment lap setiap kali tiba di start
+        State.MandalikaLaps = (State.MandalikaLaps or 0) + 1
+
+        task.wait(2)
+
+        bv:Destroy()
+        bg:Destroy()
+    end
+    if noclipConn then noclipConn:Disconnect() end
+end
+
+local function StartMandalikaScript()
+    if State.IsMandalikaActive then return end
+    State.IsMandalikaActive = true
+    State.MandalikaLaps = 0
+    getgenv().UangAwalMandalika = nil
+    getgenv().WaktuMulaiMandalika = nil
+    buatMonitoringMandalika()
+    task.spawn(function() StartMandalikaLoop(State.MandalikaSpeed) end)
+end
+
+local function StopMandalikaScript()
+    State.IsMandalikaActive = false
+    matikanMonitoringMandalika()
+end
+
+-- ============================================================================
+-- // 15. INJECT A-CHASSIS
 -- ============================================================================
 local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
     local char = game:GetService("Players").LocalPlayer.Character
@@ -1615,7 +1880,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
 end
 
 -- ============================================================================
--- // 15. UI — 8 TAB (Webhook baru ditambahkan)
+-- // 16. UI — 8 TAB
 -- ============================================================================
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
@@ -1738,6 +2003,33 @@ SectionCourier:Toggle({
     Icon     = "package",
     Value    = false,
     Callback = function(on) if on then StartCourierScript() else StopCourierScript() end end,
+})
+
+-- ============================
+-- TAB AUTO RACE
+-- ============================
+local TabRace = Window:Tab({ Title = "Auto Race", Icon = "flag", Border = true })
+
+local SectionMandalika = TabRace:Section({
+    Title = "Auto Mandalika",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+SectionMandalika:Toggle({
+    Title    = "Jalanin Auto Mandalika (Balap)",
+    Icon     = "flag",
+    Value    = false,
+    Callback = function(on) if on then StartMandalikaScript() else StopMandalikaScript() end end,
+})
+
+SectionMandalika:Slider({
+    Title    = "Kecepatan Balap (Studs/s)",
+    Desc     = "Semakin tinggi semakin ngebut",
+    Step     = 10,
+    Value    = { Min = 100, Max = 500, Default = 180 },
+    Callback = function(v) State.MandalikaSpeed = v end,
 })
 
 -- ============================
@@ -1885,130 +2177,6 @@ TuneSendiri:Button({
 })
 
 -- ============================
--- TAB 8: WEBHOOK (BARU!)
--- ============================
-local WebhookState = {
-    Enabled = false,
-    URL = "",
-    Interval = "Off", -- "Off", "Per Menit", "Per Jam"
-    LastSend = 0,
-}
-
-local function SendWebhook(isTest)
-    local url = WebhookState.URL
-    if url == "" or url == nil then
-        WindUI:Notify({ Title = "⚠️ Webhook", Content = "URL belum diisi!", Duration = 3 })
-        return
-    end
-
-    local player = LocalPlayer
-    local money = GetPlayerMoney() or 0
-    local profit = money - (State.UangAwalSession or money)
-    local uptime = os.time() - (State.SessionStartTime or os.time())
-    local activeJobs = {}
-    if State.IsBaristaActive then table.insert(activeJobs, "Barista") end
-    if State.IsOfficeActive then table.insert(activeJobs, "Office") end
-    if State.IsCourierActive then table.insert(activeJobs, "Courier") end
-    local jobStr = #activeJobs > 0 and table.concat(activeJobs, ", ") or "Tidak ada"
-
-    local embed = {
-        title = isTest and "🧪 Test Webhook - King Akbar" or "📊 Status Bot - King Akbar",
-        color = 0x7289DA,
-        fields = {
-            { name = "👤 Pemain", value = player.Name, inline = true },
-            { name = "🕒 Uptime", value = formatTime(uptime), inline = true },
-            { name = "💰 Uang Saat Ini", value = "Rp." .. formatNumber(money), inline = true },
-            { name = "📈 Profit", value = (profit>=0 and "+" or "") .. formatNumber(profit), inline = true },
-            { name = "⚙️ Job Aktif", value = jobStr, inline = true },
-            { name = "📊 Total Order (Barista)", value = tostring(State.OrderCount or 0), inline = true },
-            { name = "🧮 Soal Office Terjawab", value = tostring(State.OfficeMathSolved or 0), inline = true },
-            { name = "🖨️ Printer Diambil", value = tostring(State.OfficePrints or 0), inline = true },
-            { name = "📦 Courier Terkirim", value = tostring(State.CourierDelivered or 0), inline = true },
-        },
-        footer = { text = "King Akbar Ultimate Farm" },
-        timestamp = os.date("!%Y-%m-%dT%H:%M:%S.000Z"),
-    }
-
-    local payload = {
-        embeds = { embed },
-        username = "King Akbar Bot",
-        avatar_url = "https://cdn.discordapp.com/attachments/1158735493272588388/1244266037897928704/king_akbar.png"
-    }
-
-    local success = pcall(function()
-        local json = Services.HttpService:JSONEncode(payload)
-        local headers = { ["Content-Type"] = "application/json" }
-        local req = request or http_request or (syn and syn.request)
-        if req then
-            req({ Url = url, Method = "POST", Headers = headers, Body = json })
-        else
-            Services.HttpService:PostAsync(url, json, Enum.HttpContentType.ApplicationJson, false, headers)
-        end
-    end)
-
-    if success then
-        if isTest then
-            WindUI:Notify({ Title = "✅ Webhook", Content = "Test webhook terkirim!", Duration = 3 })
-        end
-    else
-        WindUI:Notify({ Title = "❌ Webhook", Content = "Gagal kirim, cek URL & koneksi.", Duration = 5 })
-    end
-end
-
--- Kirim periodik
-task.spawn(function()
-    while true do
-        task.wait(5) -- cek tiap 5 detik
-        if WebhookState.Enabled and WebhookState.URL ~= "" and WebhookState.Interval ~= "Off" then
-            local now = tick()
-            local intervalSec = 0
-            if WebhookState.Interval == "Per Menit" then
-                intervalSec = 60
-            elseif WebhookState.Interval == "Per Jam" then
-                intervalSec = 3600
-            end
-            if intervalSec > 0 and now - WebhookState.LastSend >= intervalSec then
-                SendWebhook(false)
-                WebhookState.LastSend = now
-            end
-        end
-    end
-end)
-
-local TabWebhook = Window:Tab({ Title = "Webhook", Icon = "bell", Border = true })
-
-local WebhookSection = TabWebhook:Section({
-    Title = "Notifikasi Discord",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
-
-WebhookSection:Input({
-    Title = "🔗 URL Webhook Discord",
-    Placeholder = "https://discord.com/api/webhooks/...",
-    Callback = function(text) WebhookState.URL = text end
-})
-
-WebhookSection:Select({
-    Title = "⏱️ Interval Kirim",
-    Values = {"Off", "Per Menit", "Per Jam"},
-    Default = "Off",
-    Callback = function(val) WebhookState.Interval = val end
-})
-
-WebhookSection:Toggle({
-    Title = "Aktifkan Webhook",
-    Value = false,
-    Callback = function(on) WebhookState.Enabled = on end
-})
-
-WebhookSection:Button({
-    Title = "📤 Kirim Test Webhook",
-    Callback = function() SendWebhook(true) end
-})
-
--- ============================
 -- OPEN BUTTON & FPS TAG
 -- ============================
 Window:EditOpenButton({
@@ -2052,7 +2220,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.8 FINAL SIAP!",
-    Content  = "Office langsung jawab soal pas start. Webhook siap kirim per menit/jam!",
+    Title    = "👑 KING AKBAR V6.0 SIAP!",
+    Content  = "Monitoring Mandalika aktif. Gas cuan sambil balap!",
     Duration = 5,
 })
