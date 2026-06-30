@@ -118,8 +118,8 @@ local State = {
     OfficePrints       = 0,
     CourierDelivered   = 0,
     RaceLaps           = 0,
-    MandalikaLaps      = 0,   -- untuk monitoring balapan
-    MandalikaSpeed     = 0,   -- kecepatan terakhir
+    MandalikaLaps      = 0,
+    MandalikaSpeed     = 0,
 }
 
 LocalPlayer.Idled:Connect(function()
@@ -131,7 +131,7 @@ LocalPlayer.Idled:Connect(function()
     end
 end)
 
--- BYPASS NETWORK PAUSE (AUTO JALAN)
+-- BYPASS NETWORK PAUSE
 task.spawn(function()
     while true do
         pcall(function()
@@ -156,7 +156,7 @@ local function rWait(minSec, maxSec)
 end
 
 -- ============================================================================
--- // 4. GetPlayerMoney (untuk monitoring & barista)
+-- // 4. GetPlayerMoney
 -- ============================================================================
 local function GetPlayerMoney()
     local money = 0
@@ -178,7 +178,7 @@ local function GetPlayerMoney()
 end
 
 -- ============================================================================
--- // 5. ADMIN SENSOR (tanpa webhook)
+-- // 5. ADMIN SENSOR
 -- ============================================================================
 local GAME_GROUP_ID  = 11378976
 local MIN_STAFF_RANK = 200
@@ -425,14 +425,10 @@ local function DoTap(prompt)
     rWait(0.2, 0.4); return true
 end
 
-local function FirePrompt(pp)   -- untuk auto race
+local function FirePrompt(pp)
     if not pp then return end
     local duration = pp.HoldDuration or 0
-    if duration > 0 then
-        DoHold(pp)
-    else
-        DoTap(pp)
-    end
+    if duration > 0 then DoHold(pp) else DoTap(pp) end
 end
 
 local function IsMachineBroken()
@@ -671,7 +667,7 @@ local function StopBaristaScript(reason)
 end
 
 -- ============================================================================
--- // 12. OFFICE JOB SYSTEM (V5.8 FINAL - MONITORING UI SCAN + START FIX)
+-- // 12. OFFICE JOB SYSTEM
 -- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -681,18 +677,13 @@ end
 
 local function eksekusiPromptTahan(pp)
     if not pp then return end
-    if (pp.HoldDuration or 0) > 0 then
-        DoHold(pp)
-    else
-        DoTap(pp)
-    end
+    if (pp.HoldDuration or 0) > 0 then DoHold(pp) else DoTap(pp) end
 end
 
 local myChair            = nil
 local CachedTargetLabel  = nil
 local CachedTargetParent = nil
 
--- ================== CARI KURSI ==================
 local function findNearestChair(radius)
     local origin = CharRef.Root and CharRef.Root.Position
     if not origin then return nil end
@@ -735,7 +726,6 @@ local function findAnotherChair()
     return best
 end
 
--- ================== BERJALAN KE TITIK ==================
 local function jalanKe(pos)
     local root = CharRef.Root
     local hum = CharRef.Humanoid
@@ -768,7 +758,6 @@ local function jalanKe(pos)
     end
 end
 
--- ================== DUDUK & BANGUN ==================
 local function keluarKursi()
     local hum = CharRef.Humanoid
     if not hum then return end
@@ -798,7 +787,6 @@ local function dudukKeKursi()
     return false
 end
 
--- ================== PRINTER STUFF ==================
 local function cekPanggilanPrinter()
     for _, gui in pairs(playerGui:GetDescendants()) do
         if gui:IsA("TextLabel") and gui.Visible and hasText(gui.Text, "printer") then
@@ -826,7 +814,6 @@ local function scanPromptPrint()
     return nil
 end
 
--- ================== PRINT THREAD ==================
 task.spawn(function()
     while true do
         task.wait(1)
@@ -868,7 +855,6 @@ task.spawn(function()
     end
 end)
 
--- ================== MATH STUFF ==================
 local function cariSoalBaru()
     CachedTargetLabel, CachedTargetParent = nil, nil
     for _, v in pairs(playerGui:GetDescendants()) do
@@ -904,7 +890,6 @@ local function klikTombol(btn)
     return ok
 end
 
--- ================== IDLE DETECTOR + CHAIR SWITCH ==================
 local lastActivityTime = tick()
 local isSwitching = false
 local IDLE_SWITCH_TIME = 60
@@ -920,9 +905,7 @@ task.spawn(function()
             WindUI:Notify({ Title = "🔄 Office", Content = "Sepi soal, ganti kursi dulu...", Duration = 3 })
             keluarKursi()
             local newChair = findAnotherChair()
-            if newChair then
-                myChair = newChair
-            end
+            if newChair then myChair = newChair end
             dudukKeKursi()
             getgenv().forceStopMath = false
             isSwitching = false
@@ -931,7 +914,6 @@ task.spawn(function()
     end
 end)
 
--- ================== MATH THREAD ==================
 task.spawn(function()
     while true do
         task.wait(0.2)
@@ -986,7 +968,6 @@ task.spawn(function()
     end
 end)
 
--- ================== ANTI-IDLE EVENT ==================
 task.spawn(function()
     while true do
         task.wait(10)
@@ -998,7 +979,7 @@ task.spawn(function()
     end
 end)
 
--- ================== MONITORING GUI (FIX ZEROS & AUTO SCAN UI) ==================
+-- ================== MONITORING GUI ==================
 local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer2 = Players.LocalPlayer
@@ -1159,7 +1140,6 @@ local function matikanMonitoring()
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy(); TrackerGui = nil end
 end
 
--- ================== START & STOP FUNCS (DENGAN FIX TIMER IDLE) ==================
 local function StartOfficeScript()
     if State.IsOfficeActive then return end
     State.IsOfficeActive = true
@@ -1213,7 +1193,7 @@ local function StopOfficeScript()
 end
 
 -- ============================================================================
--- // 13. AUTO COURIER (INTEGRATED)
+-- // 13. AUTO COURIER
 -- ============================================================================
 local CourierJob = {
     Name = "Courier",
@@ -1601,12 +1581,11 @@ local checkpointBalap = {
     Vector3.new(-142, 7, -1616)    -- 39. Finish
 }
 
--- ⚙️ Default settings (bisa diubah lewat UI)
+-- ⚙️ Default settings
 getgenv().AutoFarmBalap = false
 getgenv().RaceCar = "Yamahax-MioSporty"
 getgenv().RaceSpeed = 180
 
--- Noclip connection untuk race
 local raceNoclipConn
 
 local function MulaiSistemAutoBalap(namaMotor)
@@ -1676,9 +1655,6 @@ local function MulaiSistemAutoBalap(namaMotor)
         local seat = humanoid.SeatPart
         local motorModel = seat:FindFirstAncestorOfClass("Model") or seat.Parent
 
-        -- ==========================================
-        -- 🛡️ AKTIFKAN ANTI-GRAVITASI DAHULU (MODE HOVER)
-        -- ==========================================
         local bv = seat:FindFirstChild("Jet_BV") or Instance.new("BodyVelocity")
         bv.Name = "Jet_BV"
         bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge) 
@@ -1700,7 +1676,6 @@ local function MulaiSistemAutoBalap(namaMotor)
         motorModel:PivotTo(cframeMelayang)
         bg.CFrame = cframeMelayang
 
-        -- [ MENUNGGU GO!!! ]
         print("⏳ Motor aman melayang! Menunggu aba-aba GO!!!...")
         local gasMulai = false
 
@@ -1720,7 +1695,6 @@ local function MulaiSistemAutoBalap(namaMotor)
         if not getgenv().AutoFarmBalap then break end
         print("🚀 GO!!! LUNCUR FULL SPEED!")
 
-        -- [ TAHAP 1: MAJU KE FINISH ]
         for i = 2, #checkpointBalap do
             local targetPos = checkpointBalap[i] + Vector3.new(0, 3.5, 0) 
 
@@ -1741,7 +1715,6 @@ local function MulaiSistemAutoBalap(namaMotor)
         
         print("🏁 Finish! Putar balik...")
 
-        -- [ TAHAP 2: TERBANG BALIK KE START ]
         local targetStart = checkpointBalap[1] + Vector3.new(0, 3.5, 0)
         while getgenv().AutoFarmBalap do
             local currentPos = seat.Position
@@ -1757,7 +1730,6 @@ local function MulaiSistemAutoBalap(namaMotor)
             task.wait()
         end
 
-        -- [ REM TOTAL DI TITIK START ]
         bv.Velocity = Vector3.zero 
         seat.ThrottleFloat = 0
         seat.AssemblyLinearVelocity = Vector3.zero
@@ -1765,7 +1737,6 @@ local function MulaiSistemAutoBalap(namaMotor)
         motorModel:PivotTo(cframeMelayang)
         bg.CFrame = cframeMelayang
 
-        -- ✅ Tambah lap counter & update speed untuk monitoring
         State.MandalikaLaps = (State.MandalikaLaps or 0) + 1
         State.MandalikaSpeed = getgenv().RaceSpeed
         
@@ -1777,7 +1748,7 @@ local function MulaiSistemAutoBalap(namaMotor)
 end
 
 -- ===========================================================================
--- MONITORING MANDALIKA – GUI kiri tengah
+-- MONITORING MANDALIKA
 -- ===========================================================================
 local MandalikaTrackerGui = nil
 
@@ -1801,7 +1772,7 @@ local function buatMonitoringMandalika()
 
     local Frame = Instance.new("Frame")
     Frame.Size = UDim2.new(0, 190, 0, 0)
-    Frame.Position = UDim2.new(0, 16, 0.5, 0)  -- kiri tengah
+    Frame.Position = UDim2.new(0, 16, 0.5, 0)
     Frame.AnchorPoint = Vector2.new(0, 0.5)
     Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     Frame.BackgroundTransparency = 0.25
@@ -1872,20 +1843,18 @@ local function matikanMonitoringMandalika()
 end
 
 -- ============================================================================
--- // 15. START / STOP RACE (dengan monitoring)
+-- // 15. START / STOP RACE
 -- ============================================================================
 local function StartRaceScript()
     if State.IsRaceActive then return end
     State.IsRaceActive = true
     getgenv().AutoFarmBalap = true
 
-    -- Reset stat balapan
     State.MandalikaLaps = 0
     State.MandalikaSpeed = getgenv().RaceSpeed
     getgenv().UangAwalMandalika = nil
     getgenv().WaktuMulaiMandalika = nil
 
-    -- Noclip connection
     raceNoclipConn = Services.RunService.Stepped:Connect(function()
         if not getgenv().AutoFarmBalap then return end
         local player = game:GetService("Players").LocalPlayer
@@ -1986,7 +1955,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
 end
 
 -- ============================================================================
--- // 17. UI — 8 TAB (Tab Auto Race terpisah)
+-- // 17. UI
 -- ============================================================================
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
@@ -2069,7 +2038,6 @@ local ServerInfo = TabInfo:Paragraph({
 -- ============================
 local TabFarm = Window:Tab({ Title = "Auto Farm", Icon = "coffee", Border = true })
 
--- Barista
 local SectionBarista = TabFarm:Section({
     Title = "Auto Barista",
     Box = true,
@@ -2084,7 +2052,6 @@ SectionBarista:Toggle({
     Callback = function(on) if on then StartBaristaScript() else StopBaristaScript() end end,
 })
 
--- Office
 local SectionOffice = TabFarm:Section({
     Title = "Auto Office",
     Box = true,
@@ -2099,7 +2066,6 @@ SectionOffice:Toggle({
     Callback = function(on) if on then StartOfficeScript() else StopOfficeScript() end end,
 })
 
--- Courier
 local SectionCourier = TabFarm:Section({
     Title = "Auto Courier",
     Box = true,
@@ -2115,7 +2081,7 @@ SectionCourier:Toggle({
 })
 
 -- ============================
--- TAB 8: AUTO RACE (MANDALIKA) - NEW SEPARATE TAB
+-- TAB 8: AUTO RACE
 -- ============================
 local TabRace = Window:Tab({ Title = "🏁 Auto Race", Icon = "flag", Border = true })
 
@@ -2139,7 +2105,6 @@ SectionMandalika:Toggle({
     end,
 })
 
--- Tombol Refresh untuk mengambil daftar motor dari server
 SectionMandalika:Button({
     Title = "🔄 Refresh Daftar Motor",
     Icon = "refresh-cw",
@@ -2174,7 +2139,6 @@ SectionMandalika:Button({
     end,
 })
 
--- Dropdown pilihan motor
 local MotorSelect = SectionMandalika:Select({
     Title = "Pilih Motor",
     Values = getgenv().MotorList or {},
@@ -2376,9 +2340,6 @@ task.spawn(function()
     end
 end)
 
--- ============================
--- INIT
--- ============================
 Window:SetIconSize(47)
 WindUI:SetTheme("dark")
 TabInfo:Select()
