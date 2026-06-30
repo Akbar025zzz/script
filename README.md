@@ -1,13 +1,12 @@
 --[[
 ================================================================================
-  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (v5.8 FINAL - OFFICE FULL FIX)
+  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (v5.8 FINAL - OFFICE MULTI SOAL FIX)
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE MULTI‑DEVICE FIX)
-    [+] Perbaikan   : - Regex angka & operator lebih tangguh
-                      - Klik multi‑metode (PC + Mobile)
-                      - Delay dinamis anti‑berat
-                      - Office langsung jawab di semua executor
+    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE SEAMLESS)
+    [+] Fix         : - Cache direset tiap selesai jawab → soal berikutnya muncul
+                      - Klik tombol pakai firesignal saja, tanpa VIM
+                      - Lebih ringan & stabil di semua perangkat
 ================================================================================
 ]]--
 
@@ -667,7 +666,7 @@ local function StopBaristaScript(reason)
 end
 
 -- ============================================================================
--- // 12. OFFICE JOB SYSTEM (V5.8 FINAL - MULTI‑DEVICE FIX)
+-- // 12. OFFICE JOB SYSTEM (FINAL FIX - MULTI SOAL)
 -- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -866,10 +865,9 @@ end)
 
 -- ================== MATH STUFF (FIXED) ==================
 local function bersihkanAngka(str)
-    -- Ambil hanya digit, koma, titik
+    -- Hapus semua selain digit, koma & titik sebagai pemisah ribuan lalu hapus koma/titik
     local bersih = string.gsub(str, "[^%d,%.]", "")
-    -- Hapus SEMUA koma dan titik (pemisah ribuan)
-    bersih = string.gsub(bersih, "[,.]", "")
+    bersih = string.gsub(bersih, "[,.]", "")   -- hilangkan pemisah ribuan
     return tonumber(bersih)
 end
 
@@ -893,7 +891,7 @@ local function soalCacheValid()
     return CachedTargetLabel and CachedTargetLabel.Parent and CachedTargetLabel.Visible
 end
 
--- KLIK TOMBOL MULTI‑DEVICE (5 METODE)
+-- KLIK TOMBOL SIMPLE (FIRESIGNAL ONLY)
 local function klikTombol(btn)
     if not btn then return false end
     local success = false
@@ -911,7 +909,7 @@ local function klikTombol(btn)
             success = true
         end
     end)
-    -- 3) getconnections
+    -- 3) getconnections (beberapa executor)
     pcall(function()
         if getconnections then
             for _, c in pairs(getconnections(btn.MouseButton1Click)) do
@@ -919,22 +917,6 @@ local function klikTombol(btn)
             end
             success = true
         end
-    end)
-    -- 4) VirtualInputManager Mouse (PC)
-    pcall(function()
-        local pos = btn.AbsolutePosition + btn.AbsoluteSize / 2
-        Services.VIM:SendMouseButtonEvent(pos.X, pos.Y, 0, true, game, 1)
-        task.wait(0.05)
-        Services.VIM:SendMouseButtonEvent(pos.X, pos.Y, 0, false, game, 1)
-        success = true
-    end)
-    -- 5) VirtualInputManager Touch (Mobile)
-    pcall(function()
-        local pos = btn.AbsolutePosition + btn.AbsoluteSize / 2
-        Services.VIM:SendTouchEvent(pos, 0, true, game, 1)
-        task.wait(0.05)
-        Services.VIM:SendTouchEvent(pos, 0, false, game, 1)
-        success = true
     end)
     return success
 end
@@ -1038,6 +1020,8 @@ task.spawn(function()
                     klikTombol(btn)
                     State.OfficeMathSolved = (State.OfficeMathSolved or 0) + 1
                     lastActivityTime = tick()
+                    -- RESET CACHE AGAR SOAL BERIKUTNYA TERBACA
+                    CachedTargetLabel, CachedTargetParent = nil, nil
                     task.wait(math.random(4,12)/10)
                     break
                 end
@@ -2412,7 +2396,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.8 FINAL + OFFICE FULL FIX!",
-    Content  = "Auto Office kini stabil di semua perangkat. Gas cuan!",
+    Title    = "👑 KING AKBAR V5.8 FINAL + OFFICE MULTI SOAL FIX!",
+    Content  = "Sekarang soal pertama, kedua, ketiga... dijawab semua tanpa putus!",
     Duration = 5,
 })
