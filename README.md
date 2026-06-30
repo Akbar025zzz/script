@@ -1,9 +1,9 @@
 --[[
 ================================================================================
-  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (with Auto Mandalika Race Tab + Monitor + Refresh Motor)
+  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (FULL EDITION) 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE START FIX + RACE + MONITOR + SELECT MOTOR)
+    [+] Version     : DDS FREE EDITION (v6.0 FINAL - OFFICE START FIX + RACE TAB + MONITOR + SELECT MOTOR)
     [+] Changelog   : - Monitoring Office scan langsung teks "Rp." di UI
                       - Uang Awal dikunci, profit akurat
                       - Cache label uang biar nggak lag
@@ -12,7 +12,7 @@
                       - Bypass Network Pause auto-active
                       - Tab Auto Race + Auto Balap Mandalika (noclip hover loop)
                       - Monitoring Mandalika (lap, speed, profit, uptime)
-                      - **NEW** Refresh & Select Motor untuk balapan
+                      - Refresh & Select Motor untuk balapan
 ================================================================================
 ]]--
 
@@ -2184,7 +2184,7 @@ SectionCourier:Toggle({
 })
 
 -- ============================
--- TAB 8: AUTO RACE (MANDALIKA) - NEW SEPARATE TAB
+-- TAB 8: AUTO RACE (MANDALIKA)
 -- ============================
 local TabRace = Window:Tab({ Title = "🏁 Auto Race", Icon = "flag", Border = true })
 
@@ -2208,7 +2208,7 @@ SectionMandalika:Toggle({
     end,
 })
 
--- Select motor (dibuat dulu dengan default, nanti diupdate saat refresh)
+-- Select motor
 local MotorSelect = SectionMandalika:Select({
     Title    = "Pilih Motor",
     Values   = {"Yamahax-MioSporty"},
@@ -2439,7 +2439,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.8 FINAL + TAB AUTO RACE + MONITOR + SELECT MOTOR SIAP!",
-    Content  = "Tekan Refresh untuk muat daftar motor, pilih, lalu gas balapan!",
+    Title    = "👑 KING AKBAR V6.0 FINAL - ALL IN ONE!",
+    Content  = "Tab Auto Race + Refresh Motor + Monitoring Mandalika. Gas cuan & podium!",
     Duration = 5,
 })
