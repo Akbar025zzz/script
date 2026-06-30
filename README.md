@@ -1,18 +1,12 @@
 --[[
 ================================================================================
-  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (FULL EDITION) 👑
+  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (with Auto Mandalika Race Tab + Monitor) 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v6.0 FINAL - OFFICE START FIX + RACE TAB + MONITOR + SELECT MOTOR)
-    [+] Changelog   : - Monitoring Office scan langsung teks "Rp." di UI
-                      - Uang Awal dikunci, profit akurat
-                      - Cache label uang biar nggak lag
-                      - Auto ganti kursi kalo sepi soal
-                      - Fix: Office langsung jawab pas start (timer idle di-reset)
-                      - Bypass Network Pause auto-active
-                      - Tab Auto Race + Auto Balap Mandalika (noclip hover loop)
-                      - Monitoring Mandalika (lap, speed, profit, uptime)
-                      - Refresh & Select Motor untuk balapan
+    [+] Version     : DDS FREE EDITION (v5.9 - MOTOR REFRESH + TOMBOL PILIH)
+    [+] Changelog   : - Refresh motor list via dua remote sebelum pilih
+                      - Pilih motor pakai tombol, ganti input teks
+                      - Default motor Yamahax-MioSporty
 ================================================================================
 ]]--
 
@@ -1554,60 +1548,58 @@ local function StopCourierScript()
 end
 
 -- ============================================================================
--- // 14. AUTO RACE (MANDALIKA) - NEW FEATURE
+-- // 14. AUTO RACE (MANDALIKA) - NEW FEATURE (REFRESH + TOMBOL PILIH MOTOR)
 -- ============================================================================
 
 -- ==========================================
 -- 📍 DAFTAR KOORDINAT LINTASAN BALAP
 -- ==========================================
 local checkpointBalap = {
-    Vector3.new(-392, 7, -1615),   -- 1. Start
-    Vector3.new(1102, 7, -1621),   -- 2.
-    Vector3.new(1420, 7, -1530),   -- 3.
-    Vector3.new(1389, 7, -1137),   -- 4.
-    Vector3.new(1375, 7, -1094),   -- 5.
-    Vector3.new(1271, 7, -748),    -- 6.
-    Vector3.new(1065, 7, -717),    -- 7.
-    Vector3.new(1031, 7, -728),    -- 8.
-    Vector3.new(889, 7, -446),     -- 9.
-    Vector3.new(920, 7, -398),     -- 10.
-    Vector3.new(1208, 7, 154),     -- 11.
-    Vector3.new(1183, 7, 283),     -- 12.
-    Vector3.new(979, 7, 849),      -- 13.
-    Vector3.new(862, 7, 939),      -- 14.
-    Vector3.new(537, 7, 1176),     -- 15.
-    Vector3.new(459, 7, 1222),     -- 16.
-    Vector3.new(-109, 7, 1228),    -- 17.
-    Vector3.new(-183, 7, 1278),    -- 18.
-    Vector3.new(-565, 7, 1515),    -- 19.
-    Vector3.new(-670, 7, 1550),    -- 20.
-    Vector3.new(-1531, 7, 1778),   -- 21.
-    Vector3.new(-1625, 7, 1798),   -- 22.
-    Vector3.new(-1574, 7, 959),    -- 23.
-    Vector3.new(-1547, 7, 870),    -- 24.
-    Vector3.new(-805, 7, 635),     -- 25.
-    Vector3.new(-774, 7, 571),     -- 26.
-    Vector3.new(-583, 7, -318),    -- 27.
-    Vector3.new(-577, 7, -382),    -- 28.
-    Vector3.new(-1147, 7, -820),   -- 29.
-    Vector3.new(-1185, 7, -902),   -- 30.
-    Vector3.new(-1453, 7, -1654),  -- 31.
-    Vector3.new(-1462, 7, -1731),  -- 32.
-    Vector3.new(-1344, 7, -2119),  -- 33.
-    Vector3.new(-1300, 7, -2167),  -- 34.
-    Vector3.new(-1133, 7, -2287),  -- 35.
-    Vector3.new(-1090, 7, -1972),  -- 36.
-    Vector3.new(-1124, 7, -1892),  -- 37.
-    Vector3.new(-1153, 7, -1668),  -- 38.
-    Vector3.new(-142, 7, -1616)    -- 39. Finish
+    Vector3.new(-392, 7, -1615),
+    Vector3.new(1102, 7, -1621),
+    Vector3.new(1420, 7, -1530),
+    Vector3.new(1389, 7, -1137),
+    Vector3.new(1375, 7, -1094),
+    Vector3.new(1271, 7, -748),
+    Vector3.new(1065, 7, -717),
+    Vector3.new(1031, 7, -728),
+    Vector3.new(889, 7, -446),
+    Vector3.new(920, 7, -398),
+    Vector3.new(1208, 7, 154),
+    Vector3.new(1183, 7, 283),
+    Vector3.new(979, 7, 849),
+    Vector3.new(862, 7, 939),
+    Vector3.new(537, 7, 1176),
+    Vector3.new(459, 7, 1222),
+    Vector3.new(-109, 7, 1228),
+    Vector3.new(-183, 7, 1278),
+    Vector3.new(-565, 7, 1515),
+    Vector3.new(-670, 7, 1550),
+    Vector3.new(-1531, 7, 1778),
+    Vector3.new(-1625, 7, 1798),
+    Vector3.new(-1574, 7, 959),
+    Vector3.new(-1547, 7, 870),
+    Vector3.new(-805, 7, 635),
+    Vector3.new(-774, 7, 571),
+    Vector3.new(-583, 7, -318),
+    Vector3.new(-577, 7, -382),
+    Vector3.new(-1147, 7, -820),
+    Vector3.new(-1185, 7, -902),
+    Vector3.new(-1453, 7, -1654),
+    Vector3.new(-1462, 7, -1731),
+    Vector3.new(-1344, 7, -2119),
+    Vector3.new(-1300, 7, -2167),
+    Vector3.new(-1133, 7, -2287),
+    Vector3.new(-1090, 7, -1972),
+    Vector3.new(-1124, 7, -1892),
+    Vector3.new(-1153, 7, -1668),
+    Vector3.new(-142, 7, -1616)
 }
 
--- ⚙️ Default settings (bisa diubah lewat UI)
 getgenv().AutoFarmBalap = false
 getgenv().RaceCar = "Yamahax-MioSporty"
 getgenv().RaceSpeed = 180
 
--- Noclip connection untuk race
 local raceNoclipConn
 
 local function MulaiSistemAutoBalap(namaMotor)
@@ -1766,7 +1758,6 @@ local function MulaiSistemAutoBalap(namaMotor)
         motorModel:PivotTo(cframeMelayang)
         bg.CFrame = cframeMelayang
 
-        -- ✅ Tambah lap counter & update speed untuk monitoring
         State.MandalikaLaps = (State.MandalikaLaps or 0) + 1
         State.MandalikaSpeed = getgenv().RaceSpeed
         
@@ -1802,7 +1793,7 @@ local function buatMonitoringMandalika()
 
     local Frame = Instance.new("Frame")
     Frame.Size = UDim2.new(0, 190, 0, 0)
-    Frame.Position = UDim2.new(0, 16, 0.5, 0)  -- kiri tengah
+    Frame.Position = UDim2.new(0, 16, 0.5, 0)
     Frame.AnchorPoint = Vector2.new(0, 0.5)
     Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     Frame.BackgroundTransparency = 0.25
@@ -1875,86 +1866,16 @@ end
 -- ============================================================================
 -- // 15. START / STOP RACE (dengan monitoring)
 -- ============================================================================
-local function refreshMotorList()
-    local vehicles = {}
-    local rep = game:GetService("ReplicatedStorage")
-    local dealEvents = rep:WaitForChild("DealershipEvents")
-    
-    -- Initialize car data dulu
-    pcall(function()
-        local init = dealEvents:WaitForChild("InitializeCarData")
-        init:InvokeServer()
-    end)
-    task.wait(0.3)
-    
-    -- Coba metode 1: GetPlayerVehicles
-    pcall(function()
-        local getVeh = dealEvents:FindFirstChild("GetPlayerVehicles")
-        if getVeh then
-            local result = getVeh:InvokeServer()
-            if result and type(result) == "table" then
-                for _, v in ipairs(result) do
-                    table.insert(vehicles, tostring(v))
-                end
-            end
-        end
-    end)
-    
-    if #vehicles == 0 then
-        -- Metode 2: GetOwnedVehicles
-        pcall(function()
-            local getOwned = dealEvents:FindFirstChild("GetOwnedVehicles")
-            if getOwned then
-                local result = getOwned:InvokeServer()
-                if result and type(result) == "table" then
-                    for _, v in ipairs(result) do
-                        if type(v) == "string" then
-                            table.insert(vehicles, v)
-                        elseif type(v) == "table" and v.Name then
-                            table.insert(vehicles, v.Name)
-                        end
-                    end
-                end
-            end
-        end)
-    end
-    
-    if #vehicles == 0 then
-        -- Metode 3: GetInfoCarSlot
-        pcall(function()
-            local getSlot = dealEvents:FindFirstChild("GetInfoCarSlot")
-            if getSlot then
-                local result = getSlot:InvokeServer()
-                if result and type(result) == "table" then
-                    for _, slot in ipairs(result) do
-                        if slot and type(slot) == "table" then
-                            local name = slot.CarName or slot.Name or slot.VehicleName
-                            if name then table.insert(vehicles, tostring(name)) end
-                        end
-                    end
-                end
-            end
-        end)
-    end
-    
-    if #vehicles == 0 then
-        vehicles = {"Yamahax-MioSporty", "Yamahax-R15", "Yamahax-Nmax"}
-    end
-    return vehicles
-end
-
 local function StartRaceScript()
     if State.IsRaceActive then return end
     State.IsRaceActive = true
     getgenv().AutoFarmBalap = true
 
-    -- Reset stat balapan
     State.MandalikaLaps = 0
     State.MandalikaSpeed = getgenv().RaceSpeed
     getgenv().UangAwalMandalika = nil
     getgenv().WaktuMulaiMandalika = nil
 
-    -- Noclip connection
     raceNoclipConn = Services.RunService.Stepped:Connect(function()
         if not getgenv().AutoFarmBalap then return end
         local player = game:GetService("Players").LocalPlayer
@@ -2055,7 +1976,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
 end
 
 -- ============================================================================
--- // 17. UI — 8 TAB (Tab Auto Race terpisah)
+-- // 17. UI — 8 TAB (Tab Auto Race dengan Refresh & Tombol Pilih Motor)
 -- ============================================================================
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
@@ -2184,7 +2105,7 @@ SectionCourier:Toggle({
 })
 
 -- ============================
--- TAB 8: AUTO RACE (MANDALIKA)
+-- TAB 8: AUTO RACE (MANDALIKA) - NEW SEPARATE TAB WITH REFRESH + BUTTONS
 -- ============================
 local TabRace = Window:Tab({ Title = "🏁 Auto Race", Icon = "flag", Border = true })
 
@@ -2208,36 +2129,58 @@ SectionMandalika:Toggle({
     end,
 })
 
--- Select motor
-local MotorSelect = SectionMandalika:Select({
-    Title    = "Pilih Motor",
-    Values   = {"Yamahax-MioSporty"},
-    Default  = "Yamahax-MioSporty",
-    Callback = function(val)
-        getgenv().RaceCar = val
-        WindUI:Notify({ Title = "🏍️ Motor", Content = "Dipilih: " .. val, Duration = 2 })
-    end,
+-- Tombol Refresh Motor (panggil dua remote)
+SectionMandalika:Button({
+    Title = "🔄 Refresh Motor List",
+    Callback = function()
+        pcall(function()
+            game:GetService("ReplicatedStorage").DealershipEvents.GetInfoCarSlot:InvokeServer()
+        end)
+        pcall(function()
+            game:GetService("ReplicatedStorage").DealershipEvents.InitializeCarData:InvokeServer()
+        end)
+        WindUI:Notify({ Title = "Refresh", Content = "Data motor sudah di-refresh! Silakan pilih motor.", Duration = 4 })
+    end
+})
+
+-- Tombol pilihan motor (populer di DDS)
+SectionMandalika:Button({
+    Title = "🏍️ Yamahax-MioSporty",
+    Callback = function()
+        getgenv().RaceCar = "Yamahax-MioSporty"
+        WindUI:Notify({ Title = "Motor Dipilih", Content = "Yamahax-MioSporty siap dipacu!", Duration = 2 })
+    end
 })
 
 SectionMandalika:Button({
-    Title = "🔄 Refresh Daftar Motor",
+    Title = "🏍️ Yamaha-XMAX",
     Callback = function()
-        local list = refreshMotorList()
-        if list and #list > 0 then
-            pcall(function()
-                if MotorSelect.SetValues then
-                    MotorSelect:SetValues(list)
-                elseif MotorSelect.Set then
-                    MotorSelect:Set({ Values = list })
-                elseif MotorSelect.UpdateValues then
-                    MotorSelect:UpdateValues(list)
-                end
-            end)
-            getgenv().RaceCar = list[1]
-            WindUI:Notify({ Title = "✅ Refresh", Content = "Motor tersedia: " .. #list .. " buah. Pilih di dropdown.", Duration = 4 })
-        else
-            WindUI:Notify({ Title = "❌ Gagal", Content = "Gagal memuat daftar motor.", Duration = 3 })
-        end
+        getgenv().RaceCar = "Yamaha-XMAX"
+        WindUI:Notify({ Title = "Motor Dipilih", Content = "Yamaha-XMAX siap dipacu!", Duration = 2 })
+    end
+})
+
+SectionMandalika:Button({
+    Title = "🏍️ Honda-Beat",
+    Callback = function()
+        getgenv().RaceCar = "Honda-Beat"
+        WindUI:Notify({ Title = "Motor Dipilih", Content = "Honda-Beat siap dipacu!", Duration = 2 })
+    end
+})
+
+SectionMandalika:Button({
+    Title = "🏍️ Suzuki-Satria",
+    Callback = function()
+        getgenv().RaceCar = "Suzuki-Satria"
+        WindUI:Notify({ Title = "Motor Dipilih", Content = "Suzuki-Satria siap dipacu!", Duration = 2 })
+    end
+})
+
+SectionMandalika:Button({
+    Title = "🏍️ Vespa-Sprint",
+    Callback = function()
+        getgenv().RaceCar = "Vespa-Sprint"
+        WindUI:Notify({ Title = "Motor Dipilih", Content = "Vespa-Sprint siap dipacu!", Duration = 2 })
     end
 })
 
@@ -2439,7 +2382,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V6.0 FINAL - ALL IN ONE!",
-    Content  = "Tab Auto Race + Refresh Motor + Monitoring Mandalika. Gas cuan & podium!",
+    Title    = "👑 KING AKBAR V5.9 + REFRESH MOTOR & TOMBOL PILIH MOTOR!",
+    Content  = "Refresh dulu motor list, lalu pilih motor dengan tombol. Gas cuan & podium!",
     Duration = 5,
 })
