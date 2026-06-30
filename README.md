@@ -1,16 +1,17 @@
 --[[
 ================================================================================
-  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (with Auto Mandalika Race) 👑
+  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (with Auto Mandalika Race Tab + Monitor) 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE START FIX + RACE)
+    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE START FIX + RACE TAB + MONITOR)
     [+] Changelog   : - Monitoring Office scan langsung teks "Rp." di UI
                       - Uang Awal dikunci, profit akurat
                       - Cache label uang biar nggak lag
                       - Auto ganti kursi kalo sepi soal
                       - Fix: Office langsung jawab pas start (timer idle di-reset)
                       - Bypass Network Pause auto-active
-                      - **NEW** Auto Balap Mandalika (noclip hover + full loop)
+                      - **NEW** Tab Auto Race + Auto Balap Mandalika (noclip hover loop)
+                      - **NEW** Monitoring Mandalika (lap, speed, profit, uptime)
 ================================================================================
 ]]--
 
@@ -101,7 +102,7 @@ local State = {
     IsBaristaActive    = false,
     IsOfficeActive     = false,
     IsCourierActive    = false,
-    IsRaceActive       = false,   -- NEW: Auto Race
+    IsRaceActive       = false,
     AiThread           = nil,
     StatusText         = "Santai dulu...",
     OrderCount         = 0,
@@ -113,13 +114,12 @@ local State = {
     SessionStartTime   = 0,
     LastStopReason     = "",
     MachineFixCount    = 0,
-    -- Stats Office
     OfficeMathSolved   = 0,
     OfficePrints       = 0,
-    -- Stats Courier
     CourierDelivered   = 0,
-    -- Stats Race (bisa ditambah)
     RaceLaps           = 0,
+    MandalikaLaps      = 0,   -- untuk monitoring balapan
+    MandalikaSpeed     = 0,   -- kecepatan terakhir
 }
 
 LocalPlayer.Idled:Connect(function()
@@ -1167,12 +1167,10 @@ local function StartOfficeScript()
     State.OfficePrints = 0
     getgenv().fullAuto = true
 
-    -- Reset cache & kuncian lama
     CachedMoneyLabel = nil
     getgenv().UangAwalDikunci = nil
     getgenv().WaktuMulai = tick()
 
-    -- Kalau belum duduk, cari kursi dulu
     if not CharRef.Humanoid or not CharRef.Humanoid.SeatPart then
         WindUI:Notify({ Title = "🔍 Office", Content = "Mencari kursi kerja...", Duration = 3 })
         local sitPrompt = findNearestChair(60)
@@ -1193,9 +1191,7 @@ local function StartOfficeScript()
         myChair = CharRef.Humanoid.SeatPart
     end
 
-    -- **PENTING:** Reset timer idle supaya langsung jawab soal begitu start
     lastActivityTime = tick()
-
     buatMonitoringGUI()
     WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Uang Awal discan otomatis.", Duration = 4 })
 end
@@ -1768,6 +1764,10 @@ local function MulaiSistemAutoBalap(namaMotor)
         
         motorModel:PivotTo(cframeMelayang)
         bg.CFrame = cframeMelayang
+
+        -- ✅ Tambah lap counter & update speed untuk monitoring
+        State.MandalikaLaps = (State.MandalikaLaps or 0) + 1
+        State.MandalikaSpeed = getgenv().RaceSpeed
         
         print("🔄 Tiba di Start! Istirahat melayang 2 detik...")
         task.wait(2) 
@@ -1776,10 +1776,114 @@ local function MulaiSistemAutoBalap(namaMotor)
     print("🛑 Auto-Farm dimatikan.")
 end
 
+-- ===========================================================================
+-- MONITORING MANDALIKA – GUI kiri tengah
+-- ===========================================================================
+local MandalikaTrackerGui = nil
+
+local function buatMonitoringMandalika()
+    local uangSekarang = DapatkanUangPemain()
+    
+    if not getgenv().UangAwalMandalika or getgenv().UangAwalMandalika == 0 then
+        getgenv().UangAwalMandalika = uangSekarang
+    end
+    
+    getgenv().WaktuMulaiMandalika = getgenv().WaktuMulaiMandalika or tick()
+    local uangAwal = getgenv().UangAwalMandalika
+
+    if MandalikaTrackerGui and MandalikaTrackerGui.Parent then
+        MandalikaTrackerGui:Destroy()
+    end
+
+    MandalikaTrackerGui = Instance.new("ScreenGui")
+    MandalikaTrackerGui.Name = "KingAkbarMandalikaTracker"
+    MandalikaTrackerGui.Parent = CoreGui
+
+    local Frame = Instance.new("Frame")
+    Frame.Size = UDim2.new(0, 190, 0, 0)
+    Frame.Position = UDim2.new(0, 16, 0.5, 0)  -- kiri tengah
+    Frame.AnchorPoint = Vector2.new(0, 0.5)
+    Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+    Frame.BackgroundTransparency = 0.25
+    Frame.BorderSizePixel = 0
+    Frame.Active = true
+    Frame.Draggable = true
+    Frame.AutomaticSize = Enum.AutomaticSize.Y
+    Frame.Parent = MandalikaTrackerGui
+
+    local Corner = Instance.new("UICorner"); Corner.CornerRadius = UDim.new(0,8); Corner.Parent = Frame
+    local Stroke = Instance.new("UIStroke"); Stroke.Color = Color3.fromRGB(70,70,75); Stroke.Thickness = 1; Stroke.Parent = Frame
+    local Padding = Instance.new("UIPadding"); Padding.PaddingTop = UDim.new(0,10); Padding.PaddingBottom = UDim.new(0,10); Padding.PaddingLeft = UDim.new(0,10); Padding.PaddingRight = UDim.new(0,10); Padding.Parent = Frame
+    local List = Instance.new("UIListLayout"); List.Padding = UDim.new(0,6); List.SortOrder = Enum.SortOrder.LayoutOrder; List.Parent = Frame
+
+    local H = Instance.new("Frame"); H.Size = UDim2.new(1,0,0,36); H.BackgroundTransparency = 1; H.LayoutOrder = 1; H.Parent = Frame
+    local Img = Instance.new("ImageLabel"); Img.Size = UDim2.new(0,36,0,36); Img.Position = UDim2.new(0,0,0.5,-18); Img.BackgroundTransparency = 1; Img.Image = "rbxassetid://84070081307966"; Img.ScaleType = Enum.ScaleType.Fit; Img.ZIndex = 2; Img.Parent = H
+    local ImgCorner = Instance.new("UICorner"); ImgCorner.CornerRadius = UDim.new(0,8); ImgCorner.Parent = Img
+    local Title = Instance.new("TextLabel"); Title.Size = UDim2.new(1,-42,0,24); Title.Position = UDim2.new(0,42,0.5,-12); Title.BackgroundTransparency = 1; Title.Text = "MANDALIKA RACE"; Title.TextColor3 = Color3.fromRGB(180,180,180); Title.Font = Enum.Font.GothamBold; Title.TextSize = 14; Title.TextXAlignment = Enum.TextXAlignment.Left; Title.Parent = H
+    local Div = Instance.new("Frame"); Div.Size = UDim2.new(1,0,0,1); Div.BackgroundColor3 = Color3.fromRGB(70,70,75); Div.BorderSizePixel = 0; Div.LayoutOrder = 2; Div.Parent = Frame
+
+    local function baris(labelKiri, labelKanan, order)
+        local R = Instance.new("Frame"); R.Size = UDim2.new(1,0,0,28); R.BackgroundTransparency = 1; R.LayoutOrder = order; R.Parent = Frame
+        local L = Instance.new("Frame"); L.Size = UDim2.new(0.5,-3,1,0); L.BackgroundTransparency = 1; L.Parent = R
+        local LLab = Instance.new("TextLabel"); LLab.Size = UDim2.new(1,0,0,12); LLab.BackgroundTransparency = 1; LLab.Text = labelKiri; LLab.TextColor3 = Color3.fromRGB(140,140,140); LLab.Font = Enum.Font.GothamMedium; LLab.TextSize = 10; LLab.TextXAlignment = Enum.TextXAlignment.Left; LLab.Parent = L
+        local LVal = Instance.new("TextLabel"); LVal.Size = UDim2.new(1,0,0,14); LVal.Position = UDim2.new(0,0,1,-14); LVal.BackgroundTransparency = 1; LVal.Text = "0"; LVal.TextColor3 = Color3.fromRGB(220,220,220); LVal.Font = Enum.Font.GothamBold; LVal.TextSize = 12; LVal.TextXAlignment = Enum.TextXAlignment.Left; LVal.Parent = L
+        local Ri = Instance.new("Frame"); Ri.Size = UDim2.new(0.5,-3,1,0); Ri.Position = UDim2.new(0.5,3,0,0); Ri.BackgroundTransparency = 1; Ri.Parent = R
+        local RLab = Instance.new("TextLabel"); RLab.Size = UDim2.new(1,0,0,12); RLab.BackgroundTransparency = 1; RLab.Text = labelKanan; RLab.TextColor3 = Color3.fromRGB(140,140,140); RLab.Font = Enum.Font.GothamMedium; RLab.TextSize = 10; RLab.TextXAlignment = Enum.TextXAlignment.Left; RLab.Parent = Ri
+        local RVal = Instance.new("TextLabel"); RVal.Size = UDim2.new(1,0,0,14); RVal.Position = UDim2.new(0,0,1,-14); RVal.BackgroundTransparency = 1; RVal.Text = "0"; RVal.TextColor3 = Color3.fromRGB(220,220,220); RVal.Font = Enum.Font.GothamBold; RVal.TextSize = 12; RVal.TextXAlignment = Enum.TextXAlignment.Left; RVal.Parent = Ri
+        return LVal, RVal
+    end
+
+    local function barisTunggal(label, order)
+        local R = Instance.new("Frame"); R.Size = UDim2.new(1,0,0,28); R.BackgroundTransparency = 1; R.LayoutOrder = order; R.Parent = Frame
+        local Lab = Instance.new("TextLabel"); Lab.Size = UDim2.new(0.4,0,0,12); Lab.BackgroundTransparency = 1; Lab.Text = label; Lab.TextColor3 = Color3.fromRGB(140,140,140); Lab.Font = Enum.Font.GothamMedium; Lab.TextSize = 10; Lab.TextXAlignment = Enum.TextXAlignment.Left; Lab.Parent = R
+        local Val = Instance.new("TextLabel"); Val.Size = UDim2.new(0.6,0,0,14); Val.Position = UDim2.new(0.4,0,1,-14); Val.BackgroundTransparency = 1; Val.Text = "00:00:00"; Val.TextColor3 = Color3.fromRGB(220,220,220); Val.Font = Enum.Font.GothamBold; Val.TextSize = 12; Val.TextXAlignment = Enum.TextXAlignment.Right; Val.Parent = R
+        return Val
+    end
+
+    local uangAwalLabel, pendapatanLabel = baris("Uang Awal", "Pendapatan", 4)
+    local lapLabel, speedLabel = baris("Lap Selesai", "Kecepatan", 5)
+    local uptimeLabel = barisTunggal("Uptime", 6)
+
+    uangAwalLabel.Text = formatNumber(uangAwal)
+
+    task.spawn(function()
+        while MandalikaTrackerGui and MandalikaTrackerGui.Parent do
+            local success, err = pcall(function()
+                local currentMoney = DapatkanUangPemain()
+                local profit = currentMoney - uangAwal
+                pendapatanLabel.Text = (profit >= 0 and "+" or "") .. formatNumber(profit)
+                lapLabel.Text = tostring(State.MandalikaLaps or 0)
+                speedLabel.Text = tostring(State.MandalikaSpeed or 0) .. " st/s"
+                uptimeLabel.Text = formatTime(tick() - getgenv().WaktuMulaiMandalika)
+            end)
+            if not success then
+                warn("Monitoring Mandalika Error: ", tostring(err))
+            end
+            task.wait(1)
+        end
+    end)
+end
+
+local function matikanMonitoringMandalika()
+    if MandalikaTrackerGui and MandalikaTrackerGui.Parent then
+        MandalikaTrackerGui:Destroy()
+        MandalikaTrackerGui = nil
+    end
+end
+
+-- ============================================================================
+-- // 15. START / STOP RACE (dengan monitoring)
+-- ============================================================================
 local function StartRaceScript()
     if State.IsRaceActive then return end
     State.IsRaceActive = true
     getgenv().AutoFarmBalap = true
+
+    -- Reset stat balapan
+    State.MandalikaLaps = 0
+    State.MandalikaSpeed = getgenv().RaceSpeed
+    getgenv().UangAwalMandalika = nil
+    getgenv().WaktuMulaiMandalika = nil
 
     -- Noclip connection
     raceNoclipConn = Services.RunService.Stepped:Connect(function()
@@ -1805,6 +1909,9 @@ local function StartRaceScript()
         end
     end)
 
+    buatMonitoringMandalika()
+    WindUI:Notify({ Title = "🏁 Mandalika", Content = "Auto Balap Mandalika jalan! Monitor aktif di kiri.", Duration = 4 })
+
     task.spawn(function()
         MulaiSistemAutoBalap(getgenv().RaceCar)
     end)
@@ -1817,10 +1924,12 @@ local function StopRaceScript()
         raceNoclipConn:Disconnect()
         raceNoclipConn = nil
     end
+    matikanMonitoringMandalika()
+    WindUI:Notify({ Title = "🛑 Mandalika", Content = "Auto Balap Mandalika dimatiin.", Duration = 3 })
 end
 
 -- ============================================================================
--- // 15. INJECT A-CHASSIS
+-- // 16. INJECT A-CHASSIS
 -- ============================================================================
 local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
     local char = game:GetService("Players").LocalPlayer.Character
@@ -1877,7 +1986,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
 end
 
 -- ============================================================================
--- // 16. UI — 8 TAB (Auto Race added)
+-- // 17. UI — 8 TAB (Tab Auto Race terpisah)
 -- ============================================================================
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
@@ -2005,17 +2114,21 @@ SectionCourier:Toggle({
     Callback = function(on) if on then StartCourierScript() else StopCourierScript() end end,
 })
 
--- ** NEW: Auto Balap Mandalika **
-local SectionRace = TabFarm:Section({
-    Title = "🏁 Auto Balap Mandalika",
+-- ============================
+-- TAB 8: AUTO RACE (MANDALIKA) - NEW SEPARATE TAB
+-- ============================
+local TabRace = Window:Tab({ Title = "🏁 Auto Race", Icon = "flag", Border = true })
+
+local SectionMandalika = TabRace:Section({
+    Title = "Auto Mandalika",
     Box = true,
     BoxBorder = true,
     Opened = true,
 })
 
-SectionRace:Toggle({
-    Title    = "Jalanin Auto Balap",
-    Icon     = "flag",
+SectionMandalika:Toggle({
+    Title    = "Jalanin Auto Balap Mandalika",
+    Icon     = "play",
     Value    = false,
     Callback = function(on)
         if on then
@@ -2026,7 +2139,7 @@ SectionRace:Toggle({
     end,
 })
 
-SectionRace:Input({
+SectionMandalika:Input({
     Title = "Nama Motor",
     Placeholder = "Yamahax-MioSporty",
     Callback = function(Text)
@@ -2036,7 +2149,7 @@ SectionRace:Input({
     end
 })
 
-SectionRace:Slider({
+SectionMandalika:Slider({
     Title = "Kecepatan Balap",
     Desc = "Makin tinggi makin ganas, tapi risiko nabrak",
     Step = 10,
@@ -2234,7 +2347,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.8 FINAL + AUTO MANDALIKA SIAP!",
-    Content  = "Office fix, Balap Mandalika sudah on. Gas cuan & podium!",
+    Title    = "👑 KING AKBAR V5.8 FINAL + TAB AUTO RACE + MONITOR MANDALIKA SIAP!",
+    Content  = "Auto Balap Mandalika lengkap dengan monitoring di kiri layar. Gas cuan & podium!",
     Duration = 5,
 })
