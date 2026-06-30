@@ -1,19 +1,13 @@
 --[[
 ================================================================================
-  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (with Auto Mandalika Race Tab + Monitor) 👑
+  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (v5.8 FINAL - OFFICE FULL FIX)
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - NOCLIP ON/OFF RACE)
-    [+] Changelog   : - Monitoring Office scan langsung teks "Rp." di UI
-                      - Uang Awal dikunci, profit akurat
-                      - Cache label uang biar nggak lag
-                      - Auto ganti kursi kalo sepi soal
-                      - Fix: Office langsung jawab pas start (timer idle di-reset)
-                      - Bypass Network Pause auto-active
-                      - **NEW** Tab Auto Race + Auto Balap Mandalika (noclip hover loop)
-                      - **NEW** Monitoring Mandalika (lap, speed, profit, uptime)
-                      - **FIXED** Anti-kick & anti-jatuh tembus tanah di Mandalika
-                      - **FIXED** Noclip hanya nyala saat "GO!!!" dan mati saat finish
+    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE MULTI‑DEVICE FIX)
+    [+] Perbaikan   : - Regex angka & operator lebih tangguh
+                      - Klik multi‑metode (PC + Mobile)
+                      - Delay dinamis anti‑berat
+                      - Office langsung jawab di semua executor
 ================================================================================
 ]]--
 
@@ -673,7 +667,7 @@ local function StopBaristaScript(reason)
 end
 
 -- ============================================================================
--- // 12. OFFICE JOB SYSTEM (V5.8 FINAL - MONITORING UI SCAN + START FIX)
+-- // 12. OFFICE JOB SYSTEM (V5.8 FINAL - MULTI‑DEVICE FIX)
 -- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -870,12 +864,22 @@ task.spawn(function()
     end
 end)
 
--- ================== MATH STUFF ==================
+-- ================== MATH STUFF (FIXED) ==================
+local function bersihkanAngka(str)
+    -- Ambil hanya digit, koma, titik
+    local bersih = string.gsub(str, "[^%d,%.]", "")
+    -- Hapus SEMUA koma dan titik (pemisah ribuan)
+    bersih = string.gsub(bersih, "[,.]", "")
+    return tonumber(bersih)
+end
+
 local function cariSoalBaru()
     CachedTargetLabel, CachedTargetParent = nil, nil
     for _, v in pairs(playerGui:GetDescendants()) do
         if v:IsA("TextLabel") and v.Visible and v.Text ~= "" then
-            local a, op, b = string.match(v.Text, "(%d+)%s*([%+%-%*/])%s*(%d+)")
+            local txt = v.Text
+            -- Dukung operator: + - * x X / ÷
+            local a, op, b = string.match(txt, "([%d%.%,]+)%s*([%+%-%*/xX÷])%s*([%d%.%,]+)")
             if a and op and b then
                 CachedTargetLabel, CachedTargetParent = v, v.Parent
                 return v
@@ -889,21 +893,50 @@ local function soalCacheValid()
     return CachedTargetLabel and CachedTargetLabel.Parent and CachedTargetLabel.Visible
 end
 
+-- KLIK TOMBOL MULTI‑DEVICE (5 METODE)
 local function klikTombol(btn)
     if not btn then return false end
-    local ok = pcall(function() if firesignal then firesignal(btn.MouseButton1Click) end end)
-    if ok then return true end
-    ok = pcall(function() if firesignal then firesignal(btn.Activated) end end)
-    if ok then return true end
-    ok = pcall(function() if getconnections then for _,c in pairs(getconnections(btn.MouseButton1Click)) do c:Fire() end end end)
-    if ok then return true end
-    ok = pcall(function()
-        local pos = btn.AbsolutePosition + btn.AbsoluteSize/2
+    local success = false
+    -- 1) Firesignal MouseButton1Click
+    pcall(function()
+        if firesignal then
+            firesignal(btn.MouseButton1Click)
+            success = true
+        end
+    end)
+    -- 2) Firesignal Activated
+    pcall(function()
+        if firesignal then
+            firesignal(btn.Activated)
+            success = true
+        end
+    end)
+    -- 3) getconnections
+    pcall(function()
+        if getconnections then
+            for _, c in pairs(getconnections(btn.MouseButton1Click)) do
+                c:Fire()
+            end
+            success = true
+        end
+    end)
+    -- 4) VirtualInputManager Mouse (PC)
+    pcall(function()
+        local pos = btn.AbsolutePosition + btn.AbsoluteSize / 2
         Services.VIM:SendMouseButtonEvent(pos.X, pos.Y, 0, true, game, 1)
         task.wait(0.05)
         Services.VIM:SendMouseButtonEvent(pos.X, pos.Y, 0, false, game, 1)
+        success = true
     end)
-    return ok
+    -- 5) VirtualInputManager Touch (Mobile)
+    pcall(function()
+        local pos = btn.AbsolutePosition + btn.AbsoluteSize / 2
+        Services.VIM:SendTouchEvent(pos, 0, true, game, 1)
+        task.wait(0.05)
+        Services.VIM:SendTouchEvent(pos, 0, false, game, 1)
+        success = true
+    end)
+    return success
 end
 
 -- ================== IDLE DETECTOR + CHAIR SWITCH ==================
@@ -933,11 +966,16 @@ task.spawn(function()
     end
 end)
 
--- ================== MATH THREAD ==================
+-- ================== MATH THREAD (FIXED + RINGAN) ==================
 task.spawn(function()
     while true do
-        task.wait(0.2)
-        if not State.IsOfficeActive or getgenv().forceStopMath or getgenv().isGoingToPrinter then continue end
+        -- Jeda dinamis: kalau tidak ada soal, tunggu lebih lama
+        local delay = 0.2
+        if not State.IsOfficeActive or getgenv().forceStopMath or getgenv().isGoingToPrinter then
+            delay = 0.5
+            task.wait(delay)
+            continue
+        end
         local hum = CharRef.Humanoid
         if not hum or not hum.SeatPart then
             if myChair then dudukKeKursi() end
@@ -946,45 +984,70 @@ task.spawn(function()
         end
 
         local soalLabel = soalCacheValid() and CachedTargetLabel or cariSoalBaru()
-        if not soalLabel then task.wait(0.8) continue end
+        if not soalLabel then
+            task.wait(0.5)   -- tidak ada soal -> santai
+            continue
+        end
 
         lastActivityTime = tick()
 
         local text = soalLabel.Text
-        local a, op, b = string.match(text, "(%d+)%s*([%+%-%*/])%s*(%d+)")
-        if not a then CachedTargetLabel, CachedTargetParent = nil, nil continue end
+        local a, op, b = string.match(text, "([%d%.%,]+)%s*([%+%-%*/xX÷])%s*([%d%.%,]+)")
+        if not a then
+            CachedTargetLabel, CachedTargetParent = nil, nil
+            task.wait(0.3)
+            continue
+        end
 
-        local n1, n2 = tonumber(a), tonumber(b)
+        local n1 = bersihkanAngka(a)
+        local n2 = bersihkanAngka(b)
+        if not n1 or not n2 then
+            CachedTargetLabel, CachedTargetParent = nil, nil
+            task.wait(0.3)
+            continue
+        end
+
         local jawaban
-        if     op == "+" then jawaban = n1 + n2
+        if op == "+" then jawaban = n1 + n2
         elseif op == "-" then jawaban = n1 - n2
-        elseif op == "*" then jawaban = n1 * n2
-        elseif op == "/" and n2 ~= 0 then jawaban = n1 / n2
-        else CachedTargetLabel, CachedTargetParent = nil, nil continue end
+        elseif op == "*" or op == "x" or op == "X" then jawaban = n1 * n2
+        elseif op == "/" or op == "÷" then
+            if n2 ~= 0 then jawaban = n1 / n2 else jawaban = nil end
+        else
+            CachedTargetLabel, CachedTargetParent = nil, nil
+            task.wait(0.3)
+            continue
+        end
+
+        if not jawaban then task.wait(0.3) continue end
 
         local ditemukan = false
         for _, btn in pairs(playerGui:GetDescendants()) do
             if getgenv().forceStopMath or not State.IsOfficeActive then break end
             if btn:IsA("TextButton") and btn.Visible then
                 local btnText = btn.Text
-                if btnText == "" or tonumber(btnText) == nil then
+                if btnText == "" or bersihkanAngka(btnText) == nil then
                     local cl = btn:FindFirstChildOfClass("TextLabel")
                     if cl then btnText = cl.Text end
                 end
-                if tonumber(btnText) == jawaban then
+                local btnNum = bersihkanAngka(btnText)
+                if btnNum and math.abs(btnNum - jawaban) < 0.001 then
                     ditemukan = true
                     task.wait(math.random(8,25)/10)
                     if getgenv().forceStopMath or not State.IsOfficeActive then break end
-                    if klikTombol(btn) then
-                        State.OfficeMathSolved = (State.OfficeMathSolved or 0) + 1
-                        lastActivityTime = tick()
-                    end
+                    klikTombol(btn)
+                    State.OfficeMathSolved = (State.OfficeMathSolved or 0) + 1
+                    lastActivityTime = tick()
                     task.wait(math.random(4,12)/10)
                     break
                 end
             end
         end
-        if not ditemukan then CachedTargetLabel, CachedTargetParent = nil, nil end
+        if not ditemukan then
+            CachedTargetLabel, CachedTargetParent = nil, nil
+        end
+        -- delay singkat setelah selesai
+        task.wait(0.2)
     end
 end)
 
@@ -1000,7 +1063,7 @@ task.spawn(function()
     end
 end)
 
--- ================== MONITORING GUI (FIX ZEROS & AUTO SCAN UI) ==================
+-- ================== MONITORING GUI (OFFICE) ==================
 local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer2 = Players.LocalPlayer
@@ -1161,7 +1224,7 @@ local function matikanMonitoring()
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy(); TrackerGui = nil end
 end
 
--- ================== START & STOP FUNCS (DENGAN FIX TIMER IDLE) ==================
+-- ================== START & STOP OFFICE ==================
 local function StartOfficeScript()
     if State.IsOfficeActive then return end
     State.IsOfficeActive = true
@@ -1555,142 +1618,111 @@ local function StopCourierScript()
 end
 
 -- ============================================================================
--- // 14. AUTO RACE (MANDALIKA) - NOCLIP ONLY WHEN RACING
+-- // 14. AUTO RACE (MANDALIKA) - NEW FEATURE
 -- ============================================================================
 
-getgenv().AutoFarmBalap = false
-getgenv().RaceCar = "Yamahax-MioSporty"
-getgenv().RaceSpeed = 150
-
+-- ==========================================
+-- 📍 DAFTAR KOORDINAT LINTASAN BALAP
+-- ==========================================
 local checkpointBalap = {
-    Vector3.new(-392, 7, -1615), Vector3.new(1102, 7, -1621), Vector3.new(1420, 7, -1530),
-    Vector3.new(1389, 7, -1137), Vector3.new(1375, 7, -1094), Vector3.new(1271, 7, -748),
-    Vector3.new(1065, 7, -717), Vector3.new(1031, 7, -728), Vector3.new(889, 7, -446),
-    Vector3.new(920, 7, -398), Vector3.new(1208, 7, 154), Vector3.new(1183, 7, 283),
-    Vector3.new(979, 7, 849), Vector3.new(862, 7, 939), Vector3.new(537, 7, 1176),
-    Vector3.new(459, 7, 1222), Vector3.new(-109, 7, 1228), Vector3.new(-183, 7, 1278),
-    Vector3.new(-565, 7, 1515), Vector3.new(-670, 7, 1550), Vector3.new(-1531, 7, 1778),
-    Vector3.new(-1625, 7, 1798), Vector3.new(-1574, 7, 959), Vector3.new(-1547, 7, 870),
-    Vector3.new(-805, 7, 635), Vector3.new(-774, 7, 571), Vector3.new(-583, 7, -318),
-    Vector3.new(-577, 7, -382), Vector3.new(-1147, 7, -820), Vector3.new(-1185, 7, -902),
-    Vector3.new(-1453, 7, -1654), Vector3.new(-1462, 7, -1731), Vector3.new(-1344, 7, -2119),
-    Vector3.new(-1300, 7, -2167), Vector3.new(-1133, 7, -2287), Vector3.new(-1090, 7, -1972),
-    Vector3.new(-1124, 7, -1892), Vector3.new(-1153, 7, -1668), Vector3.new(-142, 7, -1616)
+    Vector3.new(-392, 7, -1615),   -- 1. Start
+    Vector3.new(1102, 7, -1621),   -- 2.
+    Vector3.new(1420, 7, -1530),   -- 3.
+    Vector3.new(1389, 7, -1137),   -- 4.
+    Vector3.new(1375, 7, -1094),   -- 5.
+    Vector3.new(1271, 7, -748),    -- 6.
+    Vector3.new(1065, 7, -717),    -- 7.
+    Vector3.new(1031, 7, -728),    -- 8.
+    Vector3.new(889, 7, -446),     -- 9.
+    Vector3.new(920, 7, -398),     -- 10.
+    Vector3.new(1208, 7, 154),     -- 11.
+    Vector3.new(1183, 7, 283),     -- 12.
+    Vector3.new(979, 7, 849),      -- 13.
+    Vector3.new(862, 7, 939),      -- 14.
+    Vector3.new(537, 7, 1176),     -- 15.
+    Vector3.new(459, 7, 1222),     -- 16.
+    Vector3.new(-109, 7, 1228),    -- 17.
+    Vector3.new(-183, 7, 1278),    -- 18.
+    Vector3.new(-565, 7, 1515),    -- 19.
+    Vector3.new(-670, 7, 1550),    -- 20.
+    Vector3.new(-1531, 7, 1778),   -- 21.
+    Vector3.new(-1625, 7, 1798),   -- 22.
+    Vector3.new(-1574, 7, 959),    -- 23.
+    Vector3.new(-1547, 7, 870),    -- 24.
+    Vector3.new(-805, 7, 635),     -- 25.
+    Vector3.new(-774, 7, 571),     -- 26.
+    Vector3.new(-583, 7, -318),    -- 27.
+    Vector3.new(-577, 7, -382),    -- 28.
+    Vector3.new(-1147, 7, -820),   -- 29.
+    Vector3.new(-1185, 7, -902),   -- 30.
+    Vector3.new(-1453, 7, -1654),  -- 31.
+    Vector3.new(-1462, 7, -1731),  -- 32.
+    Vector3.new(-1344, 7, -2119),  -- 33.
+    Vector3.new(-1300, 7, -2167),  -- 34.
+    Vector3.new(-1133, 7, -2287),  -- 35.
+    Vector3.new(-1090, 7, -1972),  -- 36.
+    Vector3.new(-1124, 7, -1892),  -- 37.
+    Vector3.new(-1153, 7, -1668),  -- 38.
+    Vector3.new(-142, 7, -1616)    -- 39. Finish
 }
 
-local function dapatkanYtanah(pos)
-    local rayOrigin = Vector3.new(pos.X, 500, pos.Z)
-    local rayResult = workspace:Raycast(rayOrigin, Vector3.new(0, -1000, 0))
-    if rayResult then
-        return rayResult.Position.Y
-    else
-        return pos.Y
-    end
-end
+-- ⚙️ Default settings (bisa diubah lewat UI)
+getgenv().AutoFarmBalap = false
+getgenv().RaceCar = "Yamahax-MioSporty"
+getgenv().RaceSpeed = 180
 
-local function setCollision(model, bool)
-    if not model then return end
-    for _, part in pairs(model:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.CanCollide = bool
-        end
-    end
-end
-
-local function bersihkanMovers(seat)
-    if seat then
-        for _, mover in pairs(seat:GetChildren()) do
-            if mover:IsA("BodyVelocity") or mover:IsA("BodyGyro") then
-                mover:Destroy()
-            end
-        end
-    end
-end
-
+-- Noclip connection untuk race
 local raceNoclipConn
 
-local function MulaiSistemAutoBalapRevisi(namaMotor)
+local function MulaiSistemAutoBalap(namaMotor)
     local player = game:GetService("Players").LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local root = character:WaitForChild("HumanoidRootPart")
     local humanoid = character:WaitForChild("Humanoid")
 
     local startPos = checkpointBalap[1]
-    local groundYstart = dapatkanYtanah(startPos) + 2
 
-    root.CFrame = CFrame.new(startPos.X, groundYstart, startPos.Z)
-    task.wait(1)
-
-    -- Flag untuk menandakan sedang racing (noclip aktif)
-    local isRacing = false
-
-    -- Koneksi noclip dinamis: hanya menyala kalau isRacing true
-    raceNoclipConn = game:GetService("RunService").Stepped:Connect(function()
-        if not getgenv().AutoFarmBalap then return end
-        if isRacing then
-            if player.Character then
-                setCollision(player.Character, false)
-                local hum = player.Character:FindFirstChildOfClass("Humanoid")
-                if hum and hum.SeatPart then
-                    local motor = hum.SeatPart:FindFirstAncestorOfClass("Model")
-                    if motor then setCollision(motor, false) end
-                end
-            end
-        else
-            -- Pastikan collision normal saat tidak racing
-            if player.Character then
-                setCollision(player.Character, true)
-                local hum = player.Character:FindFirstChildOfClass("Humanoid")
-                if hum and hum.SeatPart then
-                    local motor = hum.SeatPart:FindFirstAncestorOfClass("Model")
-                    if motor then setCollision(motor, true) end
-                end
-            end
-        end
-    end)
+    print("⚡ Teleport awal ke sirkuit...")
+    root.Velocity = Vector3.zero
+    root.CFrame = CFrame.new(startPos + Vector3.new(0, 3, 0))
+    task.wait(1.5) 
 
     while getgenv().AutoFarmBalap do
-        -- Reset ke tidak racing, collision normal
-        isRacing = false
-
-        -- ==== PERSIAPAN MOTOR ====
+        
         if not humanoid.SeatPart then
-            pcall(function()
-                local motorLama = findMyMotor()
-                if motorLama then
-                    setCollision(motorLama, true)
-                    bersihkanMovers(motorLama.PrimaryPart)
-                end
-            end)
-
+            print("🔄 Spawning motor baru...")
             pcall(function()
                 game:GetService("ReplicatedStorage"):WaitForChild("SpawnCarEvents"):WaitForChild("SpawnCar"):FireServer(namaMotor)
             end)
-
+            
             local targetPrompt = nil
             local waktuMencari = 0
-            while not targetPrompt and waktuMencari < 5 do
+
+            while not targetPrompt and waktuMencari < 4 do
+                local jarakTerdekat = math.huge
                 for _, v in pairs(workspace:GetDescendants()) do
                     if v:IsA("ProximityPrompt") and v.ActionText == "Ride" and v.Enabled then
                         local part = v.Parent
                         if part and part:IsA("BasePart") then
                             local jarak = (part.Position - root.Position).Magnitude
-                            if jarak < 30 then
+                            if jarak < jarakTerdekat and jarak < 30 then
+                                jarakTerdekat = jarak
                                 targetPrompt = v
-                                break
                             end
                         end
                     end
                 end
-                if not targetPrompt then task.wait(0.2); waktuMencari += 0.2 end
+                if not targetPrompt then task.wait(0.25); waktuMencari += 0.25 end
             end
 
             if targetPrompt then
                 task.wait(0.3)
-                root.CFrame = CFrame.new(targetPrompt.Parent.Position + Vector3.new(0,2,0))
+                root.Velocity = Vector3.zero
+                root.CFrame = CFrame.new(targetPrompt.Parent.Position + Vector3.new(0, 2, 0))
                 task.wait(0.3)
                 FirePrompt(targetPrompt)
             else
+                print("❌ Motor tidak muncul. Retrying...")
                 task.wait(2)
                 continue
             end
@@ -1701,34 +1733,42 @@ local function MulaiSistemAutoBalapRevisi(namaMotor)
             end
         end
 
-        if not humanoid.SeatPart then continue end
-
+        if not humanoid.SeatPart then 
+            task.wait(1)
+            continue 
+        end
+        
         local seat = humanoid.SeatPart
         local motorModel = seat:FindFirstAncestorOfClass("Model") or seat.Parent
 
-        -- == HOVER DI START TANPA NOCLIP ==
-        local hoverY = dapatkanYtanah(startPos) + 3.5
+        -- ==========================================
+        -- 🛡️ AKTIFKAN ANTI-GRAVITASI DAHULU (MODE HOVER)
+        -- ==========================================
+        local bv = seat:FindFirstChild("Jet_BV") or Instance.new("BodyVelocity")
+        bv.Name = "Jet_BV"
+        bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge) 
+        bv.Velocity = Vector3.zero 
+        bv.Parent = seat 
+
+        local bg = seat:FindFirstChild("Jet_BG") or Instance.new("BodyGyro")
+        bg.Name = "Jet_BG"
+        bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bg.P = 100000; bg.D = 1000
+        bg.Parent = seat 
+
         local nextPos = checkpointBalap[2]
-        local cframeHover = CFrame.lookAt(
-            Vector3.new(startPos.X, hoverY, startPos.Z),
-            Vector3.new(nextPos.X, hoverY, nextPos.Z)
+        local cframeMelayang = CFrame.lookAt(
+            Vector3.new(startPos.X, startPos.Y + 3.5, startPos.Z), 
+            Vector3.new(nextPos.X, startPos.Y + 3.5, nextPos.Z)
         )
-        motorModel:PivotTo(cframeHover)
+        
+        motorModel:PivotTo(cframeMelayang)
+        bg.CFrame = cframeMelayang
 
-        -- Pasang body movers
-        local bv = Instance.new("BodyVelocity")
-        bv.MaxForce = Vector3.new(1e5, 1e5, 1e5)
-        bv.Velocity = Vector3.zero
-        bv.Parent = seat
-
-        local bg = Instance.new("BodyGyro")
-        bg.MaxTorque = Vector3.new(1e5, 1e5, 1e5)
-        bg.P = 100000
-        bg.Parent = seat
-        bg.CFrame = cframeHover
-
-        -- ==== TUNGGU GO!!! ====
+        -- [ MENUNGGU GO!!! ]
+        print("⏳ Motor aman melayang! Menunggu aba-aba GO!!!...")
         local gasMulai = false
+
         while not gasMulai and getgenv().AutoFarmBalap do
             task.wait(0.1)
             for _, ui in pairs(player.PlayerGui:GetDescendants()) do
@@ -1741,98 +1781,68 @@ local function MulaiSistemAutoBalapRevisi(namaMotor)
                 end
             end
         end
-
+        
         if not getgenv().AutoFarmBalap then break end
+        print("🚀 GO!!! LUNCUR FULL SPEED!")
 
-        -- ===== MULAI BALAP: AKTIFKAN NOCLIP =====
-        isRacing = true
-
-        -- ==== MAJU KE FINISH ====
+        -- [ TAHAP 1: MAJU KE FINISH ]
         for i = 2, #checkpointBalap do
-            local targetPos = checkpointBalap[i]
-            local targetHoverY = dapatkanYtanah(targetPos) + 3.5
-            local targetVec = Vector3.new(targetPos.X, targetHoverY, targetPos.Z)
+            local targetPos = checkpointBalap[i] + Vector3.new(0, 3.5, 0) 
 
             while getgenv().AutoFarmBalap do
                 local currentPos = seat.Position
-                local dist = (Vector3.new(targetVec.X, 0, targetVec.Z) - Vector3.new(currentPos.X, 0, currentPos.Z)).Magnitude
+                local dist = (Vector3.new(targetPos.X, 0, targetPos.Z) - Vector3.new(currentPos.X, 0, currentPos.Z)).Magnitude
                 if dist < 15 then break end
 
-                local arah = CFrame.lookAt(currentPos, targetVec)
-                bg.CFrame = arah
-                local speed = getgenv().RaceSpeed + math.random(-10,10)
-                bv.Velocity = arah.LookVector * speed
-                task.wait()
+                local arahHadap = CFrame.lookAt(currentPos, targetPos)
+                bg.CFrame = arahHadap
+                bv.Velocity = arahHadap.LookVector * getgenv().RaceSpeed
+                
+                seat.AssemblyLinearVelocity = bv.Velocity
+                seat.ThrottleFloat = 1
+                task.wait() 
             end
         end
+        
+        print("🏁 Finish! Putar balik...")
 
-        -- ==== KEMBALI KE START ====
-        local startTarget = Vector3.new(startPos.X, dapatkanYtanah(startPos) + 3.5, startPos.Z)
+        -- [ TAHAP 2: TERBANG BALIK KE START ]
+        local targetStart = checkpointBalap[1] + Vector3.new(0, 3.5, 0)
         while getgenv().AutoFarmBalap do
             local currentPos = seat.Position
-            local dist = (Vector3.new(startTarget.X, 0, startTarget.Z) - Vector3.new(currentPos.X, 0, currentPos.Z)).Magnitude
+            local dist = (Vector3.new(targetStart.X, 0, targetStart.Z) - Vector3.new(currentPos.X, 0, currentPos.Z)).Magnitude
             if dist < 15 then break end
 
-            local arah = CFrame.lookAt(currentPos, startTarget)
-            bg.CFrame = arah
-            local speed = getgenv().RaceSpeed + math.random(-10,10)
-            bv.Velocity = arah.LookVector * speed
+            local arahHadap = CFrame.lookAt(currentPos, targetStart)
+            bg.CFrame = arahHadap
+            bv.Velocity = arahHadap.LookVector * getgenv().RaceSpeed 
+
+            seat.AssemblyLinearVelocity = bv.Velocity
+            seat.ThrottleFloat = 1
             task.wait()
         end
 
-        -- ===== TIBA DI START: MATIKAN NOCLIP =====
-        isRacing = false
-
-        -- Hentikan motor
-        bv.Velocity = Vector3.zero
+        -- [ REM TOTAL DI TITIK START ]
+        bv.Velocity = Vector3.zero 
+        seat.ThrottleFloat = 0
         seat.AssemblyLinearVelocity = Vector3.zero
-        motorModel:PivotTo(CFrame.new(startTarget))
-        bg.CFrame = CFrame.new(startTarget)
+        
+        motorModel:PivotTo(cframeMelayang)
+        bg.CFrame = cframeMelayang
 
-        -- Bersihkan mover & kembalikan collision
-        bersihkanMovers(seat)
-        setCollision(motorModel, true)
-        setCollision(character, true)
-
+        -- ✅ Tambah lap counter & update speed untuk monitoring
         State.MandalikaLaps = (State.MandalikaLaps or 0) + 1
         State.MandalikaSpeed = getgenv().RaceSpeed
-
-        -- Istirahat 2 detik sebelum loop berikutnya
-        task.wait(2)
+        
+        print("🔄 Tiba di Start! Istirahat melayang 2 detik...")
+        task.wait(2) 
     end
-
-    -- ==== KETIKA LOOP BERHENTI TOTAL ====
-    isRacing = false
-    if raceNoclipConn then
-        raceNoclipConn:Disconnect()
-        raceNoclipConn = nil
-    end
-
-    -- Bersihkan total
-    pcall(function()
-        local char = player.Character
-        local hum = char and char:FindFirstChild("Humanoid")
-        local seatNow = hum and hum.SeatPart
-        if seatNow then
-            bersihkanMovers(seatNow)
-            local motor = seatNow:FindFirstAncestorOfClass("Model")
-            if motor then
-                setCollision(motor, true)
-                local posMotor = motor:GetPivot().Position
-                local groundY = dapatkanYtanah(posMotor) + 0.5
-                motor:PivotTo(CFrame.new(posMotor.X, groundY, posMotor.Z))
-            end
-        end
-        if char then setCollision(char, true) end
-        if hum and hum.SeatPart then
-            hum.Sit = false
-            hum.Jump = true
-        end
-    end)
+    
+    print("🛑 Auto-Farm dimatikan.")
 end
 
 -- ===========================================================================
--- MONITORING MANDALIKA
+-- MONITORING MANDALIKA – GUI kiri tengah
 -- ===========================================================================
 local MandalikaTrackerGui = nil
 
@@ -1856,7 +1866,7 @@ local function buatMonitoringMandalika()
 
     local Frame = Instance.new("Frame")
     Frame.Size = UDim2.new(0, 190, 0, 0)
-    Frame.Position = UDim2.new(0, 16, 0.5, 0)
+    Frame.Position = UDim2.new(0, 16, 0.5, 0)  -- kiri tengah
     Frame.AnchorPoint = Vector2.new(0, 0.5)
     Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
     Frame.BackgroundTransparency = 0.25
@@ -1927,58 +1937,60 @@ local function matikanMonitoringMandalika()
 end
 
 -- ============================================================================
--- // 15. START / STOP RACE (NOCLIP ON/OFF)
+-- // 15. START / STOP RACE (dengan monitoring)
 -- ============================================================================
 local function StartRaceScript()
     if State.IsRaceActive then return end
     State.IsRaceActive = true
     getgenv().AutoFarmBalap = true
 
+    -- Reset stat balapan
     State.MandalikaLaps = 0
     State.MandalikaSpeed = getgenv().RaceSpeed
     getgenv().UangAwalMandalika = nil
     getgenv().WaktuMulaiMandalika = nil
 
-    -- Koneksi noclip sekarang diatur di dalam MulaiSistemAutoBalapRevisi, jadi di sini tidak perlu lagi.
+    -- Noclip connection
+    raceNoclipConn = Services.RunService.Stepped:Connect(function()
+        if not getgenv().AutoFarmBalap then return end
+        local player = game:GetService("Players").LocalPlayer
+        if player.Character then
+            for _, part in pairs(player.Character:GetDescendants()) do
+                if part:IsA("BasePart") and part.CanCollide then
+                    part.CanCollide = false
+                end
+            end
+            local hum = player.Character:FindFirstChildOfClass("Humanoid")
+            if hum and hum.SeatPart then
+                local modelMotor = hum.SeatPart:FindFirstAncestorOfClass("Model")
+                if modelMotor then
+                    for _, part in pairs(modelMotor:GetDescendants()) do
+                        if part:IsA("BasePart") and part.CanCollide then
+                            part.CanCollide = false
+                        end
+                    end
+                end
+            end
+        end
+    end)
 
     buatMonitoringMandalika()
-    WindUI:Notify({ Title = "🏁 Mandalika", Content = "Auto Balap Mandalika jalan (noclip on saat GO, off saat finish)", Duration = 4 })
+    WindUI:Notify({ Title = "🏁 Mandalika", Content = "Auto Balap Mandalika jalan! Monitor aktif di kiri.", Duration = 4 })
 
     task.spawn(function()
-        MulaiSistemAutoBalapRevisi(getgenv().RaceCar)
+        MulaiSistemAutoBalap(getgenv().RaceCar)
     end)
 end
 
 local function StopRaceScript()
     State.IsRaceActive = false
     getgenv().AutoFarmBalap = false
-
-    -- Koneksi akan dimatikan di dalam loop saat flag AutoFarmBalap false
-    -- Tapi kita bersihkan juga di sini untuk jaga-jaga
     if raceNoclipConn then
         raceNoclipConn:Disconnect()
         raceNoclipConn = nil
     end
-
-    pcall(function()
-        local player = game:GetService("Players").LocalPlayer
-        if player.Character then
-            setCollision(player.Character, true)
-            local hum = player.Character:FindFirstChildOfClass("Humanoid")
-            if hum and hum.SeatPart then
-                local motor = hum.SeatPart:FindFirstAncestorOfClass("Model")
-                if motor then
-                    setCollision(motor, true)
-                    bersihkanMovers(hum.SeatPart)
-                end
-                hum.Sit = false
-                hum.Jump = true
-            end
-        end
-    end)
-
     matikanMonitoringMandalika()
-    WindUI:Notify({ Title = "🛑 Mandalika", Content = "Auto Balap dimatiin, aman tanpa bug.", Duration = 3 })
+    WindUI:Notify({ Title = "🛑 Mandalika", Content = "Auto Balap Mandalika dimatiin.", Duration = 3 })
 end
 
 -- ============================================================================
@@ -2039,7 +2051,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
 end
 
 -- ============================================================================
--- // 17. UI
+-- // 17. UI — 8 TAB (Tab Auto Race terpisah)
 -- ============================================================================
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
@@ -2122,6 +2134,7 @@ local ServerInfo = TabInfo:Paragraph({
 -- ============================
 local TabFarm = Window:Tab({ Title = "Auto Farm", Icon = "coffee", Border = true })
 
+-- Barista
 local SectionBarista = TabFarm:Section({
     Title = "Auto Barista",
     Box = true,
@@ -2136,6 +2149,7 @@ SectionBarista:Toggle({
     Callback = function(on) if on then StartBaristaScript() else StopBaristaScript() end end,
 })
 
+-- Office
 local SectionOffice = TabFarm:Section({
     Title = "Auto Office",
     Box = true,
@@ -2150,6 +2164,7 @@ SectionOffice:Toggle({
     Callback = function(on) if on then StartOfficeScript() else StopOfficeScript() end end,
 })
 
+-- Courier
 local SectionCourier = TabFarm:Section({
     Title = "Auto Courier",
     Box = true,
@@ -2165,7 +2180,7 @@ SectionCourier:Toggle({
 })
 
 -- ============================
--- TAB 8: AUTO RACE (MANDALIKA)
+-- TAB 8: AUTO RACE (MANDALIKA) - NEW SEPARATE TAB
 -- ============================
 local TabRace = Window:Tab({ Title = "🏁 Auto Race", Icon = "flag", Border = true })
 
@@ -2201,9 +2216,9 @@ SectionMandalika:Input({
 
 SectionMandalika:Slider({
     Title = "Kecepatan Balap",
-    Desc = "Makin tinggi makin ganas, tapi risiko kick",
+    Desc = "Makin tinggi makin ganas, tapi risiko nabrak",
     Step = 10,
-    Value = { Min = 100, Max = 400, Default = 150 },
+    Value = { Min = 100, Max = 400, Default = 180 },
     Callback = function(v)
         getgenv().RaceSpeed = v
     end,
@@ -2397,7 +2412,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.8 FINAL + NOCLIP ON/OFF RACE!",
-    Content  = "Noclip hanya nyala saat GO, mati saat finish. Gas cuan aman!",
+    Title    = "👑 KING AKBAR V5.8 FINAL + OFFICE FULL FIX!",
+    Content  = "Auto Office kini stabil di semua perangkat. Gas cuan!",
     Duration = 5,
 })
