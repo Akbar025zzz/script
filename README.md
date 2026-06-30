@@ -1,12 +1,12 @@
 --[[
 ================================================================================
-  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (with Auto Mandalika Race Tab + Monitor) 👑
+  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (v6.0 - DROPDOWN MOTOR DARI GARASI) 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.9 - MOTOR REFRESH + TOMBOL PILIH)
-    [+] Changelog   : - Refresh motor list via dua remote sebelum pilih
-                      - Pilih motor pakai tombol, ganti input teks
-                      - Default motor Yamahax-MioSporty
+    [+] Version     : DDS FREE EDITION (v6.0 - DROPDOWN + REFRESH INVENTORY)
+    [+] Changelog   : - Dropdown pilih motor langsung dari inventory / garasi
+                      - Tombol Refresh memanggil remote & baca UI inventory
+                      - Hanya motor yang kamu punya yang muncul di dropdown
 ================================================================================
 ]]--
 
@@ -1548,7 +1548,7 @@ local function StopCourierScript()
 end
 
 -- ============================================================================
--- // 14. AUTO RACE (MANDALIKA) - NEW FEATURE (REFRESH + TOMBOL PILIH MOTOR)
+-- // 14. AUTO RACE (MANDALIKA) - DROPDOWN MOTOR + REFRESH INVENTORY
 -- ============================================================================
 
 -- ==========================================
@@ -1864,7 +1864,7 @@ local function matikanMonitoringMandalika()
 end
 
 -- ============================================================================
--- // 15. START / STOP RACE (dengan monitoring)
+-- // 15. START / STOP RACE
 -- ============================================================================
 local function StartRaceScript()
     if State.IsRaceActive then return end
@@ -1976,7 +1976,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
 end
 
 -- ============================================================================
--- // 17. UI — 8 TAB (Tab Auto Race dengan Refresh & Tombol Pilih Motor)
+-- // 17. UI — DROPDOWN MOTOR DARI GARASI
 -- ============================================================================
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
@@ -2105,7 +2105,7 @@ SectionCourier:Toggle({
 })
 
 -- ============================
--- TAB 8: AUTO RACE (MANDALIKA) - NEW SEPARATE TAB WITH REFRESH + BUTTONS
+-- TAB 8: AUTO RACE (DROPDOWN MOTOR)
 -- ============================
 local TabRace = Window:Tab({ Title = "🏁 Auto Race", Icon = "flag", Border = true })
 
@@ -2129,9 +2129,22 @@ SectionMandalika:Toggle({
     end,
 })
 
--- Tombol Refresh Motor (panggil dua remote)
+-- Dropdown motor (diisi setelah refresh)
+local MotorSelectObj = SectionMandalika:Select({
+    Title = "Pilih Motor",
+    Options = { "Yamahax-MioSporty" },
+    Default = getgenv().RaceCar or "Yamahax-MioSporty",
+    Callback = function(selected)
+        if selected and selected ~= "" then
+            getgenv().RaceCar = selected
+            WindUI:Notify({ Title = "Motor Dipilih", Content = selected .. " siap dipacu!", Duration = 2 })
+        end
+    end
+})
+
+-- Tombol Refresh Motor List (panggil remote & baca UI)
 SectionMandalika:Button({
-    Title = "🔄 Refresh Motor List",
+    Title = "🔄 Refresh Motor List (dari Garasi)",
     Callback = function()
         pcall(function()
             game:GetService("ReplicatedStorage").DealershipEvents.GetInfoCarSlot:InvokeServer()
@@ -2139,48 +2152,42 @@ SectionMandalika:Button({
         pcall(function()
             game:GetService("ReplicatedStorage").DealershipEvents.InitializeCarData:InvokeServer()
         end)
-        WindUI:Notify({ Title = "Refresh", Content = "Data motor sudah di-refresh! Silakan pilih motor.", Duration = 4 })
-    end
-})
-
--- Tombol pilihan motor (populer di DDS)
-SectionMandalika:Button({
-    Title = "🏍️ Yamahax-MioSporty",
-    Callback = function()
-        getgenv().RaceCar = "Yamahax-MioSporty"
-        WindUI:Notify({ Title = "Motor Dipilih", Content = "Yamahax-MioSporty siap dipacu!", Duration = 2 })
-    end
-})
-
-SectionMandalika:Button({
-    Title = "🏍️ Yamaha-XMAX",
-    Callback = function()
-        getgenv().RaceCar = "Yamaha-XMAX"
-        WindUI:Notify({ Title = "Motor Dipilih", Content = "Yamaha-XMAX siap dipacu!", Duration = 2 })
-    end
-})
-
-SectionMandalika:Button({
-    Title = "🏍️ Honda-Beat",
-    Callback = function()
-        getgenv().RaceCar = "Honda-Beat"
-        WindUI:Notify({ Title = "Motor Dipilih", Content = "Honda-Beat siap dipacu!", Duration = 2 })
-    end
-})
-
-SectionMandalika:Button({
-    Title = "🏍️ Suzuki-Satria",
-    Callback = function()
-        getgenv().RaceCar = "Suzuki-Satria"
-        WindUI:Notify({ Title = "Motor Dipilih", Content = "Suzuki-Satria siap dipacu!", Duration = 2 })
-    end
-})
-
-SectionMandalika:Button({
-    Title = "🏍️ Vespa-Sprint",
-    Callback = function()
-        getgenv().RaceCar = "Vespa-Sprint"
-        WindUI:Notify({ Title = "Motor Dipilih", Content = "Vespa-Sprint siap dipacu!", Duration = 2 })
+        task.wait(0.5)
+        
+        local motorList = {}
+        for _, gui in pairs(LocalPlayer.PlayerGui:GetChildren()) do
+            local guiName = gui.Name:lower()
+            if gui:IsA("ScreenGui") and (guiName:find("deal") or guiName:find("garage") or guiName:find("inventory")) then
+                local seen = {}
+                for _, obj in pairs(gui:GetDescendants()) do
+                    if obj:IsA("TextButton") and obj.Visible and string.len(obj.Text) > 3 then
+                        local motorName = obj.Text
+                        if not seen[motorName] then
+                            seen[motorName] = true
+                            table.insert(motorList, motorName)
+                        end
+                    end
+                end
+                if #motorList > 0 then break end
+            end
+        end
+        
+        if #motorList == 0 then
+            motorList = { "Yamahax-MioSporty", "Yamaha-XMAX", "Honda-Beat", "Suzuki-Satria", "Vespa-Sprint" }
+            WindUI:Notify({ Title = "⚠️ Info", Content = "UI inventory tidak terbaca, menampilkan motor default.", Duration = 4 })
+        else
+            WindUI:Notify({ Title = "✅ Refresh Berhasil", Content = "Daftar motor dari garasi berhasil dimuat!", Duration = 4 })
+        end
+        
+        pcall(function()
+            MotorSelectObj:Set({ Options = motorList })
+        end)
+        
+        local current = getgenv().RaceCar
+        if current and not table.find(motorList, current) then
+            getgenv().RaceCar = motorList[1]
+            MotorSelectObj:Set({ Default = motorList[1] })
+        end
     end
 })
 
@@ -2382,7 +2389,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.9 + REFRESH MOTOR & TOMBOL PILIH MOTOR!",
-    Content  = "Refresh dulu motor list, lalu pilih motor dengan tombol. Gas cuan & podium!",
+    Title    = "👑 KING AKBAR V6.0 - DROPDOWN MOTOR DARI GARASI!",
+    Content  = "Klik 'Refresh Motor List' untuk memuat motor dari inventory kamu, lalu pilih di dropdown. Gas cuan & podium!",
     Duration = 5,
 })
