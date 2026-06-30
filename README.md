@@ -3,7 +3,7 @@
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (with Auto Mandalika Race Tab + Monitor) 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - MANDALIKA FIXED)
+    [+] Version     : DDS FREE EDITION (v5.8 FINAL - NOCLIP ON/OFF RACE)
     [+] Changelog   : - Monitoring Office scan langsung teks "Rp." di UI
                       - Uang Awal dikunci, profit akurat
                       - Cache label uang biar nggak lag
@@ -13,6 +13,7 @@
                       - **NEW** Tab Auto Race + Auto Balap Mandalika (noclip hover loop)
                       - **NEW** Monitoring Mandalika (lap, speed, profit, uptime)
                       - **FIXED** Anti-kick & anti-jatuh tembus tanah di Mandalika
+                      - **FIXED** Noclip hanya nyala saat "GO!!!" dan mati saat finish
 ================================================================================
 ]]--
 
@@ -1554,12 +1555,12 @@ local function StopCourierScript()
 end
 
 -- ============================================================================
--- // 14. AUTO RACE (MANDALIKA) - FIXED ANTI KICK & ANTI JATUH
+-- // 14. AUTO RACE (MANDALIKA) - NOCLIP ONLY WHEN RACING
 -- ============================================================================
 
 getgenv().AutoFarmBalap = false
 getgenv().RaceCar = "Yamahax-MioSporty"
-getgenv().RaceSpeed = 150  -- aman dari kick
+getgenv().RaceSpeed = 150
 
 local checkpointBalap = {
     Vector3.new(-392, 7, -1615), Vector3.new(1102, 7, -1621), Vector3.new(1420, 7, -1530),
@@ -1620,7 +1621,39 @@ local function MulaiSistemAutoBalapRevisi(namaMotor)
     root.CFrame = CFrame.new(startPos.X, groundYstart, startPos.Z)
     task.wait(1)
 
+    -- Flag untuk menandakan sedang racing (noclip aktif)
+    local isRacing = false
+
+    -- Koneksi noclip dinamis: hanya menyala kalau isRacing true
+    raceNoclipConn = game:GetService("RunService").Stepped:Connect(function()
+        if not getgenv().AutoFarmBalap then return end
+        if isRacing then
+            if player.Character then
+                setCollision(player.Character, false)
+                local hum = player.Character:FindFirstChildOfClass("Humanoid")
+                if hum and hum.SeatPart then
+                    local motor = hum.SeatPart:FindFirstAncestorOfClass("Model")
+                    if motor then setCollision(motor, false) end
+                end
+            end
+        else
+            -- Pastikan collision normal saat tidak racing
+            if player.Character then
+                setCollision(player.Character, true)
+                local hum = player.Character:FindFirstChildOfClass("Humanoid")
+                if hum and hum.SeatPart then
+                    local motor = hum.SeatPart:FindFirstAncestorOfClass("Model")
+                    if motor then setCollision(motor, true) end
+                end
+            end
+        end
+    end)
+
     while getgenv().AutoFarmBalap do
+        -- Reset ke tidak racing, collision normal
+        isRacing = false
+
+        -- ==== PERSIAPAN MOTOR ====
         if not humanoid.SeatPart then
             pcall(function()
                 local motorLama = findMyMotor()
@@ -1673,9 +1706,16 @@ local function MulaiSistemAutoBalapRevisi(namaMotor)
         local seat = humanoid.SeatPart
         local motorModel = seat:FindFirstAncestorOfClass("Model") or seat.Parent
 
-        setCollision(motorModel, false)
-        setCollision(character, false)
+        -- == HOVER DI START TANPA NOCLIP ==
+        local hoverY = dapatkanYtanah(startPos) + 3.5
+        local nextPos = checkpointBalap[2]
+        local cframeHover = CFrame.lookAt(
+            Vector3.new(startPos.X, hoverY, startPos.Z),
+            Vector3.new(nextPos.X, hoverY, nextPos.Z)
+        )
+        motorModel:PivotTo(cframeHover)
 
+        -- Pasang body movers
         local bv = Instance.new("BodyVelocity")
         bv.MaxForce = Vector3.new(1e5, 1e5, 1e5)
         bv.Velocity = Vector3.zero
@@ -1685,16 +1725,9 @@ local function MulaiSistemAutoBalapRevisi(namaMotor)
         bg.MaxTorque = Vector3.new(1e5, 1e5, 1e5)
         bg.P = 100000
         bg.Parent = seat
-
-        local hoverY = dapatkanYtanah(startPos) + 3.5
-        local nextPos = checkpointBalap[2]
-        local cframeHover = CFrame.lookAt(
-            Vector3.new(startPos.X, hoverY, startPos.Z),
-            Vector3.new(nextPos.X, hoverY, nextPos.Z)
-        )
-        motorModel:PivotTo(cframeHover)
         bg.CFrame = cframeHover
 
+        -- ==== TUNGGU GO!!! ====
         local gasMulai = false
         while not gasMulai and getgenv().AutoFarmBalap do
             task.wait(0.1)
@@ -1711,6 +1744,10 @@ local function MulaiSistemAutoBalapRevisi(namaMotor)
 
         if not getgenv().AutoFarmBalap then break end
 
+        -- ===== MULAI BALAP: AKTIFKAN NOCLIP =====
+        isRacing = true
+
+        -- ==== MAJU KE FINISH ====
         for i = 2, #checkpointBalap do
             local targetPos = checkpointBalap[i]
             local targetHoverY = dapatkanYtanah(targetPos) + 3.5
@@ -1729,6 +1766,7 @@ local function MulaiSistemAutoBalapRevisi(namaMotor)
             end
         end
 
+        -- ==== KEMBALI KE START ====
         local startTarget = Vector3.new(startPos.X, dapatkanYtanah(startPos) + 3.5, startPos.Z)
         while getgenv().AutoFarmBalap do
             local currentPos = seat.Position
@@ -1742,22 +1780,35 @@ local function MulaiSistemAutoBalapRevisi(namaMotor)
             task.wait()
         end
 
+        -- ===== TIBA DI START: MATIKAN NOCLIP =====
+        isRacing = false
+
+        -- Hentikan motor
         bv.Velocity = Vector3.zero
         seat.AssemblyLinearVelocity = Vector3.zero
         motorModel:PivotTo(CFrame.new(startTarget))
         bg.CFrame = CFrame.new(startTarget)
 
-        State.MandalikaLaps = (State.MandalikaLaps or 0) + 1
-        State.MandalikaSpeed = getgenv().RaceSpeed
-
+        -- Bersihkan mover & kembalikan collision
         bersihkanMovers(seat)
         setCollision(motorModel, true)
         setCollision(character, true)
 
+        State.MandalikaLaps = (State.MandalikaLaps or 0) + 1
+        State.MandalikaSpeed = getgenv().RaceSpeed
+
+        -- Istirahat 2 detik sebelum loop berikutnya
         task.wait(2)
     end
 
-    -- Cleanup saat loop berhenti
+    -- ==== KETIKA LOOP BERHENTI TOTAL ====
+    isRacing = false
+    if raceNoclipConn then
+        raceNoclipConn:Disconnect()
+        raceNoclipConn = nil
+    end
+
+    -- Bersihkan total
     pcall(function()
         local char = player.Character
         local hum = char and char:FindFirstChild("Humanoid")
@@ -1876,7 +1927,7 @@ local function matikanMonitoringMandalika()
 end
 
 -- ============================================================================
--- // 15. START / STOP RACE (FIXED)
+-- // 15. START / STOP RACE (NOCLIP ON/OFF)
 -- ============================================================================
 local function StartRaceScript()
     if State.IsRaceActive then return end
@@ -1888,21 +1939,10 @@ local function StartRaceScript()
     getgenv().UangAwalMandalika = nil
     getgenv().WaktuMulaiMandalika = nil
 
-    raceNoclipConn = game:GetService("RunService").Stepped:Connect(function()
-        if not getgenv().AutoFarmBalap then return end
-        local player = game:GetService("Players").LocalPlayer
-        if player.Character then
-            setCollision(player.Character, false)
-            local hum = player.Character:FindFirstChildOfClass("Humanoid")
-            if hum and hum.SeatPart then
-                local motor = hum.SeatPart:FindFirstAncestorOfClass("Model")
-                if motor then setCollision(motor, false) end
-            end
-        end
-    end)
+    -- Koneksi noclip sekarang diatur di dalam MulaiSistemAutoBalapRevisi, jadi di sini tidak perlu lagi.
 
     buatMonitoringMandalika()
-    WindUI:Notify({ Title = "🏁 Mandalika", Content = "Auto Balap Mandalika jalan (anti‑kick, anti‑jatuh)", Duration = 4 })
+    WindUI:Notify({ Title = "🏁 Mandalika", Content = "Auto Balap Mandalika jalan (noclip on saat GO, off saat finish)", Duration = 4 })
 
     task.spawn(function()
         MulaiSistemAutoBalapRevisi(getgenv().RaceCar)
@@ -1913,6 +1953,8 @@ local function StopRaceScript()
     State.IsRaceActive = false
     getgenv().AutoFarmBalap = false
 
+    -- Koneksi akan dimatikan di dalam loop saat flag AutoFarmBalap false
+    -- Tapi kita bersihkan juga di sini untuk jaga-jaga
     if raceNoclipConn then
         raceNoclipConn:Disconnect()
         raceNoclipConn = nil
@@ -2355,7 +2397,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.8 FINAL + MANDALIKA FIXED!",
-    Content  = "Auto Balap Mandalika sudah aman dari kick & nggak jatuh. Gas cuan!",
+    Title    = "👑 KING AKBAR V5.8 FINAL + NOCLIP ON/OFF RACE!",
+    Content  = "Noclip hanya nyala saat GO, mati saat finish. Gas cuan aman!",
     Duration = 5,
 })
