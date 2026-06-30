@@ -1,17 +1,18 @@
 --[[
 ================================================================================
-  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (with Auto Mandalika Race Tab + Monitor) 👑
+  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (with Auto Mandalika Race Tab + Monitor + Refresh Motor)
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE START FIX + RACE TAB + MONITOR)
+    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE START FIX + RACE + MONITOR + SELECT MOTOR)
     [+] Changelog   : - Monitoring Office scan langsung teks "Rp." di UI
                       - Uang Awal dikunci, profit akurat
                       - Cache label uang biar nggak lag
                       - Auto ganti kursi kalo sepi soal
                       - Fix: Office langsung jawab pas start (timer idle di-reset)
                       - Bypass Network Pause auto-active
-                      - **NEW** Tab Auto Race + Auto Balap Mandalika (noclip hover loop)
-                      - **NEW** Monitoring Mandalika (lap, speed, profit, uptime)
+                      - Tab Auto Race + Auto Balap Mandalika (noclip hover loop)
+                      - Monitoring Mandalika (lap, speed, profit, uptime)
+                      - **NEW** Refresh & Select Motor untuk balapan
 ================================================================================
 ]]--
 
@@ -118,8 +119,8 @@ local State = {
     OfficePrints       = 0,
     CourierDelivered   = 0,
     RaceLaps           = 0,
-    MandalikaLaps      = 0,   -- untuk monitoring balapan
-    MandalikaSpeed     = 0,   -- kecepatan terakhir
+    MandalikaLaps      = 0,
+    MandalikaSpeed     = 0,
 }
 
 LocalPlayer.Idled:Connect(function()
@@ -425,7 +426,7 @@ local function DoTap(prompt)
     rWait(0.2, 0.4); return true
 end
 
-local function FirePrompt(pp)   -- untuk auto race
+local function FirePrompt(pp)
     if not pp then return end
     local duration = pp.HoldDuration or 0
     if duration > 0 then
@@ -1874,6 +1875,74 @@ end
 -- ============================================================================
 -- // 15. START / STOP RACE (dengan monitoring)
 -- ============================================================================
+local function refreshMotorList()
+    local vehicles = {}
+    local rep = game:GetService("ReplicatedStorage")
+    local dealEvents = rep:WaitForChild("DealershipEvents")
+    
+    -- Initialize car data dulu
+    pcall(function()
+        local init = dealEvents:WaitForChild("InitializeCarData")
+        init:InvokeServer()
+    end)
+    task.wait(0.3)
+    
+    -- Coba metode 1: GetPlayerVehicles
+    pcall(function()
+        local getVeh = dealEvents:FindFirstChild("GetPlayerVehicles")
+        if getVeh then
+            local result = getVeh:InvokeServer()
+            if result and type(result) == "table" then
+                for _, v in ipairs(result) do
+                    table.insert(vehicles, tostring(v))
+                end
+            end
+        end
+    end)
+    
+    if #vehicles == 0 then
+        -- Metode 2: GetOwnedVehicles
+        pcall(function()
+            local getOwned = dealEvents:FindFirstChild("GetOwnedVehicles")
+            if getOwned then
+                local result = getOwned:InvokeServer()
+                if result and type(result) == "table" then
+                    for _, v in ipairs(result) do
+                        if type(v) == "string" then
+                            table.insert(vehicles, v)
+                        elseif type(v) == "table" and v.Name then
+                            table.insert(vehicles, v.Name)
+                        end
+                    end
+                end
+            end
+        end)
+    end
+    
+    if #vehicles == 0 then
+        -- Metode 3: GetInfoCarSlot
+        pcall(function()
+            local getSlot = dealEvents:FindFirstChild("GetInfoCarSlot")
+            if getSlot then
+                local result = getSlot:InvokeServer()
+                if result and type(result) == "table" then
+                    for _, slot in ipairs(result) do
+                        if slot and type(slot) == "table" then
+                            local name = slot.CarName or slot.Name or slot.VehicleName
+                            if name then table.insert(vehicles, tostring(name)) end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+    
+    if #vehicles == 0 then
+        vehicles = {"Yamahax-MioSporty", "Yamahax-R15", "Yamahax-Nmax"}
+    end
+    return vehicles
+end
+
 local function StartRaceScript()
     if State.IsRaceActive then return end
     State.IsRaceActive = true
@@ -2139,12 +2208,35 @@ SectionMandalika:Toggle({
     end,
 })
 
-SectionMandalika:Input({
-    Title = "Nama Motor",
-    Placeholder = "Yamahax-MioSporty",
-    Callback = function(Text)
-        if Text and Text ~= "" then
-            getgenv().RaceCar = Text
+-- Select motor (dibuat dulu dengan default, nanti diupdate saat refresh)
+local MotorSelect = SectionMandalika:Select({
+    Title    = "Pilih Motor",
+    Values   = {"Yamahax-MioSporty"},
+    Default  = "Yamahax-MioSporty",
+    Callback = function(val)
+        getgenv().RaceCar = val
+        WindUI:Notify({ Title = "🏍️ Motor", Content = "Dipilih: " .. val, Duration = 2 })
+    end,
+})
+
+SectionMandalika:Button({
+    Title = "🔄 Refresh Daftar Motor",
+    Callback = function()
+        local list = refreshMotorList()
+        if list and #list > 0 then
+            pcall(function()
+                if MotorSelect.SetValues then
+                    MotorSelect:SetValues(list)
+                elseif MotorSelect.Set then
+                    MotorSelect:Set({ Values = list })
+                elseif MotorSelect.UpdateValues then
+                    MotorSelect:UpdateValues(list)
+                end
+            end)
+            getgenv().RaceCar = list[1]
+            WindUI:Notify({ Title = "✅ Refresh", Content = "Motor tersedia: " .. #list .. " buah. Pilih di dropdown.", Duration = 4 })
+        else
+            WindUI:Notify({ Title = "❌ Gagal", Content = "Gagal memuat daftar motor.", Duration = 3 })
         end
     end
 })
@@ -2347,7 +2439,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.8 FINAL + TAB AUTO RACE + MONITOR MANDALIKA SIAP!",
-    Content  = "Auto Balap Mandalika lengkap dengan monitoring di kiri layar. Gas cuan & podium!",
+    Title    = "👑 KING AKBAR V5.8 FINAL + TAB AUTO RACE + MONITOR + SELECT MOTOR SIAP!",
+    Content  = "Tekan Refresh untuk muat daftar motor, pilih, lalu gas balapan!",
     Duration = 5,
 })
