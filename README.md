@@ -1,12 +1,10 @@
 --[[
 ================================================================================
-  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (v5.8 FINAL - OFFICE MULTI SOAL FIX)
+  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (v5.8 FINAL - OFFICE LOADING FIX)
 ================================================================================
-    [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE SEAMLESS)
-    [+] Fix         : - Cache direset tiap selesai jawab → soal berikutnya muncul
-                      - Klik tombol pakai firesignal saja, tanpa VIM
-                      - Lebih ringan & stabil di semua perangkat
+    [+] Fix         : - Klik tombol hybrid (firesignal + VIM mouse & touch)
+                      - Delay setelah jawab diperpanjang (2 detik)
+                      - Soal berikutnya muncul tanpa loading/bug
 ================================================================================
 ]]--
 
@@ -666,7 +664,7 @@ local function StopBaristaScript(reason)
 end
 
 -- ============================================================================
--- // 12. OFFICE JOB SYSTEM (FINAL FIX - MULTI SOAL)
+-- // 12. OFFICE JOB SYSTEM (FINAL FIX - MULTI SOAL LANCAR)
 -- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -865,7 +863,6 @@ end)
 
 -- ================== MATH STUFF (FIXED) ==================
 local function bersihkanAngka(str)
-    -- Hapus semua selain digit, koma & titik sebagai pemisah ribuan lalu hapus koma/titik
     local bersih = string.gsub(str, "[^%d,%.]", "")
     bersih = string.gsub(bersih, "[,.]", "")   -- hilangkan pemisah ribuan
     return tonumber(bersih)
@@ -876,7 +873,6 @@ local function cariSoalBaru()
     for _, v in pairs(playerGui:GetDescendants()) do
         if v:IsA("TextLabel") and v.Visible and v.Text ~= "" then
             local txt = v.Text
-            -- Dukung operator: + - * x X / ÷
             local a, op, b = string.match(txt, "([%d%.%,]+)%s*([%+%-%*/xX÷])%s*([%d%.%,]+)")
             if a and op and b then
                 CachedTargetLabel, CachedTargetParent = v, v.Parent
@@ -891,34 +887,29 @@ local function soalCacheValid()
     return CachedTargetLabel and CachedTargetLabel.Parent and CachedTargetLabel.Visible
 end
 
--- KLIK TOMBOL SIMPLE (FIRESIGNAL ONLY)
+-- KLIK TOMBOL HYBRID (Firesignal + VIM fallback)
 local function klikTombol(btn)
     if not btn then return false end
-    local success = false
-    -- 1) Firesignal MouseButton1Click
+    -- Metode 1: firesignal
+    pcall(function() if firesignal then firesignal(btn.MouseButton1Click) end end)
+    pcall(function() if firesignal then firesignal(btn.Activated) end end)
+    task.wait(0.05)
+    -- Metode 2: VirtualInputManager mouse click (PC)
     pcall(function()
-        if firesignal then
-            firesignal(btn.MouseButton1Click)
-            success = true
-        end
+        local pos = btn.AbsolutePosition + btn.AbsoluteSize / 2
+        Services.VIM:SendMouseButtonEvent(pos.X, pos.Y, 0, true, game, 1)
+        task.wait(0.05)
+        Services.VIM:SendMouseButtonEvent(pos.X, pos.Y, 0, false, game, 1)
     end)
-    -- 2) Firesignal Activated
+    task.wait(0.05)
+    -- Metode 3: VirtualInputManager touch tap (mobile)
     pcall(function()
-        if firesignal then
-            firesignal(btn.Activated)
-            success = true
-        end
+        local pos = btn.AbsolutePosition + btn.AbsoluteSize / 2
+        Services.VIM:SendTouchEvent(pos, 0, true, game, 1)
+        task.wait(0.05)
+        Services.VIM:SendTouchEvent(pos, 0, false, game, 1)
     end)
-    -- 3) getconnections (beberapa executor)
-    pcall(function()
-        if getconnections then
-            for _, c in pairs(getconnections(btn.MouseButton1Click)) do
-                c:Fire()
-            end
-            success = true
-        end
-    end)
-    return success
+    return true
 end
 
 -- ================== IDLE DETECTOR + CHAIR SWITCH ==================
@@ -948,14 +939,11 @@ task.spawn(function()
     end
 end)
 
--- ================== MATH THREAD (FIXED + RINGAN) ==================
+-- ================== MATH THREAD (FIXED + LANCAR) ==================
 task.spawn(function()
     while true do
-        -- Jeda dinamis: kalau tidak ada soal, tunggu lebih lama
-        local delay = 0.2
         if not State.IsOfficeActive or getgenv().forceStopMath or getgenv().isGoingToPrinter then
-            delay = 0.5
-            task.wait(delay)
+            task.wait(0.5)
             continue
         end
         local hum = CharRef.Humanoid
@@ -967,7 +955,7 @@ task.spawn(function()
 
         local soalLabel = soalCacheValid() and CachedTargetLabel or cariSoalBaru()
         if not soalLabel then
-            task.wait(0.5)   -- tidak ada soal -> santai
+            task.wait(0.5)
             continue
         end
 
@@ -1015,14 +1003,15 @@ task.spawn(function()
                 local btnNum = bersihkanAngka(btnText)
                 if btnNum and math.abs(btnNum - jawaban) < 0.001 then
                     ditemukan = true
-                    task.wait(math.random(8,25)/10)
+                    task.wait(math.random(4,8)/10)  -- jeda kecil sebelum klik
                     if getgenv().forceStopMath or not State.IsOfficeActive then break end
                     klikTombol(btn)
                     State.OfficeMathSolved = (State.OfficeMathSolved or 0) + 1
                     lastActivityTime = tick()
-                    -- RESET CACHE AGAR SOAL BERIKUTNYA TERBACA
+                    -- TUNGGU LOADING SOAL BERIKUTNYA (2 detik)
+                    task.wait(2)
+                    -- Reset cache agar soal berikutnya terdeteksi
                     CachedTargetLabel, CachedTargetParent = nil, nil
-                    task.wait(math.random(4,12)/10)
                     break
                 end
             end
@@ -1030,7 +1019,7 @@ task.spawn(function()
         if not ditemukan then
             CachedTargetLabel, CachedTargetParent = nil, nil
         end
-        -- delay singkat setelah selesai
+        -- delay kecil sebelum loop lagi
         task.wait(0.2)
     end
 end)
@@ -2396,7 +2385,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.8 FINAL + OFFICE MULTI SOAL FIX!",
-    Content  = "Sekarang soal pertama, kedua, ketiga... dijawab semua tanpa putus!",
+    Title    = "👑 KING AKBAR V5.8 FINAL + OFFICE LOADING FIX!",
+    Content  = "Sekarang soal mengalir lancar tanpa loading aneh. Gas cuan terus!",
     Duration = 5,
 })
