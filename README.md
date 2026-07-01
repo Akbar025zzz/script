@@ -3,11 +3,11 @@
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT 👑
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.9 OFFICE LIGHTWEIGHT FIX)
-    [+] Changelog   : - Office: pencarian UI hanya di ScreenGui aktif (reduksi lag)
-                      - Klik tombol kompatibel semua executor (PC & mobile)
-                      - Monitoring tetap ringan
-                      - Auto ganti kursi tetap jalan
+    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE START FIX)
+    [+] Changelog   : - Monitoring Office scan langsung teks "Rp." di UI
+                      - Uang Awal dikunci, profit akurat
+                      - Cache label uang biar nggak lag
+                      - Auto ganti kursi kalo sepi soal
                       - Fix: Office langsung jawab pas start (timer idle di-reset)
                       - Bypass Network Pause auto-active
 ================================================================================
@@ -657,7 +657,7 @@ local function StopBaristaScript(reason)
 end
 
 -- ============================================================================
--- // 12. OFFICE JOB SYSTEM (V5.9 OPTIMIZED - LIGHTWEIGHT & ALL EXECUTOR FIX)
+-- // 12. OFFICE JOB SYSTEM (V5.8 FINAL - MONITORING UI SCAN + START FIX)
 -- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -691,7 +691,8 @@ local function findNearestChair(radius)
                 local d = (part.Position - origin).Magnitude
                 if d < bestD then best, bestD = v, d end
             end
-        elseif v:IsA("Seat") and v:IsA("BasePart") then
+        end
+        if v:IsA("Seat") and v:IsA("BasePart") then
             local d = (v.Position - origin).Magnitude
             if d < bestD then best, bestD = v, d end
         end
@@ -711,7 +712,8 @@ local function findAnotherChair()
                 local d = (part.Position - origin).Magnitude
                 if d < bestD then best, bestD = part, d end
             end
-        elseif v:IsA("Seat") and v:IsA("BasePart") and v ~= myChair then
+        end
+        if v:IsA("Seat") and v:IsA("BasePart") and v ~= myChair then
             local d = (v.Position - origin).Magnitude
             if d < bestD then best, bestD = v, d end
         end
@@ -782,19 +784,13 @@ local function dudukKeKursi()
     return false
 end
 
--- ================== PRINTER STUFF (OPTIMIZED) ==================
+-- ================== PRINTER STUFF ==================
 local function cekPanggilanPrinter()
-    -- Hanya mencari di dalam ScreenGui yang aktif biar ringan
-    for _, gui in pairs(playerGui:GetChildren()) do
-        if gui:IsA("ScreenGui") and gui.Enabled then
-            for _, v in pairs(gui:GetDescendants()) do
-                if v:IsA("TextLabel") and v.Visible and hasText(v.Text, "printer") then
-                    return true
-                end
-            end
+    for _, gui in pairs(playerGui:GetDescendants()) do
+        if gui:IsA("TextLabel") and gui.Visible and hasText(gui.Text, "printer") then
+            return true
         end
     end
-    
     for _, obj in pairs(workspace:GetDescendants()) do
         if obj:IsA("ProximityPrompt") and obj.Enabled then
             if hasText(obj.ActionText, "printer") or hasText(obj.ObjectText, "printer") then
@@ -858,20 +854,15 @@ task.spawn(function()
     end
 end)
 
--- ================== MATH STUFF (OPTIMIZED) ==================
+-- ================== MATH STUFF ==================
 local function cariSoalBaru()
     CachedTargetLabel, CachedTargetParent = nil, nil
-    -- Hanya mencari di UI yang sedang terbuka/Enabled (Mengurangi ngelag)
-    for _, gui in pairs(playerGui:GetChildren()) do
-        if gui:IsA("ScreenGui") and gui.Enabled then
-            for _, v in pairs(gui:GetDescendants()) do
-                if v:IsA("TextLabel") and v.Visible and v.Text ~= "" then
-                    local a, op, b = string.match(v.Text, "(%d+)%s*([%+%-%*/])%s*(%d+)")
-                    if a and op and b then
-                        CachedTargetLabel, CachedTargetParent = v, v.Parent
-                        return v
-                    end
-                end
+    for _, v in pairs(playerGui:GetDescendants()) do
+        if v:IsA("TextLabel") and v.Visible and v.Text ~= "" then
+            local a, op, b = string.match(v.Text, "(%d+)%s*([%+%-%*/])%s*(%d+)")
+            if a and op and b then
+                CachedTargetLabel, CachedTargetParent = v, v.Parent
+                return v
             end
         end
     end
@@ -882,39 +873,21 @@ local function soalCacheValid()
     return CachedTargetLabel and CachedTargetLabel.Parent and CachedTargetLabel.Visible
 end
 
--- FIX UTAMA: Cara klik yang pasti jalan di semua executor mobile & PC
 local function klikTombol(btn)
     if not btn then return false end
-    local clicked = false
-
-    -- 1. Mode Executor PC / Mobile Premium
-    if getconnections then
-        local conns = getconnections(btn.MouseButton1Click)
-        if conns and #conns > 0 then
-            for _, c in pairs(conns) do pcall(function() c:Fire() end) end
-            clicked = true
-        end
-    end
-
-    -- 2. Alternatif firesignal
-    if not clicked and firesignal then
-        pcall(function() firesignal(btn.MouseButton1Click) end)
-        pcall(function() firesignal(btn.Activated) end)
-        clicked = true
-    end
-
-    -- 3. Mode VirtualInput (Paling ampuh untuk HP kalau metode di atas gagal)
-    if not clicked then
-        pcall(function()
-            local vim = game:GetService("VirtualInputManager")
-            local pos = btn.AbsolutePosition + (btn.AbsoluteSize / 2)
-            -- Menambahkan sedikit offset Y (biasanya 36 pixel untuk Topbar layar HP)
-            vim:SendMouseButtonEvent(pos.X, pos.Y + 36, 0, true, game, 1)
-            task.wait(0.05)
-            vim:SendMouseButtonEvent(pos.X, pos.Y + 36, 0, false, game, 1)
-        end)
-    end
-    return true
+    local ok = pcall(function() if firesignal then firesignal(btn.MouseButton1Click) end end)
+    if ok then return true end
+    ok = pcall(function() if firesignal then firesignal(btn.Activated) end end)
+    if ok then return true end
+    ok = pcall(function() if getconnections then for _,c in pairs(getconnections(btn.MouseButton1Click)) do c:Fire() end end end)
+    if ok then return true end
+    ok = pcall(function()
+        local pos = btn.AbsolutePosition + btn.AbsoluteSize/2
+        Services.VIM:SendMouseButtonEvent(pos.X, pos.Y, 0, true, game, 1)
+        task.wait(0.05)
+        Services.VIM:SendMouseButtonEvent(pos.X, pos.Y, 0, false, game, 1)
+    end)
+    return ok
 end
 
 -- ================== IDLE DETECTOR + CHAIR SWITCH ==================
@@ -930,9 +903,7 @@ task.spawn(function()
         if tick() - lastActivityTime > IDLE_SWITCH_TIME then
             isSwitching = true
             getgenv().forceStopMath = true
-            if WindUI and WindUI.Notify then
-                WindUI:Notify({ Title = "🔄 Office", Content = "Sepi soal, ganti kursi dulu...", Duration = 3 })
-            end
+            WindUI:Notify({ Title = "🔄 Office", Content = "Sepi soal, ganti kursi dulu...", Duration = 3 })
             keluarKursi()
             local newChair = findAnotherChair()
             if newChair then
@@ -946,7 +917,7 @@ task.spawn(function()
     end
 end)
 
--- ================== MATH THREAD (OPTIMIZED) ==================
+-- ================== MATH THREAD ==================
 task.spawn(function()
     while true do
         task.wait(0.2)
@@ -976,33 +947,26 @@ task.spawn(function()
         else CachedTargetLabel, CachedTargetParent = nil, nil continue end
 
         local ditemukan = false
-        -- Sama seperti sebelumnya, hanya mencari di UI aktif agar tidak membebani HP
-        for _, gui in pairs(playerGui:GetChildren()) do
+        for _, btn in pairs(playerGui:GetDescendants()) do
             if getgenv().forceStopMath or not State.IsOfficeActive then break end
-            if gui:IsA("ScreenGui") and gui.Enabled then
-                for _, btn in pairs(gui:GetDescendants()) do
+            if btn:IsA("TextButton") and btn.Visible then
+                local btnText = btn.Text
+                if btnText == "" or tonumber(btnText) == nil then
+                    local cl = btn:FindFirstChildOfClass("TextLabel")
+                    if cl then btnText = cl.Text end
+                end
+                if tonumber(btnText) == jawaban then
+                    ditemukan = true
+                    task.wait(math.random(8,25)/10)
                     if getgenv().forceStopMath or not State.IsOfficeActive then break end
-                    if btn:IsA("TextButton") and btn.Visible then
-                        local btnText = btn.Text
-                        if btnText == "" or tonumber(btnText) == nil then
-                            local cl = btn:FindFirstChildOfClass("TextLabel")
-                            if cl then btnText = cl.Text end
-                        end
-                        if tonumber(btnText) == jawaban then
-                            ditemukan = true
-                            task.wait(math.random(8,25)/10)
-                            if getgenv().forceStopMath or not State.IsOfficeActive then break end
-                            if klikTombol(btn) then
-                                State.OfficeMathSolved = (State.OfficeMathSolved or 0) + 1
-                                lastActivityTime = tick()
-                            end
-                            task.wait(math.random(4,12)/10)
-                            break
-                        end
+                    if klikTombol(btn) then
+                        State.OfficeMathSolved = (State.OfficeMathSolved or 0) + 1
+                        lastActivityTime = tick()
                     end
+                    task.wait(math.random(4,12)/10)
+                    break
                 end
             end
-            if ditemukan then break end
         end
         if not ditemukan then CachedTargetLabel, CachedTargetParent = nil, nil end
     end
@@ -1020,7 +984,7 @@ task.spawn(function()
     end
 end)
 
--- ================== MONITORING GUI ==================
+-- ================== MONITORING GUI (FIX ZEROS & AUTO SCAN UI) ==================
 local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local LocalPlayer2 = Players.LocalPlayer
@@ -1053,18 +1017,14 @@ local function formatTime(seconds)
 end
 
 local function CariLabelUang()
-    local playerGuiData = LocalPlayer2:FindFirstChild("PlayerGui")
-    if not playerGuiData then return nil end
+    local playerGui = LocalPlayer2:FindFirstChild("PlayerGui")
+    if not playerGui then return nil end
 
-    for _, gui in ipairs(playerGuiData:GetChildren()) do
-        if gui:IsA("ScreenGui") and gui.Enabled then
-            for _, guiObject in ipairs(gui:GetDescendants()) do
-                if guiObject:IsA("TextLabel") or guiObject:IsA("TextButton") then
-                    local text = guiObject.Text
-                    if text and string.find(text, "Rp%.") and string.match(text, "%d+") then
-                        return guiObject
-                    end
-                end
+    for _, guiObject in ipairs(playerGui:GetDescendants()) do
+        if guiObject:IsA("TextLabel") or guiObject:IsA("TextButton") then
+            local text = guiObject.Text
+            if text and string.find(text, "Rp%.") and string.match(text, "%d+") then
+                return guiObject
             end
         end
     end
@@ -1075,11 +1035,13 @@ local function DapatkanUangPemain()
     if CachedMoneyLabel and CachedMoneyLabel.Parent then
         return parseNumber(CachedMoneyLabel.Text)
     end
+
     CachedMoneyLabel = CariLabelUang()
     if CachedMoneyLabel then
         return parseNumber(CachedMoneyLabel.Text)
     end
-    return (type(GetPlayerMoney) == "function" and GetPlayerMoney()) or 0
+    
+    return GetPlayerMoney()
 end
 
 local function buatMonitoringGUI()
@@ -1088,7 +1050,9 @@ local function buatMonitoringGUI()
     if not getgenv().UangAwalDikunci or getgenv().UangAwalDikunci == 0 then
         getgenv().UangAwalDikunci = uangSekarang
     end
+    
     getgenv().WaktuMulai = getgenv().WaktuMulai or tick()
+    
     local uangAwal = getgenv().UangAwalDikunci
 
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy() end
@@ -1147,6 +1111,7 @@ local function buatMonitoringGUI()
         while TrackerGui and TrackerGui.Parent do
             local success, err = pcall(function()
                 local currentMoney = DapatkanUangPemain()
+                
                 if uangAwal == 0 and currentMoney > 0 then
                     getgenv().UangAwalDikunci = currentMoney
                     uangAwal = currentMoney
@@ -1154,6 +1119,7 @@ local function buatMonitoringGUI()
                 end
                 
                 local profit = currentMoney - uangAwal
+                
                 pendapatanLabel.Text = (profit >= 0 and "+" or "") .. formatNumber(profit)
                 
                 if type(State) == "table" then
@@ -1163,9 +1129,13 @@ local function buatMonitoringGUI()
                     soalLabel.Text = "0"
                     printLabel.Text = "0"
                 end
+                
                 uptimeLabel.Text = formatTime(tick() - getgenv().WaktuMulai)
             end)
-            if not success then warn("Monitoring Error: ", tostring(err)) end
+
+            if not success then
+                warn("Monitoring Error: ", tostring(err))
+            end
             task.wait(1)
         end
     end)
@@ -1175,7 +1145,7 @@ local function matikanMonitoring()
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy(); TrackerGui = nil end
 end
 
--- ================== START & STOP FUNCS ==================
+-- ================== START & STOP FUNCS (DENGAN FIX TIMER IDLE) ==================
 local function StartOfficeScript()
     if State.IsOfficeActive then return end
     State.IsOfficeActive = true
@@ -1183,14 +1153,14 @@ local function StartOfficeScript()
     State.OfficePrints = 0
     getgenv().fullAuto = true
 
+    -- Reset cache & kuncian lama
     CachedMoneyLabel = nil
     getgenv().UangAwalDikunci = nil
     getgenv().WaktuMulai = tick()
 
+    -- Kalau belum duduk, cari kursi dulu
     if not CharRef.Humanoid or not CharRef.Humanoid.SeatPart then
-        if WindUI and WindUI.Notify then
-            WindUI:Notify({ Title = "🔍 Office", Content = "Mencari kursi kerja...", Duration = 3 })
-        end
+        WindUI:Notify({ Title = "🔍 Office", Content = "Mencari kursi kerja...", Duration = 3 })
         local sitPrompt = findNearestChair(60)
         if sitPrompt then
             if sitPrompt:IsA("ProximityPrompt") then
@@ -1203,19 +1173,17 @@ local function StartOfficeScript()
                 dudukKeKursi()
             end
         else
-            if WindUI and WindUI.Notify then
-                WindUI:Notify({ Title = "⚠️ Office", Content = "Kursi nggak ketemu, duduk manual dulu bos!", Duration = 5 })
-            end
+            WindUI:Notify({ Title = "⚠️ Office", Content = "Kursi nggak ketemu, duduk manual dulu bos!", Duration = 5 })
         end
     else
         myChair = CharRef.Humanoid.SeatPart
     end
 
+    -- **PENTING:** Reset timer idle supaya langsung jawab soal begitu start
     lastActivityTime = tick()
+
     buatMonitoringGUI()
-    if WindUI and WindUI.Notify then
-        WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Uang Awal discan otomatis.", Duration = 4 })
-    end
+    WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Uang Awal discan otomatis.", Duration = 4 })
 end
 
 local function StopOfficeScript()
@@ -1224,15 +1192,14 @@ local function StopOfficeScript()
     getgenv().forceStopMath = false
     getgenv().isGoingToPrinter = false
     CachedTargetLabel, CachedTargetParent = nil, nil
+
     CachedMoneyLabel = nil
     getgenv().UangAwalDikunci = nil
 
     local hum = CharRef.Humanoid
     if hum then hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true) end
     matikanMonitoring()
-    if WindUI and WindUI.Notify then
-        WindUI:Notify({ Title = "🛑 Office", Content = "Auto Office dimatiin.", Duration = 3 })
-    end
+    WindUI:Notify({ Title = "🛑 Office", Content = "Auto Office dimatiin.", Duration = 3 })
 end
 
 -- ============================================================================
@@ -1946,7 +1913,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.9 OFFICE LIGHTWEIGHT SIAP!",
-    Content  = "Office optimal & kompatibel semua executor. Gas cuan!",
+    Title    = "👑 KING AKBAR V5.8 FINAL SIAP!",
+    Content  = "Office langsung jawab soal pas start. Gas cuan!",
     Duration = 5,
 })
