@@ -1,13 +1,12 @@
 --[[
 ================================================================================
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT
-     v5.8 FINAL – OFFICE SIMPLE SETTINGS + WEBHOOK FIXED (EXECUTOR REQUEST)
+     v5.8 FINAL – OFFICE SIMPLE + WEBHOOK FIX
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Update      : - Webhook pakai request executor (bypass blokir)
-                      - Notifikasi sukses/gagal saat tes
-                      - Tab Webhook dengan slider menit
-                      - Office 3 slider (detik)
+    [+] Update      : - Webhook fallback ganda (request executor & HttpService)
+                      - Validasi URL, notifikasi error jelas
+                      - Office 3 slider (detik), tab Webhook (menit)
 ================================================================================
 ]]--
 
@@ -1707,7 +1706,7 @@ SectionCourier:Toggle({
     Callback = function(on) if on then StartCourierScript() else StopCourierScript() end end,
 })
 
--- TAB WEBHOOK
+-- TAB WEBHOOK (FIXED)
 local TabWebhook = Window:Tab({ Title = "Webhook", Icon = "radio", Border = true })
 
 local WebhookSection = TabWebhook:Section({
@@ -1719,7 +1718,7 @@ local WebhookSection = TabWebhook:Section({
 
 local webhookUrl = ""
 local webhookActive = false
-local webhookInterval = 5
+local webhookInterval = 5  -- menit
 
 WebhookSection:Input({
     Title = "🔗 URL Webhook Discord",
@@ -1757,12 +1756,16 @@ WebhookSection:Button({
             WindUI:Notify({ Title = "❌ Webhook", Content = "Isi URL dulu bos!", Duration = 3 })
             return
         end
+        if not webhookUrl:match("^https://discord%.com/api/webhooks/%d+/%w+$") then
+            WindUI:Notify({ Title = "❌ Webhook", Content = "Format URL salah! Pastikan lengkap.", Duration = 5 })
+            return
+        end
         getgenv().WebhookTestMode = true
         task.spawn(sendWebhookReport)
     end
 })
 
--- ================== FUNGSI WEBHOOK (EXECUTOR REQUEST) ==================
+-- ================== FUNGSI WEBHOOK (REQUEST + HTTPSERVICE) ==================
 local function formatNumberWeb(n)
     local num = tonumber(n) or 0
     if num >= 1e6 then
@@ -1799,7 +1802,7 @@ local function sendWebhookReport()
 
     local body = Services.HttpService:JSONEncode({ embeds = { embed } })
 
-    -- Gunakan request executor, bukan HttpService Roblox
+    -- Prioritas: request executor > HttpService Roblox
     local req = request or http_request or (syn and syn.request)
     if req then
         local ok, err = pcall(function()
@@ -1814,15 +1817,25 @@ local function sendWebhookReport()
         end)
         if getgenv().WebhookTestMode then
             if ok then
-                WindUI:Notify({ Title = "✅ Webhook", Content = "Laporan terkirim!", Duration = 3 })
+                WindUI:Notify({ Title = "✅ Webhook", Content = "Laporan terkirim! (executor)", Duration = 3 })
             else
-                WindUI:Notify({ Title = "❌ Webhook Gagal", Content = "Error: "..tostring(err), Duration = 5 })
+                WindUI:Notify({ Title = "❌ Webhook Gagal", Content = "Executor error: "..tostring(err), Duration = 5 })
+                warn("[Webhook] Executor error:", err)
             end
             getgenv().WebhookTestMode = false
         end
     else
+        -- Fallback ke HttpService Roblox
+        local ok, err = pcall(function()
+            Services.HttpService:PostAsync(webhookUrl, body, "ApplicationJson")
+        end)
         if getgenv().WebhookTestMode then
-            WindUI:Notify({ Title = "❌ Webhook Error", Content = "Executor kamu tidak support HTTP Request!", Duration = 5 })
+            if ok then
+                WindUI:Notify({ Title = "✅ Webhook", Content = "Laporan terkirim! (HttpService)", Duration = 3 })
+            else
+                WindUI:Notify({ Title = "❌ Webhook Gagal", Content = "HttpService error: "..tostring(err), Duration = 5 })
+                warn("[Webhook] HttpService error:", err)
+            end
             getgenv().WebhookTestMode = false
         end
     end
@@ -2012,6 +2025,6 @@ TabInfo:Select()
 
 WindUI:Notify({
     Title    = "👑 KING AKBAR V5.8 SIAP!",
-    Content  = "Webhook pakai request executor. Gas cuan!",
+    Content  = "Webhook fix (executor + HttpService). Gas cuan!",
     Duration = 5,
 })
