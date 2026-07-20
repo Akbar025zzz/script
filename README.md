@@ -1,18 +1,16 @@
 --[[
 ================================================================================
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT
-     v5.8 FINAL – OFFICE SIMPLE SETTINGS + WEBHOOK
+     v5.8 FINAL – OFFICE SIMPLE SETTINGS + WEBHOOK FIXED
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Update      : - Tab "Webhook" dengan slider menit (1-60)
+    [+] Update      : - Webhook dengan notifikasi error/sukses
+                      - Tab Webhook sendiri, slider menit
                       - Office hanya 3 slider (detik)
-                      - Anti‑Idle, Printer, Ganti Kursi otomatis
 ================================================================================
 ]]--
 
--- ============================================================================
--- // 0. LOAD WINDUI (SAFE)
--- ============================================================================
+-- // 0. LOAD WINDUI
 local WindUI
 do
     local ok, result = pcall(function()
@@ -52,9 +50,7 @@ do
     end
 end
 
--- ============================================================================
 -- // 1. SERVICES & REFERENCES
--- ============================================================================
 local Services = {
     Players            = game:GetService("Players"),
     RunService         = game:GetService("RunService"),
@@ -90,9 +86,7 @@ LocalPlayer.CharacterAdded:Connect(function(newChar)
     CharRef.Root      = newChar:WaitForChild("HumanoidRootPart")
 end)
 
--- ============================================================================
 -- // 2. STATE MANAGER
--- ============================================================================
 local State = {
     IsBaristaActive    = false,
     IsOfficeActive     = false,
@@ -108,12 +102,9 @@ local State = {
     SessionStartTime   = 0,
     LastStopReason     = "",
     MachineFixCount    = 0,
-    -- Stats Office
     OfficeMathSolved   = 0,
     OfficePrints       = 0,
-    -- Stats Courier
     CourierDelivered   = 0,
-    -- Office Settings (hanya 3 yang diatur via UI, sisanya default)
     OfficeSettings = {
         MathDelayMin      = 0.8,
         MathDelayMax      = 2.5,
@@ -136,7 +127,7 @@ LocalPlayer.Idled:Connect(function()
     end
 end)
 
--- BYPASS NETWORK PAUSE (AUTO JALAN)
+-- BYPASS NETWORK PAUSE
 task.spawn(function()
     while true do
         pcall(function()
@@ -144,25 +135,19 @@ task.spawn(function()
             local robloxGui = coreGui:FindFirstChild("RobloxGui")
             if robloxGui then
                 local pauseScript = robloxGui:FindFirstChild("CoreScripts/NetworkPause")
-                if pauseScript then
-                    pauseScript:Destroy()
-                end
+                if pauseScript then pauseScript:Destroy() end
             end
         end)
         task.wait(0.2)
     end
 end)
 
--- ============================================================================
 -- // 3. HUMANIZATION (RNG WAIT)
--- ============================================================================
 local function rWait(minSec, maxSec)
     task.wait(math.random((minSec or 0.5) * 1000, (maxSec or 1.5) * 1000) / 1000)
 end
 
--- ============================================================================
 -- // 4. GetPlayerMoney
--- ============================================================================
 local function GetPlayerMoney()
     local money = 0
     pcall(function()
@@ -182,9 +167,7 @@ local function GetPlayerMoney()
     return money
 end
 
--- ============================================================================
 -- // 5. ADMIN SENSOR
--- ============================================================================
 local GAME_GROUP_ID  = 11378976
 local MIN_STAFF_RANK = 200
 
@@ -202,9 +185,7 @@ end
 for _, p in ipairs(Services.Players:GetPlayers()) do CheckForAdmin(p) end
 Services.Players.PlayerAdded:Connect(CheckForAdmin)
 
--- ============================================================================
 -- // 6. SPLASH SCREEN
--- ============================================================================
 do
     local sg = Instance.new("ScreenGui")
     sg.Name = "BaristaSplash"; sg.ResetOnSpawn = false
@@ -299,9 +280,7 @@ do
     task.wait(3)
 end
 
--- ============================================================================
 -- // 7. CONSTANTS & PATHS (BARISTA)
--- ============================================================================
 local Constants = {
     START_SHIFT  = Vector3.new(-4991.23, 4.29, -715.26),
     COLOR_ORANGE = Color3.fromRGB(230, 150, 30),
@@ -346,9 +325,7 @@ local Paths = {
     },
 }
 
--- ============================================================================
 -- // 8. ANTI-LAG & LAYAR HITAM
--- ============================================================================
 local BlackGui
 local function ToggleBlackScreen(on)
     pcall(function() Services.RunService:Set3dRenderingEnabled(not on) end)
@@ -370,9 +347,7 @@ local function ToggleBlackScreen(on)
     end
 end
 
--- ============================================================================
 -- // 9. UTILITY (BARISTA)
--- ============================================================================
 local function WalkToPoint(pos)
     if not CharRef.Humanoid or not CharRef.Root then return end
     CharRef.Humanoid.Sit = false
@@ -470,9 +445,7 @@ local function FindByColor(parent, col, tol)
     return bestD < (tol or 0.6) and best or nil
 end
 
--- ============================================================================
 -- // 10. AI MINIGAME (BARISTA)
--- ============================================================================
 local function StartMinigameAI()
     if State.AiThread then task.cancel(State.AiThread) end
     State.AiThread = task.spawn(function()
@@ -530,9 +503,7 @@ local function StartMinigameAI()
     end)
 end
 
--- ============================================================================
 -- // 11. BARISTA FARMING LOOP
--- ============================================================================
 local function TakeJob()
     State.StatusText = "🏃 Lagi jalan ambil shift..."
     WalkToPoint(Constants.START_SHIFT); rWait(0.4, 0.8)
@@ -665,9 +636,7 @@ local function StopBaristaScript(reason)
     end
 end
 
--- ============================================================================
 -- // 12. OFFICE JOB SYSTEM (SIMPLE SETTINGS)
--- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
 local function hasText(str, keyword)
@@ -687,7 +656,6 @@ local myChair            = nil
 local CachedTargetLabel  = nil
 local CachedTargetParent = nil
 
--- ================== CARI KURSI ==================
 local function findNearestChair(radius)
     local origin = CharRef.Root and CharRef.Root.Position
     if not origin then return nil end
@@ -730,7 +698,6 @@ local function findAnotherChair()
     return best
 end
 
--- ================== BERJALAN KE TITIK ==================
 local function jalanKe(pos)
     local root = CharRef.Root
     local hum = CharRef.Humanoid
@@ -763,7 +730,6 @@ local function jalanKe(pos)
     end
 end
 
--- ================== DUDUK & BANGUN ==================
 local function keluarKursi()
     local hum = CharRef.Humanoid
     if not hum then return end
@@ -793,7 +759,6 @@ local function dudukKeKursi()
     return false
 end
 
--- ================== PRINTER STUFF ==================
 local function cekPanggilanPrinter()
     for _, gui in pairs(playerGui:GetDescendants()) do
         if gui:IsA("TextLabel") and gui.Visible and hasText(gui.Text, "printer") then
@@ -821,7 +786,6 @@ local function scanPromptPrint()
     return nil
 end
 
--- ================== MATH STUFF ==================
 local function cariSoalBaru()
     CachedTargetLabel, CachedTargetParent = nil, nil
     for _, v in pairs(playerGui:GetDescendants()) do
@@ -987,7 +951,6 @@ task.spawn(function()
                 if tonumber(btnText) == jawaban then
                     ditemukan = true
                     local s = State.OfficeSettings
-                    -- GUNAKAN SLIDER USER
                     task.wait(math.random(s.MathDelayMin * 10, s.MathDelayMax * 10) / 10)
                     if getgenv().forceStopMath or not State.IsOfficeActive then break end
                     if klikTombol(btn) then
@@ -1155,7 +1118,6 @@ local function matikanMonitoring()
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy(); TrackerGui = nil end
 end
 
--- ================== START & STOP ==================
 local function StartOfficeScript()
     if State.IsOfficeActive then return end
     State.IsOfficeActive = true
@@ -1207,9 +1169,7 @@ local function StopOfficeScript()
     WindUI:Notify({ Title = "🛑 Office", Content = "Auto Office dimatiin.", Duration = 3 })
 end
 
--- ============================================================================
--- // 13. AUTO COURIER (INTEGRATED)
--- ============================================================================
+-- // 13. AUTO COURIER
 local CourierJob = {
     Name = "Courier",
     TeamId = 11378976,
@@ -1547,9 +1507,7 @@ local function StopCourierScript()
     end
 end
 
--- ============================================================================
 -- // 14. INJECT A-CHASSIS
--- ============================================================================
 local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
     local char = game:GetService("Players").LocalPlayer.Character
     if char and char:FindFirstChild("Humanoid") and char.Humanoid.SeatPart then
@@ -1604,9 +1562,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
     end
 end
 
--- ============================================================================
--- // 15. UI - TAB WEBHOOK + OFFICE SIMPLE
--- ============================================================================
+-- // 15. UI
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
 local mxSz = IsMobile and Vector2.new(650, 400) or Vector2.new(850, 560)
@@ -1629,9 +1585,7 @@ local Window = WindUI:CreateWindow({
     ScrollBarEnabled            = true,
 })
 
--- ============================
 -- TAB 1: INFO
--- ============================
 local TabInfo = Window:Tab({ Title = "Info", Icon = "info", Border = true })
 
 local memberCount = "N/A"
@@ -1683,9 +1637,7 @@ local ServerInfo = TabInfo:Paragraph({
     }
 })
 
--- ============================
 -- TAB 2: AUTO FARM (OFFICE SIMPLE)
--- ============================
 local TabFarm = Window:Tab({ Title = "Auto Farm", Icon = "coffee", Border = true })
 
 local SectionBarista = TabFarm:Section({
@@ -1716,7 +1668,6 @@ SectionOffice:Toggle({
     Callback = function(on) if on then StartOfficeScript() else StopOfficeScript() end end,
 })
 
--- HANYA 3 SLIDER
 SectionOffice:Slider({
     Title = "⏱️ Jeda Minimal Sebelum Klik (detik)",
     Desc = "Contoh: 0.8 detik (makin kecil makin cepat)",
@@ -1755,9 +1706,7 @@ SectionCourier:Toggle({
     Callback = function(on) if on then StartCourierScript() else StopCourierScript() end end,
 })
 
--- ============================
--- TAB WEBHOOK (SIMPLE)
--- ============================
+-- TAB WEBHOOK
 local TabWebhook = Window:Tab({ Title = "Webhook", Icon = "radio", Border = true })
 
 local WebhookSection = TabWebhook:Section({
@@ -1769,7 +1718,7 @@ local WebhookSection = TabWebhook:Section({
 
 local webhookUrl = ""
 local webhookActive = false
-local webhookInterval = 5  -- menit
+local webhookInterval = 5
 
 WebhookSection:Input({
     Title = "🔗 URL Webhook Discord",
@@ -1807,14 +1756,12 @@ WebhookSection:Button({
             WindUI:Notify({ Title = "❌ Webhook", Content = "Isi URL dulu bos!", Duration = 3 })
             return
         end
-        task.spawn(function()
-            sendWebhookReport()
-            WindUI:Notify({ Title = "✅ Webhook", Content = "Laporan terkirim!", Duration = 3 })
-        end)
+        getgenv().WebhookTestMode = true
+        task.spawn(sendWebhookReport)
     end
 })
 
--- ================== FUNGSI WEBHOOK ==================
+-- FUNGSI WEBHOOK (DIPERBAIKI)
 local function formatNumberWeb(n)
     local num = tonumber(n) or 0
     if num >= 1e6 then
@@ -1827,6 +1774,8 @@ local function formatNumberWeb(n)
 end
 
 local function sendWebhookReport()
+    if webhookUrl == "" then return end
+    
     local profit = 0
     local uangSekarang = GetPlayerMoney()
     if getgenv().UangAwalDikunci then
@@ -1834,9 +1783,9 @@ local function sendWebhookReport()
     end
 
     local embed = {
-        ["title"] = "📊 Laporan King Akbar Bot",
-        ["color"] = 0x2ecc71,
-        ["fields"] = {
+        title = "📊 Laporan King Akbar Bot",
+        color = 0x2ecc71,
+        fields = {
             { name = "💵 Uang Sekarang", value = "Rp "..formatNumberWeb(uangSekarang), inline = true },
             { name = "📈 Profit", value = (profit >= 0 and "+" or "")..formatNumberWeb(profit), inline = true },
             { name = "⏱️ Durasi", value = os.date("!%H:%M:%S", os.difftime(os.time(), getgenv().WaktuMulai or os.time())), inline = true },
@@ -1844,31 +1793,37 @@ local function sendWebhookReport()
             { name = "🧠 Office", value = "Soal: "..(State.OfficeMathSolved or 0).."\nPrint: "..(State.OfficePrints or 0), inline = true },
             { name = "📦 Courier", value = "Paket: "..(State.CourierDelivered or 0), inline = true },
         },
-        ["footer"] = { text = "King Akbar v5.8 • "..os.date("%Y-%m-%d %H:%M:%S") }
+        footer = { text = "King Akbar v5.8 • "..os.date("%Y-%m-%d %H:%M:%S") }
     }
 
-    local body = Services.HttpService:JSONEncode({
-        embeds = { embed }
-    })
-
-    pcall(function()
+    local body = Services.HttpService:JSONEncode({ embeds = { embed } })
+    local success, err = pcall(function()
         Services.HttpService:PostAsync(webhookUrl, body)
     end)
+    if not success then
+        warn("[Webhook] Gagal kirim:", err)
+        if getgenv().WebhookTestMode then
+            WindUI:Notify({ Title = "❌ Webhook Gagal", Content = "Error: "..tostring(err), Duration = 5 })
+            getgenv().WebhookTestMode = false
+        end
+    else
+        if getgenv().WebhookTestMode then
+            WindUI:Notify({ Title = "✅ Webhook", Content = "Laporan terkirim!", Duration = 3 })
+            getgenv().WebhookTestMode = false
+        end
+    end
 end
 
--- Thread pengiriman periodik
 task.spawn(function()
     while true do
-        task.wait(webhookInterval * 60)  -- menit ke detik
+        task.wait(webhookInterval * 60)
         if webhookActive and webhookUrl ~= "" then
             sendWebhookReport()
         end
     end
 end)
 
--- ============================
 -- TAB 3: KEAMANAN
--- ============================
 local TabSec = Window:Tab({ Title = "Keamanan", Icon = "shield", Border = true })
 
 local Perlindungan = TabSec:Section({
@@ -1894,9 +1849,7 @@ Perlindungan:Toggle({
     Callback = function(on) State.AntiAFK = on end,
 })
 
--- ============================
 -- TAB 4: PERFORMA
--- ============================
 local TabPerf = Window:Tab({ Title = "Performa", Icon = "zap", Border = true })
 
 local HematDaya = TabPerf:Section({
@@ -1913,9 +1866,7 @@ HematDaya:Toggle({
     Callback = function(on) ToggleBlackScreen(on) end,
 })
 
--- ============================
 -- TAB 5: PENGATURAN
--- ============================
 local TabCfg = Window:Tab({ Title = "Pengaturan", Icon = "settings", Border = true })
 
 local Konfigurasi = TabCfg:Section({
@@ -1933,9 +1884,7 @@ Konfigurasi:Slider({
     Callback = function(v) State.ActionDelay = v end,
 })
 
--- ============================
 -- TAB 6: MODE INSTAN
--- ============================
 local TabPreset = Window:Tab({ Title = "🏎️ Mode Instan", Icon = "car", Border = true })
 
 local ModeCepat = TabPreset:Section({
@@ -1967,9 +1916,7 @@ ModeCepat:Button({
     end
 })
 
--- ============================
 -- TAB 7: CUSTOM SETTING
--- ============================
 local TabCustom = Window:Tab({ Title = "⚙️ Custom Setting", Icon = "sliders", Border = true })
 
 local TuneSendiri = TabCustom:Section({
@@ -2010,9 +1957,7 @@ TuneSendiri:Button({
     Callback = function() InjectMesin(customHP, customRPM, customRatio, customFD, "Custom Tune Aktif") end
 })
 
--- ============================
 -- OPEN BUTTON & FPS TAG
--- ============================
 Window:EditOpenButton({
     Title           = "Open King Akbar",
     Icon            = "crown",
@@ -2046,9 +1991,7 @@ task.spawn(function()
     end
 end)
 
--- ============================
 -- INIT
--- ============================
 Window:SetIconSize(47)
 WindUI:SetTheme("dark")
 TabInfo:Select()
