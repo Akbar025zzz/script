@@ -1,13 +1,12 @@
 --[[
 ================================================================================
-  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (OFFICE VIM-REMOVED EDITION)
+  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (OFFICE CUSTOM SETTINGS)
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - OFFICE UI BYPASS)
-    [+] Changelog   : - Auto Office sekarang klik tombol tanpa VirtualInputManager
-                      - Gunakan firesignal, getconnections, dan GuiButton:Activate()
-                      - Monitoring uang & profit tetap akurat
-                      - Printer & idle detection tetap berfungsi normal
+    [+] Version     : DDS FREE EDITION (v5.8 FINAL - USER CONFIG)
+    [+] Changelog   : - Pengaturan Auto Office langsung di UI (slider & toggle)
+                      - Klik tombol tanpa VIM (bypass aman)
+                      - Jeda antar aksi, anti-idle, printer, ganti kursi bisa diatur
 ================================================================================
 ]]--
 
@@ -92,7 +91,7 @@ LocalPlayer.CharacterAdded:Connect(function(newChar)
 end)
 
 -- ============================================================================
--- // 2. STATE MANAGER
+-- // 2. STATE MANAGER (DITAMBAH OfficeSettings)
 -- ============================================================================
 local State = {
     IsBaristaActive    = false,
@@ -114,6 +113,18 @@ local State = {
     OfficePrints       = 0,
     -- Stats Courier
     CourierDelivered   = 0,
+    -- *** NEW: Office Settings (Customizable) ***
+    OfficeSettings = {
+        MathDelayMin      = 0.8,   -- detik
+        MathDelayMax      = 2.5,
+        AfterAnswerDelay  = 3,
+        AntiIdleInterval  = 45,
+        PrinterCheckInterval = 3,
+        EnableAntiIdle    = true,
+        EnableAutoPrinter = true,
+        EnableChairSwitch = true,
+        IdleSwitchTime    = 60,
+    }
 }
 
 LocalPlayer.Idled:Connect(function()
@@ -655,7 +666,7 @@ local function StopBaristaScript(reason)
 end
 
 -- ============================================================================
--- // 12. OFFICE JOB SYSTEM (VIM REMOVED / UI BYPASS) - FULL VERSION
+-- // 12. OFFICE JOB SYSTEM (CUSTOM SETTINGS + VIM REMOVED)
 -- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -834,7 +845,6 @@ local function klikTombol(btn)
     if not btn then return false end
     local success = false
 
-    -- Metode 1: firesignal
     if firesignal then
         pcall(function() firesignal(btn.MouseButton1Down) end)
         pcall(function() firesignal(btn.MouseButton1Click) end)
@@ -843,7 +853,6 @@ local function klikTombol(btn)
         success = true
     end
 
-    -- Metode 2: getconnections
     if not success and getconnections then
         pcall(function()
             for _, connection in pairs(getconnections(btn.MouseButton1Click)) do
@@ -858,7 +867,6 @@ local function klikTombol(btn)
         success = true
     end
 
-    -- Metode 3: Native GuiButton:Activate()
     if not success then
         pcall(function()
             if btn:IsA("GuiButton") then
@@ -871,11 +879,12 @@ local function klikTombol(btn)
     return success
 end
 
--- ================== PRINT THREAD ==================
+-- ================== PRINT THREAD (PAKAI SETTINGS) ==================
 task.spawn(function()
     while true do
-        task.wait(1)
-        if not State.IsOfficeActive or getgenv().isGoingToPrinter then continue end
+        local s = State.OfficeSettings
+        task.wait(s.PrinterCheckInterval)
+        if not State.IsOfficeActive or not s.EnableAutoPrinter or getgenv().isGoingToPrinter then continue end
         if cekPanggilanPrinter() then
             getgenv().isGoingToPrinter = true
             getgenv().forceStopMath = true
@@ -913,25 +922,23 @@ task.spawn(function()
     end
 end)
 
--- ================== IDLE DETECTOR + CHAIR SWITCH ==================
+-- ================== IDLE DETECTOR + CHAIR SWITCH (PAKAI SETTINGS) ==================
 local lastActivityTime = tick()
 local isSwitching = false
-local IDLE_SWITCH_TIME = 60
 
 task.spawn(function()
     while true do
         task.wait(1)
         if not State.IsOfficeActive then continue end
+        local s = State.OfficeSettings
         if getgenv().isGoingToPrinter or getgenv().forceStopMath or isSwitching then continue end
-        if tick() - lastActivityTime > IDLE_SWITCH_TIME then
+        if s.EnableChairSwitch and tick() - lastActivityTime > s.IdleSwitchTime then
             isSwitching = true
             getgenv().forceStopMath = true
-            WindUI:Notify({ Title = "🔄 Office", Content = "Sepi soal, ganti kursi dulu...", Duration = 3 })
+            WindUI:Notify({ Title = "🔄 Office", Content = "Sepi soal, ganti kursi...", Duration = 3 })
             keluarKursi()
             local newChair = findAnotherChair()
-            if newChair then
-                myChair = newChair
-            end
+            if newChair then myChair = newChair end
             dudukKeKursi()
             getgenv().forceStopMath = false
             isSwitching = false
@@ -940,10 +947,10 @@ task.spawn(function()
     end
 end)
 
--- ================== MATH THREAD ==================
+-- ================== MATH THREAD (PAKAI SETTINGS) ==================
 task.spawn(function()
     while true do
-        task.wait(0.2)
+        task.wait(0.8)
         if not State.IsOfficeActive or getgenv().forceStopMath or getgenv().isGoingToPrinter then continue end
         local hum = CharRef.Humanoid
         if not hum or not hum.SeatPart then
@@ -980,11 +987,15 @@ task.spawn(function()
                 end
                 if tonumber(btnText) == jawaban then
                     ditemukan = true
-                    task.wait(math.random(8,25)/10)
+                    local s = State.OfficeSettings
+                    -- jeda sebelum klik (bisa diatur)
+                    task.wait(math.random(s.MathDelayMin * 10, s.MathDelayMax * 10) / 10)
                     if getgenv().forceStopMath or not State.IsOfficeActive then break end
                     if klikTombol(btn) then
                         State.OfficeMathSolved = (State.OfficeMathSolved or 0) + 1
                         lastActivityTime = tick()
+                        -- jeda setelah jawab benar
+                        task.wait(s.AfterAnswerDelay)
                     end
                     task.wait(math.random(4,12)/10)
                     break
@@ -995,11 +1006,12 @@ task.spawn(function()
     end
 end)
 
--- ================== ANTI-IDLE EVENT ==================
+-- ================== ANTI-IDLE EVENT (PAKAI SETTINGS) ==================
 task.spawn(function()
     while true do
-        task.wait(10)
-        if State.IsOfficeActive then
+        local s = State.OfficeSettings
+        task.wait(s.AntiIdleInterval)
+        if State.IsOfficeActive and s.EnableAntiIdle then
             pcall(function()
                 game:GetService("ReplicatedStorage"):WaitForChild("EventEvents"):WaitForChild("GetMyJoinedEvents"):InvokeServer({})
             end)
@@ -1039,7 +1051,6 @@ end
 local function CariLabelUang()
     local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
     if not playerGui then return nil end
-
     for _, guiObject in ipairs(playerGui:GetDescendants()) do
         if guiObject:IsA("TextLabel") or guiObject:IsA("TextButton") then
             local text = guiObject.Text
@@ -1055,24 +1066,19 @@ local function DapatkanUangPemain()
     if CachedMoneyLabel and CachedMoneyLabel.Parent then
         return parseNumber(CachedMoneyLabel.Text)
     end
-
     CachedMoneyLabel = CariLabelUang()
     if CachedMoneyLabel then
         return parseNumber(CachedMoneyLabel.Text)
     end
-    
     return GetPlayerMoney()
 end
 
 local function buatMonitoringGUI()
     local uangSekarang = DapatkanUangPemain()
-    
     if not getgenv().UangAwalDikunci or getgenv().UangAwalDikunci == 0 then
         getgenv().UangAwalDikunci = uangSekarang
     end
-    
     getgenv().WaktuMulai = getgenv().WaktuMulai or tick()
-    
     local uangAwal = getgenv().UangAwalDikunci
 
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy() end
@@ -1151,7 +1157,7 @@ local function matikanMonitoring()
     if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy(); TrackerGui = nil end
 end
 
--- ================== START & STOP FUNCS (DENGAN FIX TIMER IDLE) ==================
+-- ================== START & STOP ==================
 local function StartOfficeScript()
     if State.IsOfficeActive then return end
     State.IsOfficeActive = true
@@ -1602,7 +1608,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
 end
 
 -- ============================================================================
--- // 15. UI — 7 TAB (Webhook dihapus)
+-- // 15. UI — 7 TAB (OFFICE SETTINGS INSIDE AUTO FARM)
 -- ============================================================================
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
@@ -1681,7 +1687,7 @@ local ServerInfo = TabInfo:Paragraph({
 })
 
 -- ============================
--- TAB 2: AUTO FARM
+-- TAB 2: AUTO FARM (DENGAN OFFICE SETTINGS)
 -- ============================
 local TabFarm = Window:Tab({ Title = "Auto Farm", Icon = "coffee", Border = true })
 
@@ -1711,6 +1717,70 @@ SectionOffice:Toggle({
     Icon     = "briefcase",
     Value    = false,
     Callback = function(on) if on then StartOfficeScript() else StopOfficeScript() end end,
+})
+
+-- *** PENGATURAN OFFICE (SLIDER ANGKA) ***
+SectionOffice:Slider({
+    Title = "Jeda Min sebelum klik (detik)",
+    Desc = "Waktu tunggu minimal sebelum jawab soal",
+    Step = 0.1,
+    Value = { Min = 0.1, Max = 3, Default = 0.8 },
+    Callback = function(v) State.OfficeSettings.MathDelayMin = v end,
+})
+
+SectionOffice:Slider({
+    Title = "Jeda Max sebelum klik (detik)",
+    Desc = "Waktu tunggu maksimal (random antara min & max)",
+    Step = 0.1,
+    Value = { Min = 0.5, Max = 5, Default = 2.5 },
+    Callback = function(v) State.OfficeSettings.MathDelayMax = v end,
+})
+
+SectionOffice:Slider({
+    Title = "Jeda setelah jawab (detik)",
+    Desc = "Delay setelah berhasil menjawab soal",
+    Step = 1,
+    Value = { Min = 1, Max = 10, Default = 3 },
+    Callback = function(v) State.OfficeSettings.AfterAnswerDelay = v end,
+})
+
+SectionOffice:Slider({
+    Title = "Interval Anti-Idle (detik)",
+    Desc = "Kirim sinyal ke server tiap ... detik",
+    Step = 5,
+    Value = { Min = 20, Max = 120, Default = 45 },
+    Callback = function(v) State.OfficeSettings.AntiIdleInterval = v end,
+})
+
+SectionOffice:Slider({
+    Title = "Cek Printer tiap (detik)",
+    Desc = "Frekuensi pengecekan panggilan printer",
+    Step = 1,
+    Value = { Min = 1, Max = 10, Default = 3 },
+    Callback = function(v) State.OfficeSettings.PrinterCheckInterval = v end,
+})
+
+SectionOffice:Slider({
+    Title = "Ganti kursi setelah sepi (detik)",
+    Desc = "0 = matikan fitur ganti kursi",
+    Step = 10,
+    Value = { Min = 0, Max = 300, Default = 60 },
+    Callback = function(v)
+        State.OfficeSettings.IdleSwitchTime = v
+        State.OfficeSettings.EnableChairSwitch = v > 0
+    end,
+})
+
+SectionOffice:Toggle({
+    Title = "Aktifkan Anti-Idle",
+    Value = true,
+    Callback = function(on) State.OfficeSettings.EnableAntiIdle = on end,
+})
+
+SectionOffice:Toggle({
+    Title = "Auto Printer",
+    Value = true,
+    Callback = function(on) State.OfficeSettings.EnableAutoPrinter = on end,
 })
 
 local SectionCourier = TabFarm:Section({
@@ -1916,6 +1986,6 @@ TabInfo:Select()
 
 WindUI:Notify({
     Title    = "👑 KING AKBAR V5.8 FINAL SIAP!",
-    Content  = "Office sekarang klik tombol tanpa VIM. Gas cuan!",
+    Content  = "Office settings ada di tab Auto Farm. Gas cuan!",
     Duration = 5,
 })
