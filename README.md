@@ -1756,7 +1756,8 @@ WebhookSection:Button({
             WindUI:Notify({ Title = "❌ Webhook", Content = "Isi URL dulu bos!", Duration = 3 })
             return
         end
-        if not webhookUrl:match("^https://discord%.com/api/webhooks/%d+/%w+$") then
+        -- *** FIXED REGEX: tambahkan karakter '-' di token ***
+        if not webhookUrl:match("^https://discord%.com/api/webhooks/%d+/[%w_%-]+$") then
             WindUI:Notify({ Title = "❌ Webhook", Content = "Format URL salah! Pastikan lengkap.", Duration = 5 })
             return
         end
@@ -1786,18 +1787,19 @@ local function sendWebhookReport()
         profit = uangSekarang - getgenv().UangAwalDikunci
     end
 
+    -- *** FIXED: pastikan semua field tidak nil ***
     local embed = {
         title = "📊 Laporan King Akbar Bot",
         color = 0x2ecc71,
         fields = {
-            { name = "💵 Uang Sekarang", value = "Rp "..formatNumberWeb(uangSekarang), inline = true },
-            { name = "📈 Profit", value = (profit >= 0 and "+" or "")..formatNumberWeb(profit), inline = true },
-            { name = "⏱️ Durasi", value = os.date("!%H:%M:%S", os.difftime(os.time(), getgenv().WaktuMulai or os.time())), inline = true },
-            { name = "☕ Barista", value = "Order: "..(State.OrderCount or 0).."\nPerbaikan: "..(State.MachineFixCount or 0), inline = true },
-            { name = "🧠 Office", value = "Soal: "..(State.OfficeMathSolved or 0).."\nPrint: "..(State.OfficePrints or 0), inline = true },
-            { name = "📦 Courier", value = "Paket: "..(State.CourierDelivered or 0), inline = true },
+            { name = "💵 Uang Sekarang", value = "Rp " .. (formatNumberWeb(uangSekarang) or "0"), inline = true },
+            { name = "📈 Profit", value = (profit >= 0 and "+" or "") .. (formatNumberWeb(profit) or "0"), inline = true },
+            { name = "⏱️ Durasi", value = os.date("!%H:%M:%S", os.difftime(os.time(), getgenv().WaktuMulai or os.time())) or "00:00:00", inline = true },
+            { name = "☕ Barista", value = "Order: " .. (State.OrderCount or 0) .. "\nPerbaikan: " .. (State.MachineFixCount or 0), inline = true },
+            { name = "🧠 Office", value = "Soal: " .. (State.OfficeMathSolved or 0) .. "\nPrint: " .. (State.OfficePrints or 0), inline = true },
+            { name = "📦 Courier", value = "Paket: " .. (State.CourierDelivered or 0), inline = true },
         },
-        footer = { text = "King Akbar v5.8 • "..os.date("%Y-%m-%d %H:%M:%S") }
+        footer = { text = "King Akbar v5.8 • " .. os.date("%Y-%m-%d %H:%M:%S") }
     }
 
     local body = Services.HttpService:JSONEncode({ embeds = { embed } })
@@ -1826,11 +1828,11 @@ local function sendWebhookReport()
         end
     else
         -- Fallback ke HttpService Roblox
-        local ok, err = pcall(function()
+        local success, err = pcall(function()
             Services.HttpService:PostAsync(webhookUrl, body, "ApplicationJson")
         end)
         if getgenv().WebhookTestMode then
-            if ok then
+            if success then
                 WindUI:Notify({ Title = "✅ Webhook", Content = "Laporan terkirim! (HttpService)", Duration = 3 })
             else
                 WindUI:Notify({ Title = "❌ Webhook Gagal", Content = "HttpService error: "..tostring(err), Duration = 5 })
