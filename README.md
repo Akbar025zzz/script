@@ -1,12 +1,13 @@
 --[[
 ================================================================================
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT
-     v5.8 FINAL – OFFICE SIMPLE SETTINGS + WEBHOOK FIXED
+     v5.8 FINAL – OFFICE SIMPLE SETTINGS + WEBHOOK FIXED (EXECUTOR REQUEST)
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Update      : - Webhook dengan notifikasi error/sukses
-                      - Tab Webhook sendiri, slider menit
-                      - Office hanya 3 slider (detik)
+    [+] Update      : - Webhook pakai request executor (bypass blokir)
+                      - Notifikasi sukses/gagal saat tes
+                      - Tab Webhook dengan slider menit
+                      - Office 3 slider (detik)
 ================================================================================
 ]]--
 
@@ -1761,7 +1762,7 @@ WebhookSection:Button({
     end
 })
 
--- FUNGSI WEBHOOK (DIPERBAIKI)
+-- ================== FUNGSI WEBHOOK (EXECUTOR REQUEST) ==================
 local function formatNumberWeb(n)
     local num = tonumber(n) or 0
     if num >= 1e6 then
@@ -1775,7 +1776,7 @@ end
 
 local function sendWebhookReport()
     if webhookUrl == "" then return end
-    
+
     local profit = 0
     local uangSekarang = GetPlayerMoney()
     if getgenv().UangAwalDikunci then
@@ -1797,18 +1798,31 @@ local function sendWebhookReport()
     }
 
     local body = Services.HttpService:JSONEncode({ embeds = { embed } })
-    local success, err = pcall(function()
-        Services.HttpService:PostAsync(webhookUrl, body)
-    end)
-    if not success then
-        warn("[Webhook] Gagal kirim:", err)
+
+    -- Gunakan request executor, bukan HttpService Roblox
+    local req = request or http_request or (syn and syn.request)
+    if req then
+        local ok, err = pcall(function()
+            req({
+                Url = webhookUrl,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = body
+            })
+        end)
         if getgenv().WebhookTestMode then
-            WindUI:Notify({ Title = "❌ Webhook Gagal", Content = "Error: "..tostring(err), Duration = 5 })
+            if ok then
+                WindUI:Notify({ Title = "✅ Webhook", Content = "Laporan terkirim!", Duration = 3 })
+            else
+                WindUI:Notify({ Title = "❌ Webhook Gagal", Content = "Error: "..tostring(err), Duration = 5 })
+            end
             getgenv().WebhookTestMode = false
         end
     else
         if getgenv().WebhookTestMode then
-            WindUI:Notify({ Title = "✅ Webhook", Content = "Laporan terkirim!", Duration = 3 })
+            WindUI:Notify({ Title = "❌ Webhook Error", Content = "Executor kamu tidak support HTTP Request!", Duration = 5 })
             getgenv().WebhookTestMode = false
         end
     end
@@ -1998,6 +2012,6 @@ TabInfo:Select()
 
 WindUI:Notify({
     Title    = "👑 KING AKBAR V5.8 SIAP!",
-    Content  = "Office 3 slider. Webhook pakai menit. Gas cuan!",
+    Content  = "Webhook pakai request executor. Gas cuan!",
     Duration = 5,
 })
