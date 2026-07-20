@@ -1,12 +1,12 @@
 --[[
 ================================================================================
-  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT (OFFICE CUSTOM SETTINGS)
+  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT
+     v5.8 FINAL – OFFICE SIMPLE SETTINGS + WEBHOOK
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Version     : DDS FREE EDITION (v5.8 FINAL - USER CONFIG)
-    [+] Changelog   : - Pengaturan Auto Office langsung di UI (slider & toggle)
-                      - Klik tombol tanpa VIM (bypass aman)
-                      - Jeda antar aksi, anti-idle, printer, ganti kursi bisa diatur
+    [+] Update      : - Tab "Webhook" dengan slider menit (1-60)
+                      - Office hanya 3 slider (detik)
+                      - Anti‑Idle, Printer, Ganti Kursi otomatis
 ================================================================================
 ]]--
 
@@ -26,7 +26,7 @@ do
         warn("[King Akbar] WindUI gagal load: " .. tostring(result))
         WindUI = {
             CreateWindow = function() return {
-                Tab            = function() return {
+                Tab = function() return {
                     Paragraph  = function() return { Set = function() end } end,
                     Toggle     = function() end,
                     Button     = function() end,
@@ -91,7 +91,7 @@ LocalPlayer.CharacterAdded:Connect(function(newChar)
 end)
 
 -- ============================================================================
--- // 2. STATE MANAGER (DITAMBAH OfficeSettings)
+-- // 2. STATE MANAGER
 -- ============================================================================
 local State = {
     IsBaristaActive    = false,
@@ -113,9 +113,9 @@ local State = {
     OfficePrints       = 0,
     -- Stats Courier
     CourierDelivered   = 0,
-    -- *** NEW: Office Settings (Customizable) ***
+    -- Office Settings (hanya 3 yang diatur via UI, sisanya default)
     OfficeSettings = {
-        MathDelayMin      = 0.8,   -- detik
+        MathDelayMin      = 0.8,
         MathDelayMax      = 2.5,
         AfterAnswerDelay  = 3,
         AntiIdleInterval  = 45,
@@ -161,7 +161,7 @@ local function rWait(minSec, maxSec)
 end
 
 -- ============================================================================
--- // 4. GetPlayerMoney (untuk monitoring & barista)
+-- // 4. GetPlayerMoney
 -- ============================================================================
 local function GetPlayerMoney()
     local money = 0
@@ -183,7 +183,7 @@ local function GetPlayerMoney()
 end
 
 -- ============================================================================
--- // 5. ADMIN SENSOR (tanpa webhook)
+-- // 5. ADMIN SENSOR
 -- ============================================================================
 local GAME_GROUP_ID  = 11378976
 local MIN_STAFF_RANK = 200
@@ -666,7 +666,7 @@ local function StopBaristaScript(reason)
 end
 
 -- ============================================================================
--- // 12. OFFICE JOB SYSTEM (CUSTOM SETTINGS + VIM REMOVED)
+-- // 12. OFFICE JOB SYSTEM (SIMPLE SETTINGS)
 -- ============================================================================
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -879,7 +879,7 @@ local function klikTombol(btn)
     return success
 end
 
--- ================== PRINT THREAD (PAKAI SETTINGS) ==================
+-- ================== PRINT THREAD (pakai default setting) ==================
 task.spawn(function()
     while true do
         local s = State.OfficeSettings
@@ -922,7 +922,7 @@ task.spawn(function()
     end
 end)
 
--- ================== IDLE DETECTOR + CHAIR SWITCH (PAKAI SETTINGS) ==================
+-- ================== IDLE DETECTOR + CHAIR SWITCH (default) ==================
 local lastActivityTime = tick()
 local isSwitching = false
 
@@ -935,7 +935,6 @@ task.spawn(function()
         if s.EnableChairSwitch and tick() - lastActivityTime > s.IdleSwitchTime then
             isSwitching = true
             getgenv().forceStopMath = true
-            WindUI:Notify({ Title = "🔄 Office", Content = "Sepi soal, ganti kursi...", Duration = 3 })
             keluarKursi()
             local newChair = findAnotherChair()
             if newChair then myChair = newChair end
@@ -947,7 +946,7 @@ task.spawn(function()
     end
 end)
 
--- ================== MATH THREAD (PAKAI SETTINGS) ==================
+-- ================== MATH THREAD (pakai slider user) ==================
 task.spawn(function()
     while true do
         task.wait(0.8)
@@ -988,13 +987,12 @@ task.spawn(function()
                 if tonumber(btnText) == jawaban then
                     ditemukan = true
                     local s = State.OfficeSettings
-                    -- jeda sebelum klik (bisa diatur)
+                    -- GUNAKAN SLIDER USER
                     task.wait(math.random(s.MathDelayMin * 10, s.MathDelayMax * 10) / 10)
                     if getgenv().forceStopMath or not State.IsOfficeActive then break end
                     if klikTombol(btn) then
                         State.OfficeMathSolved = (State.OfficeMathSolved or 0) + 1
                         lastActivityTime = tick()
-                        -- jeda setelah jawab benar
                         task.wait(s.AfterAnswerDelay)
                     end
                     task.wait(math.random(4,12)/10)
@@ -1006,7 +1004,7 @@ task.spawn(function()
     end
 end)
 
--- ================== ANTI-IDLE EVENT (PAKAI SETTINGS) ==================
+-- ================== ANTI-IDLE EVENT (default) ==================
 task.spawn(function()
     while true do
         local s = State.OfficeSettings
@@ -1170,7 +1168,6 @@ local function StartOfficeScript()
     getgenv().WaktuMulai = tick()
 
     if not CharRef.Humanoid or not CharRef.Humanoid.SeatPart then
-        WindUI:Notify({ Title = "🔍 Office", Content = "Mencari kursi kerja...", Duration = 3 })
         local sitPrompt = findNearestChair(60)
         if sitPrompt then
             if sitPrompt:IsA("ProximityPrompt") then
@@ -1608,7 +1605,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
 end
 
 -- ============================================================================
--- // 15. UI — 7 TAB (OFFICE SETTINGS INSIDE AUTO FARM)
+-- // 15. UI - TAB WEBHOOK + OFFICE SIMPLE
 -- ============================================================================
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
@@ -1687,7 +1684,7 @@ local ServerInfo = TabInfo:Paragraph({
 })
 
 -- ============================
--- TAB 2: AUTO FARM (DENGAN OFFICE SETTINGS)
+-- TAB 2: AUTO FARM (OFFICE SIMPLE)
 -- ============================
 local TabFarm = Window:Tab({ Title = "Auto Farm", Icon = "coffee", Border = true })
 
@@ -1719,68 +1716,29 @@ SectionOffice:Toggle({
     Callback = function(on) if on then StartOfficeScript() else StopOfficeScript() end end,
 })
 
--- *** PENGATURAN OFFICE (SLIDER ANGKA) ***
+-- HANYA 3 SLIDER
 SectionOffice:Slider({
-    Title = "Jeda Min sebelum klik (detik)",
-    Desc = "Waktu tunggu minimal sebelum jawab soal",
+    Title = "⏱️ Jeda Minimal Sebelum Klik (detik)",
+    Desc = "Contoh: 0.8 detik (makin kecil makin cepat)",
     Step = 0.1,
     Value = { Min = 0.1, Max = 3, Default = 0.8 },
     Callback = function(v) State.OfficeSettings.MathDelayMin = v end,
 })
 
 SectionOffice:Slider({
-    Title = "Jeda Max sebelum klik (detik)",
-    Desc = "Waktu tunggu maksimal (random antara min & max)",
+    Title = "⏱️ Jeda Maksimal Sebelum Klik (detik)",
+    Desc = "Contoh: 2.5 detik (makin besar makin santai)",
     Step = 0.1,
     Value = { Min = 0.5, Max = 5, Default = 2.5 },
     Callback = function(v) State.OfficeSettings.MathDelayMax = v end,
 })
 
 SectionOffice:Slider({
-    Title = "Jeda setelah jawab (detik)",
-    Desc = "Delay setelah berhasil menjawab soal",
-    Step = 1,
-    Value = { Min = 1, Max = 10, Default = 3 },
+    Title = "⏸️ Jeda Setelah Jawab Benar (detik)",
+    Desc = "Contoh: 3 detik (biar server nggak kaget)",
+    Step = 0.5,
+    Value = { Min = 0.5, Max = 10, Default = 3 },
     Callback = function(v) State.OfficeSettings.AfterAnswerDelay = v end,
-})
-
-SectionOffice:Slider({
-    Title = "Interval Anti-Idle (detik)",
-    Desc = "Kirim sinyal ke server tiap ... detik",
-    Step = 5,
-    Value = { Min = 20, Max = 120, Default = 45 },
-    Callback = function(v) State.OfficeSettings.AntiIdleInterval = v end,
-})
-
-SectionOffice:Slider({
-    Title = "Cek Printer tiap (detik)",
-    Desc = "Frekuensi pengecekan panggilan printer",
-    Step = 1,
-    Value = { Min = 1, Max = 10, Default = 3 },
-    Callback = function(v) State.OfficeSettings.PrinterCheckInterval = v end,
-})
-
-SectionOffice:Slider({
-    Title = "Ganti kursi setelah sepi (detik)",
-    Desc = "0 = matikan fitur ganti kursi",
-    Step = 10,
-    Value = { Min = 0, Max = 300, Default = 60 },
-    Callback = function(v)
-        State.OfficeSettings.IdleSwitchTime = v
-        State.OfficeSettings.EnableChairSwitch = v > 0
-    end,
-})
-
-SectionOffice:Toggle({
-    Title = "Aktifkan Anti-Idle",
-    Value = true,
-    Callback = function(on) State.OfficeSettings.EnableAntiIdle = on end,
-})
-
-SectionOffice:Toggle({
-    Title = "Auto Printer",
-    Value = true,
-    Callback = function(on) State.OfficeSettings.EnableAutoPrinter = on end,
 })
 
 local SectionCourier = TabFarm:Section({
@@ -1796,6 +1754,117 @@ SectionCourier:Toggle({
     Value    = false,
     Callback = function(on) if on then StartCourierScript() else StopCourierScript() end end,
 })
+
+-- ============================
+-- TAB WEBHOOK (SIMPLE)
+-- ============================
+local TabWebhook = Window:Tab({ Title = "Webhook", Icon = "radio", Border = true })
+
+local WebhookSection = TabWebhook:Section({
+    Title = "Laporan Otomatis ke Discord",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+local webhookUrl = ""
+local webhookActive = false
+local webhookInterval = 5  -- menit
+
+WebhookSection:Input({
+    Title = "🔗 URL Webhook Discord",
+    Placeholder = "https://discord.com/api/webhooks/...",
+    Callback = function(text)
+        webhookUrl = text
+    end
+})
+
+WebhookSection:Slider({
+    Title = "⏰ Interval Laporan (menit)",
+    Desc = "1 = tiap menit, 60 = tiap jam",
+    Step = 1,
+    Value = { Min = 1, Max = 60, Default = 5 },
+    Callback = function(v)
+        webhookInterval = v
+    end
+})
+
+WebhookSection:Toggle({
+    Title = "🔔 Aktifkan Laporan Berkala",
+    Value = false,
+    Callback = function(on)
+        webhookActive = on
+        if on and webhookUrl ~= "" then
+            WindUI:Notify({ Title = "📡 Webhook", Content = "Laporan akan dikirim setiap "..webhookInterval.." menit.", Duration = 4 })
+        end
+    end
+})
+
+WebhookSection:Button({
+    Title = "📤 Kirim Laporan Sekarang (Tes)",
+    Callback = function()
+        if webhookUrl == "" then
+            WindUI:Notify({ Title = "❌ Webhook", Content = "Isi URL dulu bos!", Duration = 3 })
+            return
+        end
+        task.spawn(function()
+            sendWebhookReport()
+            WindUI:Notify({ Title = "✅ Webhook", Content = "Laporan terkirim!", Duration = 3 })
+        end)
+    end
+})
+
+-- ================== FUNGSI WEBHOOK ==================
+local function formatNumberWeb(n)
+    local num = tonumber(n) or 0
+    if num >= 1e6 then
+        return string.format("%.1fM", num/1e6)
+    elseif num >= 1e3 then
+        return string.format("%.0fK", num/1000)
+    else
+        return tostring(num)
+    end
+end
+
+local function sendWebhookReport()
+    local profit = 0
+    local uangSekarang = GetPlayerMoney()
+    if getgenv().UangAwalDikunci then
+        profit = uangSekarang - getgenv().UangAwalDikunci
+    end
+
+    local embed = {
+        ["title"] = "📊 Laporan King Akbar Bot",
+        ["color"] = 0x2ecc71,
+        ["fields"] = {
+            { name = "💵 Uang Sekarang", value = "Rp "..formatNumberWeb(uangSekarang), inline = true },
+            { name = "📈 Profit", value = (profit >= 0 and "+" or "")..formatNumberWeb(profit), inline = true },
+            { name = "⏱️ Durasi", value = os.date("!%H:%M:%S", os.difftime(os.time(), getgenv().WaktuMulai or os.time())), inline = true },
+            { name = "☕ Barista", value = "Order: "..(State.OrderCount or 0).."\nPerbaikan: "..(State.MachineFixCount or 0), inline = true },
+            { name = "🧠 Office", value = "Soal: "..(State.OfficeMathSolved or 0).."\nPrint: "..(State.OfficePrints or 0), inline = true },
+            { name = "📦 Courier", value = "Paket: "..(State.CourierDelivered or 0), inline = true },
+        },
+        ["footer"] = { text = "King Akbar v5.8 • "..os.date("%Y-%m-%d %H:%M:%S") }
+    }
+
+    local body = Services.HttpService:JSONEncode({
+        embeds = { embed }
+    })
+
+    pcall(function()
+        Services.HttpService:PostAsync(webhookUrl, body)
+    end)
+end
+
+-- Thread pengiriman periodik
+task.spawn(function()
+    while true do
+        task.wait(webhookInterval * 60)  -- menit ke detik
+        if webhookActive and webhookUrl ~= "" then
+            sendWebhookReport()
+        end
+    end
+end)
 
 -- ============================
 -- TAB 3: KEAMANAN
@@ -1985,7 +2054,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.8 FINAL SIAP!",
-    Content  = "Office settings ada di tab Auto Farm. Gas cuan!",
+    Title    = "👑 KING AKBAR V5.8 SIAP!",
+    Content  = "Office 3 slider. Webhook pakai menit. Gas cuan!",
     Duration = 5,
 })
