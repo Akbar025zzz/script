@@ -1,12 +1,12 @@
 --[[
 ================================================================================
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT
-     v5.8 FINAL – OFFICE SIMPLE + FACING FIX + WEBHOOK + NO VIM
+     v5.9 – OFFICE SIMPLE + FACING FIX + WEBHOOK UPGRADE + NO VIM
 ================================================================================
     [+] Developer   : King Akbar
     [+] Update      : - Office 3 slider (detik)
                       - Auto hadap depan setelah duduk (menghadap komputer)
-                      - Tab Webhook (Discord)
+                      - Tab Webhook (Discord) DENGAN INTERVAL & RICH EMBED
                       - Fix klik tombol matematika murni memory (Anti-Meleset)
 ================================================================================
 ]]--
@@ -1589,7 +1589,89 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
     end
 end
 
--- // 15. UI
+-- // 15. WEBHOOK FUNCTIONS (NEW)
+local function KirimWebhookRapi()
+    if not getgenv().WebhookURL or getgenv().WebhookURL == "" then return end
+    
+    local username = LocalPlayer.Name
+    local displayName = LocalPlayer.DisplayName
+    local userId = LocalPlayer.UserId
+    
+    local avatarUrl = string.format("https://www.roblox.com/headshot-thumbnail/image?userId=%d&width=420&height=420&format=png", userId)
+    
+    local uang = "0"
+    if LocalPlayer:FindFirstChild("leaderstats") and LocalPlayer.leaderstats:FindFirstChild("Money") then
+        uang = "Rp " .. tostring(LocalPlayer.leaderstats.Money.Value)
+    end
+    
+    local pekerjaan = "Tidak ada"
+    if LocalPlayer.Team then
+        pekerjaan = LocalPlayer.Team.Name
+    end
+    
+    local timestampISO = os.date("!%Y-%m-%dT%H:%M:%SZ")
+    
+    local payload = {
+        ["username"] = "System Monitor",
+        ["avatar_url"] = "https://i.imgur.com/AfFp7pu.png",
+        ["embeds"] = {{
+            ["title"] = "📊 Player Activity Log",
+            ["description"] = string.format("Update otomatis untuk **%s** (@%s)", displayName, username),
+            ["color"] = 0x2ECC71,
+            ["thumbnail"] = { ["url"] = avatarUrl },
+            ["fields"] = {
+                {
+                    ["name"] = "👤 Player Info",
+                    ["value"] = string.format("**Name:** %s\n**ID:** `%d`", displayName, userId),
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "💼 Pekerjaan",
+                    ["value"] = string.format("```\n%s\n```", pekerjaan),
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "💰 Total Uang",
+                    ["value"] = string.format("```yaml\n%s\n```", uang),
+                    ["inline"] = true
+                }
+            },
+            ["footer"] = {
+                ["text"] = "KING AKBAR UI",
+                ["icon_url"] = "https://i.imgur.com/AfFp7pu.png"
+            },
+            ["timestamp"] = timestampISO
+        }}
+    }
+
+    local requestFunc = syn and syn.request or http and http.request or http_request or fluxus and fluxus.request or request
+    if requestFunc then
+        pcall(function()
+            requestFunc({
+                Url = getgenv().WebhookURL,
+                Method = "POST",
+                Headers = {["Content-Type"] = "application/json"},
+                Body = Services.HttpService:JSONEncode(payload)
+            })
+        end)
+    end
+end
+
+-- Auto-send webhook loop (berjalan jika EnableWebhook true)
+task.spawn(function()
+    while true do
+        task.wait(5) -- cek lebih sering agar responsif
+        if getgenv().EnableWebhook and getgenv().WebhookURL and getgenv().WebhookIntervalMinutes then
+            local waitTime = getgenv().WebhookIntervalMinutes * 60
+            KirimWebhookRapi()
+            task.wait(waitTime)
+        else
+            task.wait(1)
+        end
+    end
+end)
+
+-- // 16. UI
 local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
 local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
 local mxSz = IsMobile and Vector2.new(650, 400) or Vector2.new(850, 560)
@@ -1733,7 +1815,7 @@ SectionCourier:Toggle({
     Callback = function(on) if on then StartCourierScript() else StopCourierScript() end end,
 })
 
--- TAB 2.5: WEBHOOK
+-- TAB 2.5: WEBHOOK (UPGRADED)
 local TabWebhook = Window:Tab({ Title = "Webhook", Icon = "link", Border = true })
 
 local WebhookSection = TabWebhook:Section({
@@ -1753,10 +1835,20 @@ WebhookSection:Input({
 
 WebhookSection:Toggle({
     Title    = "Kirim Notif Otomatis",
-    Desc     = "Kirim status cuan ke Discord otomatis",
+    Desc     = "Kirim status player ke Discord otomatis setiap interval",
     Value    = false,
     Callback = function(on) 
         getgenv().EnableWebhook = on 
+    end,
+})
+
+WebhookSection:Slider({
+    Title = "⏰ Interval Kirim (menit)",
+    Desc = "Setiap berapa menit webhook dikirim (1-60 menit)",
+    Step = 1,
+    Value = { Min = 1, Max = 60, Default = 5 },
+    Callback = function(v)
+        getgenv().WebhookIntervalMinutes = v
     end,
 })
 
@@ -1767,30 +1859,8 @@ WebhookSection:Button({
             WindUI:Notify({ Title = "⚠️ Error", Content = "Isi URL Webhook dulu bos!", Duration = 3 })
             return
         end
-        
-        local playerMoney = GetPlayerMoney() or 0
-        local data = {
-            ["embeds"] = {{
-                ["title"] = "👑 King Akbar - Status Webhook",
-                ["description"] = "Test Webhook Berhasil!\n\n**Uang Sekarang:** Rp." .. tostring(playerMoney),
-                ["color"] = tonumber(0x5707AB)
-            }}
-        }
-        
-        local req = request or http_request or (syn and syn.request)
-        if req then
-            pcall(function()
-                req({
-                    Url = getgenv().WebhookURL,
-                    Method = "POST",
-                    Headers = {["Content-Type"] = "application/json"},
-                    Body = game:GetService("HttpService"):JSONEncode(data)
-                })
-            end)
-            WindUI:Notify({ Title = "✅ Sukses", Content = "Webhook berhasil dikirim ke Discord!", Duration = 3 })
-        else
-            WindUI:Notify({ Title = "❌ Error", Content = "Executor tidak support request HTTP", Duration = 3 })
-        end
+        KirimWebhookRapi()
+        WindUI:Notify({ Title = "✅ Sukses", Content = "Webhook (rich embed) berhasil dikirim!", Duration = 3 })
     end
 })
 
@@ -1963,7 +2033,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.8 SIAP!",
-    Content  = "Office memory fix + Webhook sudah di-load!",
+    Title    = "👑 KING AKBAR V5.9 SIAP!",
+    Content  = "Webhook upgraded: rich embed + interval menit",
     Duration = 5,
 })
