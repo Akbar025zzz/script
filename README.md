@@ -1,5 +1,5 @@
 -- ============================================================================
--- // KING V YP E R S - AUTO INSTANT FISHING (LEMPAR - TARIK - DAPAT)
+-- // KING V YP E R S - FORCE BITE + F9 DEBUG LOGGING (FISH IT)
 -- ============================================================================
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
@@ -21,35 +21,28 @@ local Kings  = Color3.fromHex("#120324")
 local Mains  = Color3.fromHex("#110029")
 local Purple = Color3.fromHex("#7775F2")
 
-WindUI:AddTheme({
-    Name = "MachTheme",
-    Background = Kings,
-})
+WindUI:AddTheme({ Name = "MachTheme", Background = Kings })
 WindUI:SetTheme("MachTheme")
 
 Window:Tag({ Title = "PREMIUM", Color = Mains })
-Window:Tag({ Title = "BETA", Color = Purple })
+Window:Tag({ Title = "FORCE BITE + LOG", Color = Purple })
 
 -- =================================================================
--- TOMBOL TOGGLE GUI (DRAG & CLICK SUPPORT PC + MOBILE)
+-- TOMBOL TOGGLE GUI (DRAG & CLICK)
 -- =================================================================
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 
 local protectGui
 local success, result = pcall(function()
-    if gethui then
-        return gethui()
+    if gethui then return gethui()
     elseif syn and syn.protect_gui then
         local sg = Instance.new("ScreenGui")
         syn.protect_gui(sg)
         sg.Parent = CoreGui
         return sg.Parent
-    else
-        return CoreGui
-    end
+    else return CoreGui end
 end)
 
 protectGui = success and result or Players.LocalPlayer:WaitForChild("PlayerGui")
@@ -78,18 +71,14 @@ local uiStroke = Instance.new("UIStroke"); uiStroke.Thickness = 2; uiStroke.Colo
 local dragging, dragStart, startPos, dragInput
 imageButton.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = buttonFrame.Position
+        dragging = true; dragStart = input.Position; startPos = buttonFrame.Position
     end
 end)
-
 imageButton.InputChanged:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
         dragInput = input
     end
 end)
-
 UserInputService.InputChanged:Connect(function(input)
     if dragging and dragInput and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
         local delta = input.Position - dragStart
@@ -103,16 +92,12 @@ imageButton.InputBegan:Connect(function(input)
         clickStart = input.Position
     end
 end)
-
 imageButton.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        if clickStart then
-            if (input.Position - clickStart).Magnitude < 10 then
-                if Window and Window.Toggle then Window:Toggle() end
-            end
-            clickStart = nil
-            dragging = false
+        if clickStart and (input.Position - clickStart).Magnitude < 10 then
+            if Window and Window.Toggle then Window:Toggle() end
         end
+        clickStart = nil; dragging = false
     end
 end)
 
@@ -120,51 +105,16 @@ end)
 -- INFO TAB
 -- =================================================================
 local InfoTab = Window:Tab({ Title = "Info", Icon = "solar:info-square-bold", Border = true })
-local memberCount, onlineCount = "N/A", "N/A"
-
-local function fetchDiscordInfo()
-    local req = request or http_request or (syn and syn.request)
-    if not req then return end
-    pcall(function()
-        local res = req({ Url = "https://discord.com/api/v9/invites/XmWf3YQPpZ?with_counts=true", Method = "GET" })
-        if res and res.StatusCode == 200 then
-            local data = game:GetService("HttpService"):JSONDecode(res.Body)
-            memberCount = tostring(data.approximate_member_count or "N/A")
-            onlineCount = tostring(data.approximate_presence_count or "N/A")
-        end
-    end)
-end
-
-fetchDiscordInfo()
-
-local ServerInfo = InfoTab:Paragraph({
+InfoTab:Paragraph({
     Title = "King Vypers | Official",
-    Desc = "• Member Count: " .. memberCount .. "\n• Online Count: " .. onlineCount,
+    Desc = "Script Optimized for Fish It.\n• Mode: Force Instant Bite\n• Cek F9 Console untuk melihat Log Tangkapan Ikan.",
     Image = "rbxassetid://107726435417936",
     Thumbnail = "rbxassetid://83197533072664",
     ThumbnailSize = 80,
-    Buttons = {
-        {
-            Title = "Copy Discord Invite",
-            Color = Color3.fromHex("#5707AB"),
-            Icon = "link",
-            Callback = function()
-                if setclipboard then setclipboard("https://discord.gg/XmWf3YQPpZ") end
-            end
-        },
-        {
-            Title = "Update Info",
-            Icon = "refresh-cw",
-            Callback = function()
-                fetchDiscordInfo()
-                ServerInfo:SetDesc("• Member Count: " .. memberCount .. "\n• Online Count: " .. onlineCount)
-            end
-        }
-    }
 })
 
 -- =================================================================
--- FARM TAB (EXCESSIVE INSTANT FISHING)
+-- FARM TAB & BYPASS CORE
 -- =================================================================
 local FarmTab = Window:Tab({ Title = "Farm", Icon = "fish", Border = true })
 
@@ -192,12 +142,8 @@ end)
 
 local FLOATER = "Floater_Doll"
 local FLOATER_PROPS = {
-    LightInfluence = 1,
-    Transparency   = 0.15,
-    Color          = Color3.new(1, 0.882, 0.207),
-    FaceCamera     = true,
-    LightEmission  = 1,
-    Width          = 0.12
+    LightInfluence = 1, Transparency = 0.15, Color = Color3.new(1, 0.882, 0.207),
+    FaceCamera = true, LightEmission = 1, Width = 0.12
 }
 
 local autoInstantFish = false
@@ -228,51 +174,76 @@ local function getCastPosAndRod(castDist)
     return playerPos, castPos, currentRod
 end
 
--- FUNGSIONALITAS UTAMA: LEMPAR - TARIK - DAPAT
-local function doInstantCycle()
+-- =================================================================
+-- INTI BYPASS (DENGAN LOGGING F9)
+-- =================================================================
+local cycleCount = 0
+
+local function doForceBiteCycle()
     if not START_FISHING then return end
+    cycleCount = cycleCount + 1
 
     local playerPos, castPos, currentRod = getCastPosAndRod(castDistValue)
 
-    -- 1. LEMPAR
-    pcall(function() STOP_FISHING:InvokeServer() end)
-    pcall(function() START_FISHING:InvokeServer(currentRod, FLOATER) end)
-    pcall(function() THROW_FLOATER:InvokeServer(playerPos, castPos, currentRod, FLOATER, FLOATER_PROPS, throwPowerValue) end)
-    pcall(function() CONFIRM_CAST:InvokeServer(castPos) end)
-
-    -- 2. TARIK
-    local ok, res = pcall(function() return REQUEST_FISH_BITE:InvokeServer(castPos) end)
-    local sessionId = (ok and type(res) == "table") and res.SessionId or nil
-
-    pcall(function() START_PULLING:InvokeServer() end)
-
-    -- 3. DAPAT (Burst Input Tap)
-    if sessionId then
-        pcall(function() FISHING_PULL_INPUT:InvokeServer(sessionId, "begin") end)
+    task.spawn(function()
+        print("[King Vypers] 🎣 --- Memulai Siklus ke-" .. tostring(cycleCount) .. " ---")
         
-        for _ = 1, 10 do
-            task.spawn(function()
-                pcall(function() FISHING_PULL_INPUT:InvokeServer(sessionId, "tap") end)
-            end)
-        end
-    end
+        -- 1. Lempar Umpan
+        pcall(function() STOP_FISHING:InvokeServer() end)
+        pcall(function() START_FISHING:InvokeServer(currentRod, FLOATER) end)
+        pcall(function() THROW_FLOATER:InvokeServer(playerPos, castPos, currentRod, FLOATER, FLOATER_PROPS, throwPowerValue) end)
+        pcall(function() CONFIRM_CAST:InvokeServer(castPos) end)
 
-    pcall(function() STOP_FISHING:InvokeServer() end)
+        -- 2. PAKSA MAKAN
+        local ok, res = pcall(function() return REQUEST_FISH_BITE:InvokeServer(castPos) end)
+        
+        if ok and type(res) == "table" then
+            local sessionId = res.SessionId
+            if sessionId then
+                warn("[King Vypers] ✅ UMPAN DIMAKAN! SessionID: " .. tostring(sessionId))
+                
+                -- Nge-print semua data yang dikasih dari server (jenis ikan, rarity, dll kalau ada)
+                for k, v in pairs(res) do
+                    print("   -> " .. tostring(k) .. ": " .. tostring(v))
+                end
+
+                -- 3. LANGSUNG TARIK
+                pcall(function() START_PULLING:InvokeServer() end)
+                pcall(function() FISHING_PULL_INPUT:InvokeServer(sessionId, "begin") end)
+                
+                print("[King Vypers] ⚡ Mengeksekusi 15x Tap Instan untuk Bypass Tarikan...")
+                for _ = 1, 15 do
+                    task.spawn(function()
+                        pcall(function() FISHING_PULL_INPUT:InvokeServer(sessionId, "tap") end)
+                    end)
+                end
+                warn("[King Vypers] 🐟 IKAN BERHASIL DITANGKAP!")
+            else
+                warn("[King Vypers] ❌ MISS! Ikan tidak merespon umpan atau data kosong.")
+            end
+        else
+            warn("[King Vypers] ⚠️ GAGAL REQUEST! Server tidak merespon gigitan ikan.")
+        end
+
+        print("[King Vypers] 🛑 Reset Pancingan...")
+        print("------------------------------------------------")
+        pcall(function() STOP_FISHING:InvokeServer() end)
+    end)
 end
 
 -- =================================================================
 -- UI CONTROL ELEMENTS
 -- =================================================================
 FarmTab:Toggle({
-    Title = "Auto Instant Fish (Fast)",
-    Desc = "Mode Ekstrim: Lempar -> Tarik -> Dapat",
+    Title = "Auto Farm (Force Bite + Log)",
+    Desc = "Buka F9 Console untuk melihat Log pergerakan ikan",
     Value = false,
     Callback = function(state)
         autoInstantFish = state
         if state then
             task.spawn(function()
                 while autoInstantFish do
-                    doInstantCycle()
+                    doForceBiteCycle()
                     task.wait(fishDelayValue)
                 end
             end)
@@ -282,35 +253,20 @@ FarmTab:Toggle({
 
 FarmTab:Input({
     Title = "Cast Distance",
-    Desc = "Jarak lemparan pancingan",
-    Value = "28",
-    Placeholder = "28",
-    Callback = function(text)
-        local num = tonumber(text)
-        if num then castDistValue = num end
-    end,
+    Value = "28", Placeholder = "28",
+    Callback = function(text) local num = tonumber(text); if num then castDistValue = num end end,
 })
 
 FarmTab:Input({
     Title = "Throw Power",
-    Desc = "Kekuatan melempar",
-    Value = "10",
-    Placeholder = "10",
-    Callback = function(text)
-        local num = tonumber(text)
-        if num then throwPowerValue = num end
-    end,
+    Value = "10", Placeholder = "10",
+    Callback = function(text) local num = tonumber(text); if num then throwPowerValue = num end end,
 })
 
 FarmTab:Input({
-    Title = "Fish Delay",
-    Desc = "Micro delay siklus (Default 0.01s)",
-    Value = "0.01",
-    Placeholder = "0.01",
-    Callback = function(text)
-        local num = tonumber(text)
-        if num then fishDelayValue = num end
-    end,
+    Title = "Cycle Delay (Speed)",
+    Value = "0.01", Placeholder = "0.01",
+    Callback = function(text) local num = tonumber(text); if num then fishDelayValue = num end end,
 })
 
 InfoTab:Select()
