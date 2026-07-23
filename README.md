@@ -25,7 +25,6 @@ local Grey = Color3.fromHex("#292828")
 local Blue = Color3.fromHex("#257AF7")
 local Red = Color3.fromHex("#EF4F1D")
 
-
 -- TARUH DISINI ↓
 WindUI:AddTheme({
     Name = "MachTheme",
@@ -89,7 +88,7 @@ buttonFrame.Parent = screenGui
 
 local imageButton = Instance.new("ImageButton")
 imageButton.Size = UDim2.new(1, 0, 1, 0)
-imageButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)       -- merah -> hitam pekat
+imageButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)       
 imageButton.BackgroundTransparency = 0.2
 imageButton.Image = "rbxassetid://107726435417936"
 imageButton.ScaleType = Enum.ScaleType.Fit
@@ -101,13 +100,13 @@ uiCorner.Parent = imageButton
 
 local uiStroke = Instance.new("UIStroke")
 uiStroke.Thickness = 2
-uiStroke.Color = Color3.fromRGB(60, 60, 60)                     -- merah muda -> abu gelap
+uiStroke.Color = Color3.fromRGB(60, 60, 60)                     
 uiStroke.Parent = imageButton
 
 local uiGradient = Instance.new("UIGradient")
 uiGradient.Color = ColorSequence.new(
-    Color3.fromRGB(20, 20, 20),                                  -- merah -> hitam pekat
-    Color3.fromRGB(60, 60, 60)                                   -- merah muda -> abu gelap
+    Color3.fromRGB(20, 20, 20),                                  
+    Color3.fromRGB(60, 60, 60)                                   
 )
 uiGradient.Parent = uiStroke
 
@@ -188,19 +187,13 @@ imageButton.MouseLeave:Connect(function()
 end)
 
 -- INFO TAB
-
-	local InfoTab = Window:Tab({
-		Title = "Info",
-		Icon = "solar:info-square-bold",
-		IconColor = Mains,
-		IconShape = "Square",
-		Border = true,
-	})
-
-
-
-
-
+local InfoTab = Window:Tab({
+    Title = "Info",
+    Icon = "solar:info-square-bold",
+    IconColor = Mains,
+    IconShape = "Square",
+    Border = true,
+})
 
 local HttpService = game:GetService("HttpService")
 -- Fungsi fetch member count
@@ -264,10 +257,10 @@ local ServerInfo = InfoTab:Paragraph({
         }
     }
 })
+
 -- ══════════════════════════════════════════
 --              RESOLVER MODUL
 -- ══════════════════════════════════════════
--- EventResolver v7 (hash-safe, scan langsung dari net:GetChildren())
 local EmbeddedEventResolver = (function()
     local RS = game:GetService("ReplicatedStorage")
 
@@ -279,14 +272,10 @@ local EmbeddedEventResolver = (function()
     }
 
     local function isHash(name)
-        -- Hash = hex string panjang >= 32 char, hanya hex
         return #name >= 32 and name:match("^[0-9a-f]+$") ~= nil
     end
 
     local function stripPrefix(name)
-        -- "RF/ChargeFishingRod" -> "ChargeFishingRod"
-        -- "RE/FishCaught"       -> "FishCaught"
-        -- "URE/TakeMeasurement" -> "TakeMeasurement"
         return name:match("^[A-Z]+/(.+)$") or name
     end
 
@@ -303,7 +292,6 @@ local EmbeddedEventResolver = (function()
             return net
         end
 
-        -- Fallback: scan _Index cari folder yang ada child "net"/"Net"
         local idx = RS:FindFirstChild("Packages")
         idx = idx and idx:FindFirstChild("_Index")
         if not idx then return nil end
@@ -340,7 +328,6 @@ local EmbeddedEventResolver = (function()
                 local currClass = curr.ClassName
                 local nextClass = nextChild.ClassName
 
-                -- Pair valid: sama class, curr = nama asli, next = hash
                 if currClass == nextClass
                     and not isHash(currName)
                     and isHash(nextName) then
@@ -356,7 +343,6 @@ local EmbeddedEventResolver = (function()
                 end
             end
 
-            -- Bukan pair: simpan apa adanya jika nama asli (tidak hash)
             local name = stripPrefix(curr.Name)
             if not isHash(name) then
                 if curr:IsA("RemoteFunction") and not self._rf[name] then
@@ -496,6 +482,7 @@ setmetatable(NetEvents, {
         rawset(t, k, v)
     end
 })
+
 local CombinedModules = rawget(getgenv(), "CombinedModules")
 if type(CombinedModules) ~= "table" then
     CombinedModules = {}
@@ -594,6 +581,115 @@ InstantSection:Toggle({
 })
 
 -- ══════════════════════════════════════════
+--              INSTANT FISH YTTA MODULE
+-- ══════════════════════════════════════════
+local InstantYtta = (function()
+    local Ytta = {}
+    Ytta.Active = false
+    Ytta.Settings = { 
+        SpamDelay = 0.01, 
+        SpamCount = 5, -- Jumlah ikan yang didapat per 1 lempar visual
+        CastDelay = 0.05
+    }
+    local spamThread = nil
+
+    local function loop()
+        while Ytta.Active do
+            if not EmbeddedEventResolver:IsInitialized() then task.wait(1) continue end
+            local t = Workspace:GetServerTimeNow()
+            
+            -- Lempar pancingan
+            safeFire(function() if NetEvents.RF_ChargeFishingRod then NetEvents.RF_ChargeFishingRod:InvokeServer(nil, nil, t, nil) end end)
+            task.wait(Ytta.Settings.CastDelay)
+            
+            -- Bypass minigame
+            safeFire(function() if NetEvents.RF_RequestMinigame then NetEvents.RF_RequestMinigame:InvokeServer(-1.2331848144531, 0.89899236174132, t) end end)
+            task.wait(0.01)
+            
+            -- Spam dapet ikan (Visual 1x tapi dapet banyak)
+            for i = 1, Ytta.Settings.SpamCount do
+                safeFire(function()
+                    local rf = NetEvents.RE_FishingCompleted
+                    if rf then rf:FireServer() end
+                end)
+                task.wait(Ytta.Settings.SpamDelay)
+            end
+            
+            -- Reset state biar bisa lempar lagi
+            if NetEvents.RF_CancelFishingInputs then safeFire(function() NetEvents.RF_CancelFishingInputs:InvokeServer() end) end
+            task.wait(0.01)
+        end
+    end
+
+    function Ytta.Start()
+        if Ytta.Active then return end
+        if not EmbeddedEventResolver:IsInitialized() then return end
+        Ytta.Active = true
+        spamThread = task.spawn(loop)
+    end
+
+    function Ytta.Stop()
+        if not Ytta.Active then return end
+        Ytta.Active = false
+        if spamThread then task.cancel(spamThread) spamThread = nil end
+        safeFire(function()
+            if NetEvents.RF_CancelFishingInputs then NetEvents.RF_CancelFishingInputs:InvokeServer() end
+        end)
+    end
+
+    return Ytta
+end)()
+
+-- ══════════════════════════════════════════
+--              INSTANT FISH YTTA SECTION
+-- ══════════════════════════════════════════
+local YttaSection = Fsihing:Section({ 
+    Title = "Instant Fish Ytta",
+    Box = true,
+    TextXAlignment = "Center",
+    TextSize = 15,
+    Opened = false,
+})
+
+YttaSection:Input({
+    Title = "Jumlah Ikan Per Lempar",
+    Value = tostring(InstantYtta.Settings.SpamCount),
+    Type = "Input",
+    Placeholder = "5",
+    Callback = function(input)
+        local num = tonumber(input)
+        if num and num > 0 then
+            InstantYtta.Settings.SpamCount = math.floor(num)
+        end
+    end
+})
+
+YttaSection:Input({
+    Title = "Spam Delay",
+    Value = tostring(InstantYtta.Settings.SpamDelay),
+    Type = "Input",
+    Placeholder = "0.01",
+    Callback = function(input)
+        local num = tonumber(input)
+        if num then
+            InstantYtta.Settings.SpamDelay = num
+        end
+    end
+})
+
+YttaSection:Toggle({
+    Title = "Enable Instant Fish Ytta",
+    Value = false,
+    Callback = function(state)
+        if state then
+            InstantYtta.Start()
+        else
+            InstantYtta.Stop()
+        end
+    end
+})
+
+-- ══════════════════════════════════════════
 --              Legit FISH Modul
 -- ══════════════════════════════════════════
 CombinedModules.legit = (function()
@@ -603,7 +699,7 @@ CombinedModules.legit = (function()
 
     Legit.Settings = {
         CastWait = 0.5,
-        ClickWait = 0.04, -- langsung set 0.04
+        ClickWait = 0.04,
         ShakeDelay = 0.05,
     }
 
@@ -694,7 +790,6 @@ CombinedModules.legit = (function()
         if Legit.Active then return end
         Legit.Active = true
         fishingThread = task.spawn(mainLoop)
-        -- Auto shake langsung nyala bareng
         Legit.StartAutoShake()
     end
 
@@ -705,7 +800,6 @@ CombinedModules.legit = (function()
             task.cancel(fishingThread)
             fishingThread = nil
         end
-        -- Auto shake langsung mati bareng
         Legit.StopAutoShake()
         task.wait(0.1)
         resetFishingState()
@@ -863,11 +957,9 @@ BlatantSection:Toggle({
     end
 })
 
-
 -- ══════════════════════════════════════════
 --              Support Feature
 -- ══════════════════════════════════════════
---no fishing animation
 local NoFishingAnimation = (function()
     local M = {}
     M.Enabled = false
@@ -902,7 +994,6 @@ local NoFishingAnimation = (function()
     return M
 end)()
 
---Auto Equip Rod
 local AutoEquipRod = (function()
     local M = {}
     local v0 = { Players = Players, RS = ReplicatedStorage }
@@ -919,7 +1010,6 @@ local AutoEquipRod = (function()
         return M
     end
     
-    -- ✅ Nama fungsi konsisten, pakai GetRF karena sudah RemoteFunction
     local function getRFEquip() return EmbeddedEventResolver:GetRF("EquipToolFromHotbar") end
     
     local v7Success, v7 = pcall(function()
@@ -947,8 +1037,8 @@ local AutoEquipRod = (function()
     local function equipRod()
         pcall(function()
             if not isRodEquipped() then
-                local rfEquip = getRFEquip()                -- ✅ Fix: getREEquip() → getRFEquip()
-                if rfEquip then rfEquip:InvokeServer(1) end -- ✅ InvokeServer tetap benar untuk RF
+                local rfEquip = getRFEquip()
+                if rfEquip then rfEquip:InvokeServer(1) end
             end
         end)
     end
@@ -966,7 +1056,6 @@ local AutoEquipRod = (function()
     return M
 end)()
 
---Lock Position
 local LockPosition = (function()
     local M = {}
     M.Enabled = false
@@ -994,7 +1083,6 @@ local LockPosition = (function()
     return M
 end)()
 
---disable cutscane
 local DisableCutscenes = (function()
     local CutsceneController = nil
     local OldPlayCutscene = nil
@@ -1025,7 +1113,6 @@ local DisableCutscenes = (function()
     return M
 end)()
 
---disable extras
 local DisableExtras = (function()
     local VFXFolder = ReplicatedStorage:WaitForChild("VFX")
     local DisableNotificationConnection = nil
@@ -1092,7 +1179,6 @@ local DisableExtras = (function()
     return M
 end)()
 
---stable result
 local StableResult = (function()
     local M = {}
     M.Enabled = false
@@ -1120,7 +1206,6 @@ local StableResult = (function()
     return M
 end)()
 
---walk on weather 
 local WalkOnWater = (function()
     local M = { Enabled = false, Platform = nil, AlignPos = nil, Connection = nil }
     local PLATFORM_SIZE = 14
@@ -1446,7 +1531,7 @@ CombinedModules.AutoFavorite = (function()
         if isScanning then return end
 
         local hasNameFilter = next(v8.selectedName) ~= nil
-        local hasVariantFilter = next(v8.selectedVariant) ~= nil
+        local hasVariantFilter = next(v8.selectedVariant) <> nil
         local hasRarityFilter = next(v8.selectedRarity) ~= nil
 
         if not hasNameFilter and not hasVariantFilter and not hasRarityFilter then return end
@@ -1565,7 +1650,6 @@ CombinedModules.AutoFavorite = (function()
         return v8.autoFavEnabled
     end
 
-    -- Auto init saat load
     task.spawn(function()
         if not game:IsLoaded() then game.Loaded:Wait() end
         task.wait(1)
@@ -1595,9 +1679,6 @@ local Favorite = Window:Tab({
     Border = true,
 })
 
--- ══════════════════════════════════════════
---              AUTO FAVORITE SECTION
--- ══════════════════════════════════════════
 local AutoFavSection = Favorite:Section({
     Title = "Auto Favorite",
     Box = true,
@@ -1995,9 +2076,6 @@ local Teleport = Window:Tab({
     Border = true,
 })
 
--- ══════════════════════════════════════════
---           TELEPORT TO ISLAND SECTION
--- ══════════════════════════════════════════
 local IslandSection = Teleport:Section({
     Title = "Teleport to Island",
     Box = true,
@@ -2031,9 +2109,6 @@ IslandSection:Button({
     end,
 })
 
--- ══════════════════════════════════════════
---           TELEPORT TO PLAYER SECTION
--- ══════════════════════════════════════════
 local PlayerSection = Teleport:Section({
     Title = "Teleport to Player",
     Box = true,
@@ -2081,9 +2156,6 @@ PlayerSection:Button({
     end,
 })
 
--- ══════════════════════════════════════════
---           EVENT TELEPORT SECTION
--- ══════════════════════════════════════════
 local EventSection = Teleport:Section({
     Title = "Event Teleport",
     Box = true,
@@ -2101,7 +2173,6 @@ EventSection:Dropdown({
     Value = 1,
     Callback = function(selected)
         selectedEventName = selected
-        -- Jika toggle aktif, restart dengan event baru
         if CombinedModules.AutoEvent and selected then
             CombinedModules.AutoEvent.Stop()
             task.wait(0.1)
@@ -2125,7 +2196,6 @@ EventSection:Toggle({
         end
     end,
 })
-
 
 -- ══════════════════════════════════════════
 --              AUTO SELL MODULE
@@ -2344,9 +2414,6 @@ local Shop = Window:Tab({
     Border = true,
 })
 
--- ══════════════════════════════════════════
---              AUTO SELL SECTION
--- ══════════════════════════════════════════
 local SellSection = Shop:Section({
     Title = "Auto Sell",
     Box = true,
@@ -2420,9 +2487,6 @@ SellSection:Toggle({
     end,
 })
 
--- ══════════════════════════════════════════
---           AUTO BUY WEATHER SECTION
--- ══════════════════════════════════════════
 local WeatherSection = Shop:Section({
     Title = "Auto Buy Weather",
     Box = true,
@@ -2461,9 +2525,6 @@ WeatherSection:Toggle({
     end,
 })
 
--- ══════════════════════════════════════════
---            REMOTE MERCHANT SECTION
--- ══════════════════════════════════════════
 local MerchantSection = Shop:Section({
     Title = "Remote Merchant",
     Box = true,
@@ -2485,7 +2546,6 @@ MerchantSection:Button({
         CombinedModules.MerchantSystem.Close()
     end,
 })
-
 
 -- ══════════════════════════════════════════
 --           AUTO BUY CHARM MODULE
@@ -2743,17 +2803,50 @@ local SkinSwapAnimation = (function()
     local SkinAnimation = {}
     SkinAnimation.Connections = {}
 
+    -- Extracted from provided Animations Module
     local SkinDatabase = {
-        ["Eclipse"]          = "rbxassetid://107940819382815",
-        ["HolyTrident"]      = "rbxassetid://128167068291703",
-        ["SoulScythe"]       = "rbxassetid://82259219343456",
-        ["OceanicHarpoon"]   = "rbxassetid://76325124055693",
-        ["BinaryEdge"]       = "rbxassetid://109653945741202",
-        ["Vanquisher"]       = "rbxassetid://93884986836266",
-        ["KrampusScythe"]    = "rbxassetid://134934781977605",
-        ["BanHammer"]        = "rbxassetid://96285280763544",
-        ["CorruptionEdge"]   = "rbxassetid://126613975718573",
-        ["PrincessParasol"]  = "rbxassetid://99143072029495",
+        ["Eclipse"]              = "rbxassetid://107940819382815",
+        ["HolyTrident"]          = "rbxassetid://128167068291703",
+        ["SoulScythe"]           = "rbxassetid://82259219343456",
+        ["BinaryEdge"]           = "rbxassetid://109653945741202",
+        ["Vanquisher"]           = "rbxassetid://93884986836266",
+        ["KrampusScythe"]        = "rbxassetid://134934781977605",
+        ["BanHammer"]            = "rbxassetid://96285280763544",
+        ["CorruptionEdge"]       = "rbxassetid://126613975718573",
+        ["PrincessParasol"]      = "rbxassetid://99143072029495",
+        ["AetherMonarch"]        = "rbxassetid://74447876553309",
+        ["DragonmasterScythe"]   = "rbxassetid://115176378891122",
+        ["CloudWeaver"]          = "rbxassetid://121026156047780",
+        ["WorldTourFootball"]    = "rbxassetid://95122147521041",
+        ["EnergyBlaster"]        = "rbxassetid://128051680962035",
+        ["ButterflySword"]       = "rbxassetid://128847574673285",
+        ["GalaxyConqueror"]      = "rbxassetid://133255172354551",
+        ["Overdrive"]            = "rbxassetid://71232649901855",
+        ["VoidGuitar"]           = "rbxassetid://79346352464845",
+        ["KittyGuitar"]          = "rbxassetid://132530630982956",
+        ["DraconicSoul"]         = "rbxassetid://109818439508879",
+        ["DivineStaff"]          = "rbxassetid://107412232735920",
+        ["EmpyreanStaff"]        = "rbxassetid://101971777673013",
+        ["GoldenClockwork"]      = "rbxassetid://126346193348309",
+        ["BunnySummoner"]        = "rbxassetid://101318598176860",
+        ["EasterParasol"]        = "rbxassetid://90572706842137",
+        ["SerpentsTrident"]      = "rbxassetid://140142098810185",
+        ["CrimsonRetribution"]   = "rbxassetid://108205633866814",
+        ["DarkMatterScythe"]     = "rbxassetid://106846315932087",
+        ["EtherealSword"]        = "rbxassetid://110866636674655",
+        ["CupidsHarp"]           = "rbxassetid://93542218938956",
+        ["AurelianBow"]          = "rbxassetid://89083607138153",
+        ["VoidKraken"]           = "rbxassetid://71093335229963",
+        ["CelestialScythe"]      = "rbxassetid://125568004947137",
+        ["KitsuneGreatsword"]    = "rbxassetid://139914168110430",
+        ["ChromaticKatana"]      = "rbxassetid://75078942392746",
+        ["CrescendoScythe"]      = "rbxassetid://101593515409348",
+        ["BlackholeSword"]       = "rbxassetid://88993991486322",
+        ["EternalFlower"]        = "rbxassetid://119567958965696",
+        ["GingerbreadKatana"]    = "rbxassetid://107940819382815",
+        ["ChristmasParasol"]     = "rbxassetid://99143072029495",
+        ["SunshineCello"]        = "rbxassetid://87182079399663",
+        ["ElectricGuitar"]       = "rbxassetid://139089375187802",
     }
 
     local CurrentSkin = nil
@@ -3267,9 +3360,6 @@ local Auto = Window:Tab({
     Border = true,
 })
 
--- ══════════════════════════════════════════
---           AUTO BUY CHARM SECTION
--- ══════════════════════════════════════════
 local CharmSection = Auto:Section({
     Title = "Auto Buy Charm",
     Box = true,
@@ -3339,9 +3429,6 @@ CharmSection:Toggle({
     end,
 })
 
--- ══════════════════════════════════════════
---       AUTO CLAIM PIRATE CHEST SECTION
--- ══════════════════════════════════════════
 local ClaimSection = Auto:Section({
     Title = "Auto Claim Pirate Chest",
     Box = true,
@@ -3362,9 +3449,6 @@ ClaimSection:Toggle({
     end,
 })
 
--- ══════════════════════════════════════════
---           AUTO USE POTION SECTION
--- ══════════════════════════════════════════
 local PotionSection = Auto:Section({
     Title = "Auto Use Potion",
     Box = true,
@@ -3423,22 +3507,62 @@ local SkinSection = Auto:Section({
     Opened = false,
 })
 
+-- Updated Skin Mapping from Decompiled Module
 local skinDisplayToId = {
     ["Eclipse Katana"]          = "Eclipse",
     ["Holy Trident"]            = "HolyTrident",
     ["Soul Scythe"]             = "SoulScythe",
-    ["Oceanic Harpoon"]         = "OceanicHarpoon",
     ["Binary Edge"]             = "BinaryEdge",
     ["The Vanquisher"]          = "Vanquisher",
     ["Frozen Krampus Scythe"]   = "KrampusScythe",
     ["1x1x1x1 Ban Hammer"]      = "BanHammer",
     ["Corruption Edge"]         = "CorruptionEdge",
     ["Princess Parasol"]        = "PrincessParasol",
+    ["Aether Monarch"]          = "AetherMonarch",
+    ["Dragonmaster Scythe"]     = "DragonmasterScythe",
+    ["Cloud Weaver"]            = "CloudWeaver",
+    ["World Tour Football"]     = "WorldTourFootball",
+    ["Energy Blaster"]          = "EnergyBlaster",
+    ["Butterfly Sword"]         = "ButterflySword",
+    ["Galaxy Conqueror"]        = "GalaxyConqueror",
+    ["Overdrive"]               = "Overdrive",
+    ["Void Guitar"]             = "VoidGuitar",
+    ["Kitty Guitar"]            = "KittyGuitar",
+    ["Draconic Soul"]           = "DraconicSoul",
+    ["Divine Staff"]            = "DivineStaff",
+    ["Empyrean Staff"]          = "EmpyreanStaff",
+    ["Golden Clockwork"]        = "GoldenClockwork",
+    ["Bunny Summoner"]          = "BunnySummoner",
+    ["Easter Parasol"]          = "EasterParasol",
+    ["Serpent's Trident"]       = "SerpentsTrident",
+    ["Crimson Retribution"]     = "CrimsonRetribution",
+    ["Dark Matter Scythe"]      = "DarkMatterScythe",
+    ["Ethereal Sword"]          = "EtherealSword",
+    ["Cupid's Harp"]            = "CupidsHarp",
+    ["Aurelian Bow"]            = "AurelianBow",
+    ["Void Kraken"]             = "VoidKraken",
+    ["Celestial Scythe"]        = "CelestialScythe",
+    ["Kitsune Greatsword"]      = "KitsuneGreatsword",
+    ["Chromatic Katana"]        = "ChromaticKatana",
+    ["Crescendo Scythe"]        = "CrescendoScythe",
+    ["Blackhole Sword"]         = "BlackholeSword",
+    ["Eternal Flower"]          = "EternalFlower",
+    ["Gingerbread Katana"]      = "GingerbreadKatana",
+    ["Christmas Parasol"]       = "ChristmasParasol",
+    ["Sunshine Cello"]          = "SunshineCello",
+    ["Electric Guitar"]         = "ElectricGuitar",
 }
 local skinNames = {
-    "Eclipse Katana", "Holy Trident", "Soul Scythe", "Oceanic Harpoon",
-    "Binary Edge", "The Vanquisher", "Frozen Krampus Scythe",
-    "1x1x1x1 Ban Hammer", "Corruption Edge", "Princess Parasol"
+    "Eclipse Katana", "Holy Trident", "Soul Scythe", "Binary Edge", "The Vanquisher",
+    "Frozen Krampus Scythe", "1x1x1x1 Ban Hammer", "Corruption Edge", "Princess Parasol",
+    "Aether Monarch", "Dragonmaster Scythe", "Cloud Weaver", "World Tour Football",
+    "Energy Blaster", "Butterfly Sword", "Galaxy Conqueror", "Overdrive", "Void Guitar",
+    "Kitty Guitar", "Draconic Soul", "Divine Staff", "Empyrean Staff", "Golden Clockwork",
+    "Bunny Summoner", "Easter Parasol", "Serpent's Trident", "Crimson Retribution",
+    "Dark Matter Scythe", "Ethereal Sword", "Cupid's Harp", "Aurelian Bow", "Void Kraken",
+    "Celestial Scythe", "Kitsune Greatsword", "Chromatic Katana", "Crescendo Scythe",
+    "Blackhole Sword", "Eternal Flower", "Gingerbread Katana", "Christmas Parasol",
+    "Sunshine Cello", "Electric Guitar"
 }
 local selectedSkin = "Eclipse Katana"
 
@@ -3646,7 +3770,7 @@ CombinedModules.AutoTrade = (function()
     end
 
     local function playerExists(playerName)
-        return Players:FindFirstChild(playerName) ~= nil
+        return Players:FindFirstChild(playerName) <> nil
     end
 
     local function itemStillExists(uuid)
@@ -3948,9 +4072,6 @@ local Trade = Window:Tab({
 local activeMonitor = nil
 local activeToggle = nil
 
--- ══════════════════════════════════════════
---           SELECT PLAYER SECTION
--- ══════════════════════════════════════════
 local PlayerSection = Trade:Section({
     Title = "Select Player",
     Box = true,
@@ -3976,9 +4097,6 @@ PlayerSection:Button({
     end,
 })
 
--- ══════════════════════════════════════════
---           TRADE BY NAME SECTION
--- ══════════════════════════════════════════
 local ByNameSection = Trade:Section({
     Title = "Trade By Name",
     Box = true,
@@ -4047,9 +4165,6 @@ ByNameSection:Button({
     end,
 })
 
--- ══════════════════════════════════════════
---           TRADE BY COIN SECTION
--- ══════════════════════════════════════════
 local ByCoinSection = Trade:Section({
     Title = "Trade By Coin",
     Box = true,
@@ -4098,9 +4213,6 @@ ByCoinSection:Button({
     end,
 })
 
--- ══════════════════════════════════════════
---           TRADE BY RARITY SECTION
--- ══════════════════════════════════════════
 local ByRaritySection = Trade:Section({
     Title = "Trade By Rarity",
     Box = true,
@@ -4158,9 +4270,6 @@ ByRaritySection:Button({
     end,
 })
 
--- ══════════════════════════════════════════
---         TRADE ENCHANT STONE SECTION
--- ══════════════════════════════════════════
 local ByStoneSection = Trade:Section({
     Title = "Trade Enchant Stone",
     Box = true,
@@ -4228,9 +4337,6 @@ ByStoneSection:Button({
     end,
 })
 
--- ══════════════════════════════════════════
---         WIRE UP CALLBACKS
--- ══════════════════════════════════════════
 CombinedModules.AutoTrade.OnStatsChanged = function(s)
     pcall(function()
         if not activeMonitor then return end
@@ -4636,9 +4742,6 @@ local Webhook = Window:Tab({
     Border = true,
 })
 
--- ══════════════════════════════════════════
---         FISH CAUGHT WEBHOOK SECTION
--- ══════════════════════════════════════════
 local FishWebhookSection = Webhook:Section({
     Title = "Fish Caught Webhook",
     Box = true,
@@ -4734,9 +4837,6 @@ FishWebhookSection:Button({
     end,
 })
 
--- ══════════════════════════════════════════
---        DISCONNECT WEBHOOK SECTION
--- ══════════════════════════════════════════
 local DisconnectWebhookSection = Webhook:Section({
     Title = "Disconnect Webhook",
     Box = true,
@@ -4804,4 +4904,3 @@ DisconnectWebhookSection:Button({
         pcall(function() WebhookModule:TestDisconnectWebhook() end)
     end,
 })
-
