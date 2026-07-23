@@ -189,13 +189,13 @@ end)
 
 -- INFO TAB
 
-    local InfoTab = Window:Tab({
-        Title = "Info",
-        Icon = "solar:info-square-bold",
-        IconColor = Mains,
-        IconShape = "Square",
-        Border = true,
-    })
+	local InfoTab = Window:Tab({
+		Title = "Info",
+		Icon = "solar:info-square-bold",
+		IconColor = Mains,
+		IconShape = "Square",
+		Border = true,
+	})
 
 
 
@@ -1446,7 +1446,7 @@ CombinedModules.AutoFavorite = (function()
         if isScanning then return end
 
         local hasNameFilter = next(v8.selectedName) ~= nil
-        local hasVariantFilter = next(v8.selectedVariant) <> nil
+        local hasVariantFilter = next(v8.selectedVariant) ~= nil
         local hasRarityFilter = next(v8.selectedRarity) ~= nil
 
         if not hasNameFilter and not hasVariantFilter and not hasRarityFilter then return end
@@ -2743,51 +2743,17 @@ local SkinSwapAnimation = (function()
     local SkinAnimation = {}
     SkinAnimation.Connections = {}
 
-    -- Database diupdate dari file remot Skin Animation
     local SkinDatabase = {
-        ["Eclipse Katana"]          = "rbxassetid://107940819382815",
-        ["Gingerbread Katana"]      = "rbxassetid://107940819382815",
-        ["Sunshine Cello"]          = "rbxassetid://87182079399663",
-        ["Electric Guitar"]         = "rbxassetid://139089375187802",
-        ["Soul Scythe"]             = "rbxassetid://82259219343456",
-        ["Aether Monarch"]          = "rbxassetid://74447876553309",
-        ["Dragonmaster Scythe"]     = "rbxassetid://115176378891122",
-        ["Cloud Weaver"]            = "rbxassetid://121026156047780",
-        ["World Tour Football"]     = "rbxassetid://95122147521041",
-        ["Energy Blaster"]          = "rbxassetid://128051680962035",
-        ["Butterfly Sword"]         = "rbxassetid://128847574673285",
-        ["Galaxy Conqueror"]        = "rbxassetid://133255172354551",
-        ["Overdrive"]               = "rbxassetid://71232649901855",
-        ["Void Guitar"]             = "rbxassetid://79346352464845",
-        ["Kitty Guitar"]            = "rbxassetid://132530630982956",
-        ["Draconic Soul"]           = "rbxassetid://109818439508879",
-        ["Divine Staff"]            = "rbxassetid://107412232735920",
-        ["Empyrean Staff"]          = "rbxassetid://101971777673013",
-        ["Golden Clockwork"]        = "rbxassetid://126346193348309",
-        ["Bunny Summoner"]          = "rbxassetid://101318598176860",
-        ["Easter Parasol"]          = "rbxassetid://90572706842137",
-        ["Serpent's Trident"]       = "rbxassetid://140142098810185",
-        ["Crimson Retribution"]     = "rbxassetid://108205633866814",
-        ["Dark Matter Scythe"]      = "rbxassetid://106846315932087",
-        ["Ethereal Sword"]          = "rbxassetid://110866636674655",
-        ["Cupid's Harp"]            = "rbxassetid://93542218938956",
-        ["Aurelian Bow"]            = "rbxassetid://89083607138153",
-        ["Void Kraken"]             = "rbxassetid://71093335229963",
-        ["Celestial Scythe"]        = "rbxassetid://125568004947137",
-        ["Kitsune Greatsword"]      = "rbxassetid://139914168110430",
-        ["Chromatic Katana"]        = "rbxassetid://75078942392746",
-        ["Crescendo Scythe"]        = "rbxassetid://101593515409348",
-        ["Blackhole Sword"]         = "rbxassetid://88993991486322",
-        ["Eternal Flower"]          = "rbxassetid://119567958965696",
-        ["Holy Trident"]            = "rbxassetid://128167068291703",
-        ["Binary Edge"]             = "rbxassetid://109653945741202",
-        ["The Vanquisher"]          = "rbxassetid://93884986836266",
-        ["Frozen Krampus Scythe"]   = "rbxassetid://134934781977605",
-        ["1x1x1x1 Ban Hammer"]      = "rbxassetid://96285280763544",
-        ["Corruption Edge"]         = "rbxassetid://126613975718573",
-        ["Christmas Parasol"]       = "rbxassetid://99143072029495",
-        ["Princess Parasol"]        = "rbxassetid://99143072029495",
-        ["Oceanic Harpoon"]         = "rbxassetid://76325124055693",
+        ["Eclipse"]          = "rbxassetid://107940819382815",
+        ["HolyTrident"]      = "rbxassetid://128167068291703",
+        ["SoulScythe"]       = "rbxassetid://82259219343456",
+        ["OceanicHarpoon"]   = "rbxassetid://76325124055693",
+        ["BinaryEdge"]       = "rbxassetid://109653945741202",
+        ["Vanquisher"]       = "rbxassetid://93884986836266",
+        ["KrampusScythe"]    = "rbxassetid://134934781977605",
+        ["BanHammer"]        = "rbxassetid://96285280763544",
+        ["CorruptionEdge"]   = "rbxassetid://126613975718573",
+        ["PrincessParasol"]  = "rbxassetid://99143072029495",
     }
 
     local CurrentSkin = nil
@@ -2798,8 +2764,8 @@ local SkinSwapAnimation = (function()
     local replaceCount = 0
     local currentPoolIndex = 1
 
-    local function LoadAnimationPool(skinName)
-        local animId = SkinDatabase[skinName]
+    local function LoadAnimationPool(skinId)
+        local animId = SkinDatabase[skinId]
         if not animId then return false end
         for _, track in ipairs(AnimationPool) do
             pcall(function() track:Stop(0) track:Destroy() end)
@@ -2881,10 +2847,10 @@ local SkinSwapAnimation = (function()
         end
     end)
 
-    function SkinAnimation.SwitchSkin(skinName)
-        if not SkinDatabase[skinName] then return false end
-        CurrentSkin = skinName
-        if IsEnabled then return LoadAnimationPool(skinName) end
+    function SkinAnimation.SwitchSkin(skinId)
+        if not SkinDatabase[skinId] then return false end
+        CurrentSkin = skinId
+        if IsEnabled then return LoadAnimationPool(skinId) end
         return true
     end
 
@@ -2934,14 +2900,6 @@ local SkinSwapAnimation = (function()
     function SkinAnimation.IsEnabled() return IsEnabled end
     function SkinAnimation.GetCurrentSkin() return CurrentSkin end
     function SkinAnimation.GetReplaceCount() return replaceCount end
-    function SkinAnimation.GetSkinNames()
-        local names = {}
-        for name, _ in pairs(SkinDatabase) do
-            table.insert(names, name)
-        end
-        table.sort(names)
-        return names
-    end
 
     return SkinAnimation
 end)()
@@ -3465,9 +3423,24 @@ local SkinSection = Auto:Section({
     Opened = false,
 })
 
--- Generate Skin Names langsung dari database SkinSwapAnimation
-local skinNames = SkinSwapAnimation.GetSkinNames()
-local selectedSkin = skinNames[1] or "Eclipse Katana"
+local skinDisplayToId = {
+    ["Eclipse Katana"]          = "Eclipse",
+    ["Holy Trident"]            = "HolyTrident",
+    ["Soul Scythe"]             = "SoulScythe",
+    ["Oceanic Harpoon"]         = "OceanicHarpoon",
+    ["Binary Edge"]             = "BinaryEdge",
+    ["The Vanquisher"]          = "Vanquisher",
+    ["Frozen Krampus Scythe"]   = "KrampusScythe",
+    ["1x1x1x1 Ban Hammer"]      = "BanHammer",
+    ["Corruption Edge"]         = "CorruptionEdge",
+    ["Princess Parasol"]        = "PrincessParasol",
+}
+local skinNames = {
+    "Eclipse Katana", "Holy Trident", "Soul Scythe", "Oceanic Harpoon",
+    "Binary Edge", "The Vanquisher", "Frozen Krampus Scythe",
+    "1x1x1x1 Ban Hammer", "Corruption Edge", "Princess Parasol"
+}
+local selectedSkin = "Eclipse Katana"
 
 SkinSection:Dropdown({
     Title = "Select Skin",
@@ -3475,8 +3448,8 @@ SkinSection:Dropdown({
     Value = 1,
     Callback = function(selected)
         selectedSkin = selected
-        if SkinSwapAnimation.IsEnabled() then
-            SkinSwapAnimation.SwitchSkin(selectedSkin)
+        if SkinSwapAnimation.IsEnabled() and skinDisplayToId[selected] then
+            SkinSwapAnimation.SwitchSkin(skinDisplayToId[selected])
         end
     end,
 })
@@ -3486,7 +3459,8 @@ SkinSection:Toggle({
     Value = false,
     Callback = function(state)
         if state then
-            SkinSwapAnimation.SwitchSkin(selectedSkin)
+            local skinId = skinDisplayToId[selectedSkin] or "Eclipse"
+            SkinSwapAnimation.SwitchSkin(skinId)
             SkinSwapAnimation.Enable()
         else
             SkinSwapAnimation.Disable()
@@ -3563,7 +3537,7 @@ EnchantSection:Button({
     Callback = function()
         local char = game.Players.LocalPlayer.Character
         if char and char:FindFirstChild("HumanoidRootPart") then
-            char.HumanoidRootPart.CFRAME = CFrame.new(1478.29846, 126.044891, -613.519653)
+            char.HumanoidRootPart.CFrame = CFrame.new(1478.29846, 126.044891, -613.519653)
         end
     end,
 })
@@ -4529,7 +4503,7 @@ local WebhookModule = (function()
                     Headers = { ["Content-Type"] = "application/json" },
                     Body = HttpService:JSONEncode(payload)
                 })
-            })
+            end)
         end)
     end
 
@@ -4830,3 +4804,4 @@ DisconnectWebhookSection:Button({
         pcall(function() WebhookModule:TestDisconnectWebhook() end)
     end,
 })
+
