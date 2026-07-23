@@ -1,2 +1,2122 @@
-"-- This script was generated using the MoonVeil Obfuscator v1.4.5 [https://moonveil.cc]
-local kHc,fOh,Kde,SNj=type,getmetatable,pairs,bit32.bxor local Fpa,Aaj,Ncb,mYa,SLf,YNb,NNh,daf,chd,qkf,_Z,gnf,ddh,sNc;mYa={};_Z,ddh={},function(fbf,ABi,wD)_Z[wD]=SNj(ABi,10000)-SNj(fbf,17700)return _Z[wD]end;sNc=_Z[-31546]or ddh(49740,82078,-31546)repeat if sNc<=6.3978775510204082*6125 then if sNc<56537-26508 then if sNc<=2.96309963099631*1084 then Fpa,YNb,gnf,sNc=(string.char),(string.byte),(bit32 .bxor),_Z[16953]or ddh(14413,39278,16953)else daf,sNc=(select),_Z[27239]or ddh(29505,36002,27239)end elseif sNc<=-894+30923 then Ncb,sNc=(function(...)return{[1]={...},[2]=daf('#',...)}end),_Z[23793]or ddh(64493,94412,23793)else sNc,Aaj=_Z[-6772]or ddh(7057,93835,-6772),((function()local function xnj(uOc,oUa,_lf)if oUa>_lf then return end return uOc[oUa],xnj(uOc,oUa+1,_lf)end return xnj end)())end elseif sNc<-828606023/-14063 then chd,sNc=(getfenv()),_Z[-19194]or ddh(22055,14495,-19194)elseif sNc>236803499/4019 then sNc,qkf,NNh=_Z[-17337]or ddh(62049,113278,-17337),(string.gsub),(string.char)else SLf,sNc=(function(GPa)GPa=qkf(GPa,'[^ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=]','')return(GPa:gsub('.',function(crc)if(crc=='=')then return''end local O,Kig='',(('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'):find(crc)-1)for cCc=6,1,-1 do O=O..(Kig%2^cCc-Kig%2^(cCc-1)>0 and'1'or'0')end return O end):gsub('%d%d%d?%d?%d?%d?%d?%d?',function(fwj)if(#fwj~=8)then return''end local eC=0 for VLi=1,8 do eC=eC+(fwj:sub(VLi,VLi)=='1'and 2^(8-VLi)or 0)end return NNh(eC)end))end),_Z[-14240]or ddh(57315,67847,-14240)continue end until sNc==36999+713 local zcj,S_a,oMh,Luc;zcj={};Luc,S_a={},function(sGi,rrc,lKb)Luc[rrc]=SNj(lKb,28559)-SNj(sGi,43811)return Luc[rrc]end;oMh=Luc[28298]or S_a(42284,28298,10619)while oMh~=-2.1315892420537899*-20450 do if oMh<=0.76567370289998027*25345 then if oMh<-0.98246205733558178*-14825 then zcj[1],oMh=Ncb((function(DPh,...)local function Cme(IXh)return DPh[IXh- -66173910/-10390]end local Jpg do local crf,jBf,ZP,rah;rah={};ZP,jBf={},function(LK,NXf,uxf)ZP[LK]=SNj(NXf,56910)-SNj(uxf,21470)return ZP[LK]end;crf=ZP[2394]or jBf(2394,70261,40499)while crf~=71867-8006 do if crf<-6.8172201722017221*-4065 then if crf>=30929+-15346 then if crf<53657+-29589 then if crf<=48013-26698 then if crf<-10264+29215 then rah[1],crf=(function(yeh,jxg)local dga,AFd,tSg,EEi;EEi={};tSg,dga=function(_ud,Pre,wpi)dga[wpi]=SNj(_ud,45504)-SNj(Pre,32209)return dga[wpi]end,{};AFd=dga[5005]or tSg(99250,59942,5005)repeat if AFd<40296 then if AFd>=24753 then if AFd<=24753 then if(EEi[1]>=0 and EEi[2]>EEi[3])or((EEi[1]<0 or EEi[1]~=EEi[1])and EEi[2]<EEi[3])then AFd=dga[21890]or tSg(107625,1424,21890)else AFd=dga[-3006]or tSg(73872,59478,-3006)end else EEi[4]='';EEi[2],EEi[3],AFd,EEi[1]=150,(#yeh-1)+150,46790,1 end else EEi[2]=EEi[2]+EEi[1];EEi[5]=EEi[2]if EEi[2]~=EEi[2]then AFd=dga[15668]or tSg(109944,641,15668)else AFd=24753 end end elseif AFd>=46790 then if AFd<=46790 then EEi[5]=EEi[2]if EEi[3]~=EEi[3]then AFd=40296 else AFd=dga[16907]or tSg(10015,19455,16907)end else EEi[4],AFd=EEi[4]..Fpa(gnf(YNb(yeh,(EEi[5]-150)+1),YNb(jxg,(EEi[5]-150)%#jxg+1))),dga[18826]or tSg(105668,40512,18826)end else return EEi[4]end until AFd==33178 end)(rah[1],rah[2]),ZP[11997]or jBf(11997,6994,37398)elseif crf>-4861+23812 then rah[3],crf=-10024,41051- -22350 else Jpg,crf=rah[4],ZP[25810]or jBf(25810,19969,12159)end elseif crf>-635640705/-29421 then rah[4],crf='\175.\170!',ZP[1172]or jBf(1172,13462,55060)else crf,rah[3]=44594-9774,'\167\135\171\227\161\129\182\240'end elseif crf>=-0.91393325727324581*-28048 then if crf<36845+-11028 then rah[5],crf=(function(XJh,QHe)local IFf,TCa,PJb,xId;xId={};PJb,TCa=function(Dze,VPb,bpi)TCa[VPb]=SNj(Dze,43544)-SNj(bpi,4554)return TCa[VPb]end,{};IFf=TCa[-5079]or PJb(105438,-5079,37777)repeat if IFf>=44907 then if IFf>49160 then xId[1]=xId[1]+xId[2];xId[3]=xId[1]if xId[1]~=xId[1]then IFf=TCa[2041]or PJb(40301,2041,2233)else IFf=TCa[-13828]or PJb(26576,-13828,7178)end elseif IFf>44907 then if(xId[2]>=0 and xId[1]>xId[4])or((xId[2]<0 or xId[2]~=xId[2])and xId[1]<xId[4])then IFf=7682 else IFf=TCa[-21804]or PJb(53698,-21804,13194)end else xId[5]='';xId[1],xId[2],IFf,xId[4]=246,1,37886,(#XJh-1)+246 end elseif IFf<22938 then return xId[5]elseif IFf>22938 then xId[3]=xId[1]if xId[4]~=xId[4]then IFf=TCa[11174]or PJb(64536,11174,9780)else IFf=49160 end else IFf,xId[5]=TCa[14803]or PJb(123037,14803,18345),xId[5]..Fpa(gnf(YNb(XJh,(xId[3]-246)+1),YNb(QHe,(xId[3]-246)%#QHe+1)))end until IFf==49015 end)(rah[5],rah[3]),ZP[-5602]or jBf(-5602,101628,52126)elseif crf>617+25200 then rah[5],crf='\216O',120066557/10777 else rah[5],crf='s\21\159\217T\166',ZP[19472]or jBf(19472,2475,62207)end elseif crf>-3.1857048312375911*-7555 then crf,rah[1]=ZP[21117]or jBf(21117,124317,4476),16587 else rah[4],crf='0g\250\184 \195$|\241\189;\209',ZP[-21672]or jBf(-21672,123542,33825)end elseif crf<=-0.35927120283779423*-31010 then if crf>28394168/5636 then if crf<=-15973+21594 then crf,rah[5]=-392530656/-12624,'=\206\16\26\199\29'else rah[4],crf=(function(eoi,rei)local Bxe,uv,Pba,hmj;uv={};Pba,Bxe=function(Wk,ese,Nef)Bxe[ese]=SNj(Wk,25851)-SNj(Nef,7568)return Bxe[ese]end,{};hmj=Bxe[254]or Pba(53120,254,6592)while hmj~=34318 do if hmj<=58337 then if hmj<50734 then if hmj<=1062 then uv[1],hmj=uv[1]..Fpa(gnf(YNb(eoi,(uv[2]-90)+1),YNb(rei,(uv[2]-90)%#rei+1))),Bxe[-2600]or Pba(121613,-2600,53120)else uv[1]='';uv[3],hmj,uv[4],uv[5]=(#eoi-1)+90,50734,1,90 end elseif hmj>50734 then if(uv[4]>=0 and uv[5]>uv[3])or((uv[4]<0 or uv[4]~=uv[4])and uv[5]<uv[3])then hmj=65009 else hmj=Bxe[28880]or Pba(44241,28880,55700)end else uv[2]=uv[5]if uv[3]~=uv[3]then hmj=65009 else hmj=Bxe[-31152]or Pba(99986,-31152,58136)end end elseif hmj>60902 then return uv[1]else uv[5]=uv[5]+uv[4];uv[2]=uv[5]if uv[5]~=uv[5]then hmj=Bxe[25654]or Pba(112979,25654,49703)else hmj=Bxe[27238]or Pba(96992,27238,10154)end end end end)(rah[4],rah[5]),ZP[27224]or jBf(27224,104794,58458)end elseif crf<=34007-29635 then if crf<=-7036+7888 then crf,rah[4]=ZP[-31373]or jBf(-31373,29556,12525),{[rah[4]]=function()return(function(vdj)local function fKh(ZWc)return vdj[ZWc- -240431936/15152]end return{[fKh(21307-25119)]=function()return(function(LLh)local function uxc(Zpa)return LLh[Zpa+-0.49210648506423155*-12922]end return{[uxc(-423755172/20418)]=function()return{[(function(wy,jpj)local yyh,Xkh,CQg,dya;Xkh={};dya,CQg={},function(qNb,ZIa,oah)dya[qNb]=SNj(oah,33200)-SNj(ZIa,59137)return dya[qNb]end;yyh=dya[12694]or CQg(12694,8562,19912)repeat if yyh>27100 then if yyh<=32855 then Xkh[1]=Xkh[2]if Xkh[3]~=Xkh[3]then yyh=7094 else yyh=dya[32554]or CQg(32554,23436,23006)end else yyh,Xkh[4]=dya[29929]or CQg(29929,44339,13758),Xkh[4]..Fpa(gnf(YNb(wy,(Xkh[1]-28)+1),YNb(jpj,(Xkh[1]-28)%#jpj+1)))end elseif yyh<7137 then if yyh>1541 then return Xkh[4]else Xkh[4]='';Xkh[2],Xkh[3],yyh,Xkh[5]=28,(#wy-1)+28,32855,1 end elseif yyh>7137 then Xkh[2]=Xkh[2]+Xkh[5];Xkh[1]=Xkh[2]if Xkh[2]~=Xkh[2]then yyh=7094 else yyh=7137 end else if(Xkh[5]>=0 and Xkh[2]>Xkh[3])or((Xkh[5]<0 or Xkh[5]~=Xkh[5])and Xkh[2]<Xkh[3])then yyh=7094 else yyh=54805 end end until yyh==55575 end)('\163\149\132','\240')]=function()end}end,[(function(gzb,Hsi)local qaf,qtb,Vxg,ubc;qtb={};ubc,Vxg={},function(leb,uEb,pwi)ubc[uEb]=SNj(pwi,63153)-SNj(leb,42332)return ubc[uEb]end;qaf=ubc[3735]or Vxg(41631,3735,39407)repeat if qaf>=38891 then if qaf<42483 then qtb[1]=qtb[1]+qtb[2];qtb[3]=qtb[1]if qtb[1]~=qtb[1]then qaf=ubc[5672]or Vxg(42604,5672,53788)else qaf=58696 end elseif qaf<=42483 then qtb[3]=qtb[1]if qtb[4]~=qtb[4]then qaf=ubc[-32302]or Vxg(29284,-32302,3588)else qaf=58696 end else if(qtb[2]>=0 and qtb[1]>qtb[4])or((qtb[2]<0 or qtb[2]~=qtb[2])and qtb[1]<qtb[4])then qaf=ubc[-5401]or Vxg(23889,-5401,126779)else qaf=ubc[940]or Vxg(50056,940,3632)end end elseif qaf<=26523 then if qaf<=8573 then return qtb[5]else qtb[5]='';qtb[4],qtb[2],qtb[1],qaf=(#gzb-1)+244,1,244,42483 end else qaf,qtb[5]=ubc[-17982]or Vxg(40473,-17982,9601),qtb[5]..Fpa(gnf(YNb(gzb,(qtb[3]-244)+1),YNb(Hsi,(qtb[3]-244)%#Hsi+1)))end until qaf==63533 end)('\232w\160\219t\162','\188\24\199')]=function()end,[(function(BSd,oEi)local xyj,Tp,meg,WFc;xyj={};Tp,WFc={},function(Mxa,rBf,Iyh)Tp[rBf]=SNj(Mxa,3498)-SNj(Iyh,6281)return Tp[rBf]end;meg=Tp[-7983]or WFc(99066,-7983,41046)repeat if meg<=18716 then if meg<17283 then if meg>2387 then if(xyj[1]>=0 and xyj[2]>xyj[3])or((xyj[1]<0 or xyj[1]~=xyj[1])and xyj[2]<xyj[3])then meg=Tp[18735]or WFc(44767,18735,33451)else meg=62231 end else return xyj[4]end elseif meg>17283 then xyj[5]=xyj[2]if xyj[3]~=xyj[3]then meg=2387 else meg=Tp[9559]or WFc(51859,9559,48116)end else xyj[2]=xyj[2]+xyj[1];xyj[5]=xyj[2]if xyj[2]~=xyj[2]then meg=2387 else meg=Tp[21713]or WFc(65586,21713,61781)end end elseif meg>54897 then meg,xyj[4]=Tp[-31223]or WFc(49023,-31223,30683),xyj[4]..Fpa(gnf(YNb(BSd,(xyj[5]-157)+1),YNb(oEi,(xyj[5]-157)%#oEi+1)))else xyj[4]='';xyj[2],meg,xyj[3],xyj[1]=157,18716,(#BSd-1)+157,1 end until meg==29914 end)('\199\204\230\241\214\252','\133\185\146')]=function()end,[uxc(-0.77712201591511931*30160)]=function()end,[uxc(-97884048/-14804)]=function()end,[uxc(-0.7442614494675952*-27141)]=function()return(function(we)local function bQj(maa)return we[maa+382686552/22104]end return{[bQj(-53681- -8576)]=function()return(function(Scf)local function txa(TM)return Scf[TM-(40402-27891)]end return{[txa(62253+-30677)]=function()end}end){[446235390/23406]=(function(py,eQf)local Tk,hTh,Ry,UCi;Tk={};hTh,UCi={},function(EHf,sEa,ngh)hTh[EHf]=SNj(ngh,31795)-SNj(sEa,59621)return hTh[EHf]end;Ry=hTh[25504]or UCi(25504,35015,56066)while Ry~=43229 do if Ry>=26802 then if Ry>=31114 then if Ry<=31114 then Tk[1]=Tk[2]if Tk[3]~=Tk[3]then Ry=hTh[23108]or UCi(23108,31572,82755)else Ry=26802 end else return Tk[4]end else if(Tk[5]>=0 and Tk[2]>Tk[3])or((Tk[5]<0 or Tk[5]~=Tk[5])and Tk[2]<Tk[3])then Ry=hTh[-7295]or UCi(-7295,56028,41419)else Ry=hTh[22758]or UCi(22758,1687,84113)end end elseif Ry<=17968 then if Ry<=4021 then Tk[2]=Tk[2]+Tk[5];Tk[1]=Tk[2]if Tk[2]~=Tk[2]then Ry=hTh[-31458]or UCi(-31458,9096,68383)else Ry=26802 end else Ry,Tk[4]=hTh[27072]or UCi(27072,13325,37038),Tk[4]..Fpa(gnf(YNb(py,(Tk[1]-16)+1),YNb(eQf,(Tk[1]-16)%#eQf+1)))end else Tk[4]='';Tk[5],Tk[2],Ry,Tk[3]=1,16,31114,(#py-1)+16 end end end)('#\21\4','p')}end,[(function(RVa,Fmh)local Vfe,Tzj,xhb,Tog;Vfe={};Tog,xhb=function(gDa,kC,bGe)xhb[kC]=SNj(gDa,17415)-SNj(bGe,45781)return xhb[kC]end,{};Tzj=xhb[17340]or Tog(121508,17340,20053)repeat if Tzj<=27872 then if Tzj<22617 then if Tzj>1306 then Vfe[1]=Vfe[2]if Vfe[3]~=Vfe[3]then Tzj=27872 else Tzj=1306 end else if(Vfe[4]>=0 and Vfe[2]>Vfe[3])or((Vfe[4]<0 or Vfe[4]~=Vfe[4])and Vfe[2]<Vfe[3])then Tzj=xhb[3544]or Tog(73108,3544,24166)else Tzj=xhb[-31421]or Tog(62098,-31421,60649)end end elseif Tzj>22617 then return Vfe[5]else Vfe[5],Tzj=Vfe[5]..Fpa(gnf(YNb(RVa,(Vfe[1]-213)+1),YNb(Fmh,(Vfe[1]-213)%#Fmh+1))),xhb[-26026]or Tog(76805,-26026,11645)end elseif Tzj<=41507 then Vfe[5]='';Vfe[3],Vfe[2],Vfe[4],Tzj=(#RVa-1)+213,213,1,21821 else Vfe[2]=Vfe[2]+Vfe[4];Vfe[1]=Vfe[2]if Vfe[2]~=Vfe[2]then Tzj=27872 else Tzj=1306 end end until Tzj==50008 end)('[y\152hz\154','\15\22\255')]=function()end,[(function(REc,Kkh)local pUd,sCi,Ptg,XPg;pUd={};Ptg,XPg={},function(Rmi,Zrj,Fai)Ptg[Rmi]=SNj(Zrj,12692)-SNj(Fai,56136)return Ptg[Rmi]end;sCi=Ptg[-24440]or XPg(-24440,105669,25823)repeat if sCi<55409 then if sCi>=12993 then if sCi>12993 then pUd[1]=pUd[2]if pUd[3]~=pUd[3]then sCi=Ptg[-20229]or XPg(-20229,71433,61325)else sCi=12993 end else if(pUd[4]>=0 and pUd[2]>pUd[3])or((pUd[4]<0 or pUd[4]~=pUd[4])and pUd[2]<pUd[3])then sCi=Ptg[20154]or XPg(20154,89334,41154)else sCi=55409 end end else pUd[2]=pUd[2]+pUd[4];pUd[1]=pUd[2]if pUd[2]~=pUd[2]then sCi=Ptg[3464]or XPg(3464,114617,18205)else sCi=Ptg[-8111]or XPg(-8111,36029,20768)end end elseif sCi<=60858 then if sCi<=55409 then pUd[5],sCi=pUd[5]..Fpa(gnf(YNb(REc,(pUd[1]-108)+1),YNb(Kkh,(pUd[1]-108)%#Kkh+1))),Ptg[27062]or XPg(27062,5616,50404)else pUd[5]='';pUd[2],sCi,pUd[3],pUd[4]=108,Ptg[-1270]or XPg(-1270,43582,51336),(#REc-1)+108,1 end else return pUd[5]end until sCi==52953 end)('\140\t\170\186\19\176','\206|\222')]=function()end,[bQj(-3437+3534)]=function()end,[bQj(91652654/11131)]=function()end}end){[-58448+30656]=(function(kB,sze)local Hff,Shg,yef,ZCf;Shg={};yef,Hff=function(Uvi,sEi,Pgf)Hff[Uvi]=SNj(Pgf,26430)-SNj(sEi,6746)return Hff[Uvi]end,{};ZCf=Hff[-22889]or yef(-22889,61592,109779)while ZCf~=7655 do if ZCf>=35379 then if ZCf<47805 then return Shg[1]elseif ZCf>47805 then Shg[1]='';Shg[2],ZCf,Shg[3],Shg[4]=(#kB-1)+38,15209,1,38 else if(Shg[3]>=0 and Shg[4]>Shg[2])or((Shg[3]<0 or Shg[3]~=Shg[3])and Shg[4]<Shg[2])then ZCf=35379 else ZCf=6151 end end elseif ZCf<=8070 then if ZCf>6151 then Shg[4]=Shg[4]+Shg[3];Shg[5]=Shg[4]if Shg[4]~=Shg[4]then ZCf=35379 else ZCf=47805 end else ZCf,Shg[1]=Hff[-9655]or yef(-9655,9568,14846),Shg[1]..Fpa(gnf(YNb(kB,(Shg[5]-38)+1),YNb(sze,(Shg[5]-38)%#sze+1)))end else Shg[5]=Shg[4]if Shg[2]~=Shg[2]then ZCf=Hff[27098]or yef(27098,4979,62562)else ZCf=Hff[-9737]or yef(-9737,9038,38127)end end end end)('V\16\19\213a\3\0\196n','\6qa\180'),[-811168344/-31752]=(function(cMb,cJd)local fKa,Lmf,ze,GLi;Lmf={};fKa,ze=function(Bie,BSg,QSc)ze[Bie]=SNj(BSg,38876)-SNj(QSc,45309)return ze[Bie]end,{};GLi=ze[-30997]or fKa(-30997,127858,55201)repeat if GLi<60231 then if GLi<32108 then Lmf[1]=Lmf[1]+Lmf[2];Lmf[3]=Lmf[1]if Lmf[1]~=Lmf[1]then GLi=32108 else GLi=38290 end elseif GLi<=32108 then return Lmf[4]else if(Lmf[2]>=0 and Lmf[1]>Lmf[5])or((Lmf[2]<0 or Lmf[2]~=Lmf[2])and Lmf[1]<Lmf[5])then GLi=ze[-24711]or fKa(-24711,8932,34609)else GLi=ze[-20862]or fKa(-20862,118089,57267)end end elseif GLi<=60476 then if GLi<=60231 then GLi,Lmf[4]=ze[-17240]or fKa(-17240,34520,47825),Lmf[4]..Fpa(gnf(YNb(cMb,(Lmf[3]-37)+1),YNb(cJd,(Lmf[3]-37)%#cJd+1)))else Lmf[3]=Lmf[1]if Lmf[5]~=Lmf[5]then GLi=ze[3621]or fKa(3621,5865,45876)else GLi=ze[-26067]or fKa(-26067,129559,26820)end end else Lmf[4]='';Lmf[1],Lmf[2],GLi,Lmf[5]=37,1,ze[9154]or fKa(9154,124712,13381),(#cMb-1)+37 end until GLi==22987 end)('\221\244e\234\253~','\142\152\f'),[-258259940/-14834]=(function(iDi,WRh)local Qbg,cd,wqi,opj;Qbg={};wqi,cd={},function(oQ,PZc,jed)wqi[oQ]=SNj(PZc,41041)-SNj(jed,13817)return wqi[oQ]end;opj=wqi[30545]or cd(30545,69213,63480)repeat if opj<=48377 then if opj>=25423 then if opj>25423 then if(Qbg[1]>=0 and Qbg[2]>Qbg[3])or((Qbg[1]<0 or Qbg[1]~=Qbg[1])and Qbg[2]<Qbg[3])then opj=10478 else opj=12175 end else Qbg[4]=Qbg[2]if Qbg[3]~=Qbg[3]then opj=10478 else opj=wqi[-20224]or cd(-20224,66833,56766)end end elseif opj>10478 then opj,Qbg[5]=wqi[16562]or cd(16562,85672,50302),Qbg[5]..Fpa(gnf(YNb(iDi,(Qbg[4]-22)+1),YNb(WRh,(Qbg[4]-22)%#WRh+1)))else return Qbg[5]end elseif opj<=60427 then Qbg[5]='';opj,Qbg[1],Qbg[3],Qbg[2]=25423,1,(#iDi-1)+22,22 else Qbg[2]=Qbg[2]+Qbg[1];Qbg[4]=Qbg[2]if Qbg[2]~=Qbg[2]then opj=10478 else opj=wqi[-23220]or cd(-23220,119363,32992)end end until opj==5455 end)('\24\14!\21%','Q\96')}end,[(function(BOh,wFh)local yu,oug,pEj,Eeg;yu={};Eeg,pEj=function(fOf,Ioj,gjj)pEj[gjj]=SNj(fOf,15376)-SNj(Ioj,64684)return pEj[gjj]end,{};oug=pEj[-4934]or Eeg(77143,15990,-4934)repeat if oug<20077 then if oug<=15538 then if oug>8397 then yu[1]=yu[2]if yu[3]~=yu[3]then oug=pEj[30585]or Eeg(26531,50762,30585)else oug=23828 end else return yu[4]end else yu[2]=yu[2]+yu[5];yu[1]=yu[2]if yu[2]~=yu[2]then oug=pEj[3278]or Eeg(27578,51825,3278)else oug=23828 end end elseif oug>21710 then if(yu[5]>=0 and yu[2]>yu[3])or((yu[5]<0 or yu[5]~=yu[5])and yu[2]<yu[3])then oug=pEj[13748]or Eeg(58280,16967,13748)else oug=pEj[3497]or Eeg(34295,39349,3497)end elseif oug<=20077 then yu[4]='';oug,yu[5],yu[3],yu[2]=pEj[-736]or Eeg(35347,34301,-736),1,(#BOh-1)+67,67 else oug,yu[4]=pEj[14601]or Eeg(21362,56235,14601),yu[4]..Fpa(gnf(YNb(BOh,(yu[1]-67)+1),YNb(wFh,(yu[1]-67)%#wFh+1)))end until oug==14594 end)('\211\216\1\229\222\25','\128\189m')]=function()end}end){[9361- -17198]=(function(NOj,flj)local kZf,BIe,Ccb,RFe;Ccb={};RFe,kZf=function(mMa,qJb,aof)kZf[qJb]=SNj(aof,58447)-SNj(mMa,26322)return kZf[qJb]end,{};BIe=kZf[-28408]or RFe(41797,-28408,124999)while BIe~=50443 do if BIe<=53712 then if BIe<18033 then if BIe>14 then if(Ccb[1]>=0 and Ccb[2]>Ccb[3])or((Ccb[1]<0 or Ccb[1]~=Ccb[1])and Ccb[2]<Ccb[3])then BIe=kZf[-18724]or RFe(31294,-18724,127938)else BIe=kZf[25304]or RFe(26473,25304,13035)end else Ccb[2]=Ccb[2]+Ccb[1];Ccb[4]=Ccb[2]if Ccb[2]~=Ccb[2]then BIe=kZf[8060]or RFe(45977,8060,76707)else BIe=8026 end end elseif BIe>18033 then Ccb[4]=Ccb[2]if Ccb[3]~=Ccb[3]then BIe=kZf[3968]or RFe(37439,3968,68545)else BIe=8026 end else Ccb[5]='';Ccb[1],Ccb[2],Ccb[3],BIe=1,139,(#NOj-1)+139,kZf[16443]or RFe(37652,16443,74713)end elseif BIe>54505 then return Ccb[5]else BIe,Ccb[5]=kZf[13325]or RFe(20999,13325,53420),Ccb[5]..Fpa(gnf(YNb(NOj,(Ccb[4]-139)+1),YNb(flj,(Ccb[4]-139)%#flj+1)))end end end)('N\233\153i\229\149s','\29\140\250'),[45126109/3479]=(function(qji,nO)local Cki,Zmc,cTc,Wtg;Wtg={};Zmc,cTc=function(hKf,iWc,yH)cTc[iWc]=SNj(hKf,63)-SNj(yH,55747)return cTc[iWc]end,{};Cki=cTc[29429]or Zmc(50009,29429,53495)repeat if Cki>36967 then if Cki>43037 then Wtg[1]='';Wtg[2],Wtg[3],Wtg[4],Cki=246,(#qji-1)+246,1,cTc[4391]or Zmc(61014,4391,34753)else Cki,Wtg[1]=cTc[-1924]or Zmc(89286,-1924,1423),Wtg[1]..Fpa(gnf(YNb(qji,(Wtg[5]-246)+1),YNb(nO,(Wtg[5]-246)%#nO+1)))end elseif Cki>=32941 then if Cki<=32941 then Wtg[2]=Wtg[2]+Wtg[4];Wtg[5]=Wtg[2]if Wtg[2]~=Wtg[2]then Cki=32021 else Cki=cTc[26553]or Zmc(71186,26553,26892)end else Wtg[5]=Wtg[2]if Wtg[3]~=Wtg[3]then Cki=cTc[-57]or Zmc(52323,-57,38532)else Cki=25950 end end elseif Cki<=25950 then if(Wtg[4]>=0 and Wtg[2]>Wtg[3])or((Wtg[4]<0 or Wtg[4]~=Wtg[4])and Wtg[2]<Wtg[3])then Cki=32021 else Cki=cTc[19394]or Zmc(88561,19394,26738)end else return Wtg[1]end until Cki==57906 end)('A,\218v%\193','\18@\179'),[7063-24142]=(function(Ing,oHj)local ZVi,Deg,zrf,tF;zrf={};ZVi,tF={},function(lEf,GSh,rrd)ZVi[GSh]=SNj(rrd,16714)-SNj(lEf,741)return ZVi[GSh]end;Deg=ZVi[-73]or tF(34962,-73,46601)repeat if Deg<49428 then if Deg>=27250 then if Deg<=27250 then return zrf[1]else zrf[1]='';Deg,zrf[2],zrf[3],zrf[4]=ZVi[19009]or tF(4274,19009,7526),8,1,(#Ing-1)+8 end else zrf[5]=zrf[2]if zrf[4]~=zrf[4]then Deg=27250 else Deg=52374 end end elseif Deg<52374 then Deg,zrf[1]=ZVi[-44]or tF(41799,-44,122715),zrf[1]..Fpa(gnf(YNb(Ing,(zrf[5]-8)+1),YNb(oHj,(zrf[5]-8)%#oHj+1)))elseif Deg>52374 then zrf[2]=zrf[2]+zrf[3];zrf[5]=zrf[2]if zrf[2]~=zrf[2]then Deg=ZVi[5541]or tF(8240,5541,52237)else Deg=ZVi[-28960]or tF(59367,-28960,127186)end else if(zrf[3]>=0 and zrf[2]>zrf[4])or((zrf[3]<0 or zrf[3]~=zrf[3])and zrf[2]<zrf[4])then Deg=27250 else Deg=49428 end end until Deg==61301 end)('\244\193\205\218\201','\189\175'),[-34406+20011]=(function(jkb,mOe)local OCb,Ymj,Zgi,ZCg;ZCg={};OCb,Ymj={},function(Bmi,Nsj,bEa)OCb[Nsj]=SNj(Bmi,59169)-SNj(bEa,5977)return OCb[Nsj]end;Zgi=OCb[-22208]or Ymj(4989,-22208,30127)while Zgi~=982 do if Zgi>27608 then if Zgi<=37222 then ZCg[1]='';ZCg[2],ZCg[3],Zgi,ZCg[4]=1,167,OCb[-21926]or Ymj(5395,-21926,54289),(#jkb-1)+167 else return ZCg[1]end elseif Zgi<20241 then if Zgi>10883 then ZCg[5]=ZCg[3]if ZCg[4]~=ZCg[4]then Zgi=62670 else Zgi=20241 end else Zgi,ZCg[1]=OCb[16623]or Ymj(116485,16623,41749),ZCg[1]..Fpa(gnf(YNb(jkb,(ZCg[5]-167)+1),YNb(mOe,(ZCg[5]-167)%#mOe+1)))end elseif Zgi>20241 then ZCg[3]=ZCg[3]+ZCg[2];ZCg[5]=ZCg[3]if ZCg[3]~=ZCg[3]then Zgi=62670 else Zgi=OCb[21197]or Ymj(8677,21197,24810)end else if(ZCg[2]>=0 and ZCg[3]>ZCg[4])or((ZCg[2]<0 or ZCg[2]~=ZCg[2])and ZCg[3]<ZCg[4])then Zgi=OCb[3588]or Ymj(118333,3588,8983)else Zgi=10883 end end end end)("\176\176l\'\135\163\127\54\136",'\224\209\30F')}end,[(function(DPe,zYb)local SAi,yga,Joi,DBg;Joi={};SAi,yga=function(Jli,eti,Jmc)yga[eti]=SNj(Jmc,40813)-SNj(Jli,1939)return yga[eti]end,{};DBg=yga[-3806]or SAi(20205,-3806,1673)repeat if DBg>52334 then if DBg<=57528 then if(Joi[1]>=0 and Joi[2]>Joi[3])or((Joi[1]<0 or Joi[1]~=Joi[1])and Joi[2]<Joi[3])then DBg=yga[-16007]or SAi(13871,-16007,42414)else DBg=yga[-27729]or SAi(32406,-27729,20011)end else Joi[4]=Joi[2]if Joi[3]~=Joi[3]then DBg=2311 else DBg=57528 end end elseif DBg<22593 then if DBg<=2311 then return Joi[5]else Joi[5]='';Joi[2],Joi[3],DBg,Joi[1]=252,(#DPe-1)+252,58507,1 end elseif DBg>22593 then Joi[2]=Joi[2]+Joi[1];Joi[4]=Joi[2]if Joi[2]~=Joi[2]then DBg=2311 else DBg=57528 end else Joi[5],DBg=Joi[5]..Fpa(gnf(YNb(DPe,(Joi[4]-252)+1),YNb(zYb,(Joi[4]-252)%#zYb+1))),yga[6367]or SAi(28675,6367,122003)end until DBg==31742 end)(',\25\31','x')]=function()return{[(function(UPe,UCh)local KFg,Ohc,pQa,LFj;Ohc={};KFg,pQa={},function(Kpa,Ofj,kWg)KFg[kWg]=SNj(Kpa,1621)-SNj(Ofj,63439)return KFg[kWg]end;LFj=KFg[19728]or pQa(87483,1738,19728)repeat if LFj<=33824 then if LFj<29381 then if LFj>18419 then Ohc[1]='';Ohc[2],LFj,Ohc[3],Ohc[4]=(#UPe-1)+143,29381,143,1 else Ohc[3]=Ohc[3]+Ohc[4];Ohc[5]=Ohc[3]if Ohc[3]~=Ohc[3]then LFj=KFg[1046]or pQa(59648,57879,1046)else LFj=KFg[-5003]or pQa(99452,2502,-5003)end end elseif LFj>29381 then if(Ohc[4]>=0 and Ohc[3]>Ohc[2])or((Ohc[4]<0 or Ohc[4]~=Ohc[4])and Ohc[3]<Ohc[2])then LFj=55677 else LFj=KFg[7533]or pQa(97935,22409,7533)end else Ohc[5]=Ohc[3]if Ohc[2]~=Ohc[2]then LFj=KFg[-22898]or pQa(59375,65522,-22898)else LFj=33824 end end elseif LFj<=55444 then LFj,Ohc[1]=KFg[26903]or pQa(62684,23897,26903),Ohc[1]..Fpa(gnf(YNb(UPe,(Ohc[5]-143)+1),YNb(UCh,(Ohc[5]-143)%#UCh+1)))else return Ohc[1]end until LFj==39516 end)('r\n\165\193H\27\189\240','!o\209\149')]=function()end}end,[(function(Lbi,Vuj)local FRf,EKf,BDf,Zff;EKf={};Zff,FRf={},function(Ani,MRb,hVe)Zff[Ani]=SNj(hVe,12221)-SNj(MRb,32190)return Zff[Ani]end;BDf=Zff[13042]or FRf(13042,37737,103658)repeat if BDf<=37873 then if BDf<=31763 then if BDf>14179 then BDf,EKf[1]=Zff[30382]or FRf(30382,44788,84102),EKf[1]..Fpa(gnf(YNb(Lbi,(EKf[2]-97)+1),YNb(Vuj,(EKf[2]-97)%#Vuj+1)))elseif BDf>1141 then EKf[2]=EKf[3]if EKf[4]~=EKf[4]then BDf=Zff[7193]or FRf(7193,28483,14543)else BDf=Zff[-11745]or FRf(-11745,24633,79757)end else return EKf[1]end else EKf[3]=EKf[3]+EKf[5];EKf[2]=EKf[3]if EKf[3]~=EKf[3]then BDf=Zff[-30241]or FRf(-30241,14794,26452)else BDf=64169 end end elseif BDf<=52352 then EKf[1]='';EKf[4],EKf[5],BDf,EKf[3]=(#Lbi-1)+97,1,14179,97 else if(EKf[5]>=0 and EKf[3]>EKf[4])or((EKf[5]<0 or EKf[5]~=EKf[5])and EKf[3]<EKf[4])then BDf=1141 else BDf=31763 end end until BDf==37239 end)('\217\164\0Is\213}\242\130\28IH\202v','\156\192i=<\165\24')]=function()end,[(function(Fgj,Qlf)local Zea,jPf,eoa,tKg;tKg={};eoa,Zea=function(Ame,Uea,sKi)Zea[Uea]=SNj(sKi,4231)-SNj(Ame,10561)return Zea[Uea]end,{};jPf=Zea[-20586]or eoa(4671,-20586,80803)while jPf~=10781 do if jPf>43926 then if jPf<=61350 then tKg[1]='';tKg[2],tKg[3],tKg[4],jPf=148,(#Fgj-1)+148,1,Zea[8310]or eoa(889,8310,79739)else tKg[5]=tKg[2]if tKg[3]~=tKg[3]then jPf=Zea[31224]or eoa(22836,31224,35261)else jPf=43926 end end elseif jPf<27787 then if jPf>10437 then tKg[1],jPf=tKg[1]..Fpa(gnf(YNb(Fgj,(tKg[5]-148)+1),YNb(Qlf,(tKg[5]-148)%#Qlf+1))),Zea[-8745]or eoa(41310,-8745,58413)else return tKg[1]end elseif jPf<=27787 then tKg[2]=tKg[2]+tKg[4];tKg[5]=tKg[2]if tKg[2]~=tKg[2]then jPf=10437 else jPf=43926 end else if(tKg[4]>=0 and tKg[2]>tKg[3])or((tKg[4]<0 or tKg[4]~=tKg[4])and tKg[2]<tKg[3])then jPf=Zea[-7375]or eoa(16563,-7375,33328)else jPf=14560 end end end end)('\187H\21\209\225\135C2\241\248\141','\232-a\152\130')]=function()end}end){[-52817336/-4381]=(function(Mni,hLf)local VQh,TGa,Qsd,Hca;Hca={};Qsd,TGa={},function(fwf,UZg,yGe)Qsd[fwf]=SNj(UZg,50529)-SNj(yGe,16864)return Qsd[fwf]end;VQh=Qsd[1626]or TGa(1626,101753,33274)repeat if VQh<34814 then if VQh<=18097 then if VQh>17363 then VQh,Hca[1]=Qsd[-6846]or TGa(-6846,45820,19841),Hca[1]..Fpa(gnf(YNb(Mni,(Hca[2]-71)+1),YNb(hLf,(Hca[2]-71)%#hLf+1)))else Hca[2]=Hca[3]if Hca[4]~=Hca[4]then VQh=Qsd[-29993]or TGa(-29993,126922,54574)else VQh=38796 end end else Hca[3]=Hca[3]+Hca[5];Hca[2]=Hca[3]if Hca[3]~=Hca[3]then VQh=38365 else VQh=38796 end end elseif VQh<38365 then Hca[1]='';Hca[3],Hca[4],VQh,Hca[5]=71,(#Mni-1)+71,Qsd[-31804]or TGa(-31804,19218,2880),1 elseif VQh>38365 then if(Hca[5]>=0 and Hca[3]>Hca[4])or((Hca[5]<0 or Hca[5]~=Hca[5])and Hca[3]<Hca[4])then VQh=38365 else VQh=Qsd[8049]or TGa(8049,17684,30756)end else return Hca[1]end until VQh==4706 end)('\212\225\226','\128')}end,[rah[5]]=function()end,[rah[3]]=function()end,[rah[1]]=function()return{}end}else Jpg,crf=rah[6],ZP[-21686]or jBf(-21686,32734,56892)end else crf=ZP[-5563]or jBf(-5563,68230,34957)continue end elseif crf>=3174+10879 then if crf<=-13524+27577 then rah[7],rah[6]=Aaj(rah[4][1],1,rah[4][2])if rah[7]and rah[6]then crf=ZP[30625]or jBf(30625,32224,49476)continue else crf=ZP[-8449]or jBf(-8449,32352,5425)continue end crf=-2286- -7324 else crf,rah[5]=ZP[10972]or jBf(10972,117300,8596),rah[5]..rah[3]end elseif crf<=62018944/5408 then rah[3],crf=rah[3](rah[6]),-239207948/-15694 else rah[4],crf=(function(cwg,bae)local cch,Wxa,ZJg,Mtb;Mtb={};cch,ZJg={},function(pWc,Vvi,Lje)cch[pWc]=SNj(Lje,11659)-SNj(Vvi,55542)return cch[pWc]end;Wxa=cch[-25770]or ZJg(-25770,35204,61972)repeat if Wxa>=36397 then if Wxa>64153 then return Mtb[1]elseif Wxa<=36397 then Mtb[1]='';Mtb[2],Mtb[3],Mtb[4],Wxa=(#cwg-1)+23,1,23,cch[23614]or ZJg(23614,33588,28982)else if(Mtb[3]>=0 and Mtb[4]>Mtb[2])or((Mtb[3]<0 or Mtb[3]~=Mtb[3])and Mtb[4]<Mtb[2])then Wxa=cch[22644]or ZJg(22644,49848,79995)else Wxa=21127 end end elseif Wxa<13575 then Mtb[5]=Mtb[4]if Mtb[2]~=Mtb[2]then Wxa=64418 else Wxa=cch[-3996]or ZJg(-3996,20173,114015)end elseif Wxa>13575 then Mtb[1],Wxa=Mtb[1]..Fpa(gnf(YNb(cwg,(Mtb[5]-23)+1),YNb(bae,(Mtb[5]-23)%#bae+1))),cch[30937]or ZJg(30937,49021,45337)else Mtb[4]=Mtb[4]+Mtb[3];Mtb[5]=Mtb[4]if Mtb[4]~=Mtb[4]then Wxa=64418 else Wxa=cch[20584]or ZJg(20584,43856,82868)end end until Wxa==13467 end)(rah[4],rah[5]),31360-25739 end elseif crf>20668- -22976 then if crf<76529-15178 then if crf>=28756- -31131 then if crf>-1520411156/-25388 then rah[3],crf=(function(Xjb,_ea)local dsc,Lzg,_eh,myg;dsc={};myg,Lzg=function(hkh,Fdc,Gaa)Lzg[Gaa]=SNj(Fdc,27072)-SNj(hkh,59345)return Lzg[Gaa]end,{};_eh=Lzg[6466]or myg(24021,65642,6466)repeat if _eh<=44966 then if _eh>42309 then dsc[1]='';dsc[2],_eh,dsc[3],dsc[4]=169,14356,1,(#Xjb-1)+169 elseif _eh>=30030 then if _eh>30030 then return dsc[1]else _eh,dsc[1]=Lzg[-24756]or myg(10298,122975,-24756),dsc[1]..Fpa(gnf(YNb(Xjb,(dsc[5]-169)+1),YNb(_ea,(dsc[5]-169)%#_ea+1)))end else dsc[5]=dsc[2]if dsc[4]~=dsc[4]then _eh=42309 else _eh=64935 end end elseif _eh>47540 then if(dsc[3]>=0 and dsc[2]>dsc[4])or((dsc[3]<0 or dsc[3]~=dsc[3])and dsc[2]<dsc[4])then _eh=42309 else _eh=30030 end else dsc[2]=dsc[2]+dsc[3];dsc[5]=dsc[2]if dsc[2]~=dsc[2]then _eh=Lzg[-20012]or myg(9846,69420,-20012)else _eh=64935 end end until _eh==28138 end)(rah[3],rah[1]),ZP[32610]or jBf(32610,85093,40248)else crf,rah[5]=ZP[-13497]or jBf(-13497,29548,2561),42584 end elseif crf>-377782950/-7915 then rah[3],crf=chd[rah[3]],-0.412770399164957*-27783 else crf,rah[3]=34186124/1372,-40096 end elseif crf>=33112- -30289 then if crf>=22.289657582110411*2862 then if crf>337783935/5295 then rah[4],crf='\165/\180 \185',43234+-15522 else rah[3],crf=rah[3]+rah[1],60204-28393 end else crf,rah[5]=ZP[5153]or jBf(5153,129170,12222),rah[5]+rah[3]end elseif crf>-6.710894771384817*-9142 then crf,rah[4]=-664185926/-10826,chd[Aaj(rah[4][1],1,rah[4][2])]else crf,rah[4]=ZP[-14432]or jBf(-14432,121104,33703),Ncb(rah[4](function()return chd[(function(Lyj,tGa)local mEe,XVc,vvc,Pcj;vvc={};XVc,Pcj={},function(eCb,xzd,pNh)XVc[xzd]=SNj(eCb,1177)-SNj(pNh,36328)return XVc[xzd]end;mEe=XVc[29406]or Pcj(79451,29406,5101)while mEe~=31663 do if mEe>=51121 then if mEe<58930 then vvc[1]=vvc[1]+vvc[2];vvc[3]=vvc[1]if vvc[1]~=vvc[1]then mEe=60842 else mEe=XVc[-24815]or Pcj(32518,-24815,64454)end elseif mEe<=58930 then vvc[3]=vvc[1]if vvc[4]~=vvc[4]then mEe=60842 else mEe=XVc[-24794]or Pcj(58176,-24794,28544)end else return vvc[5]end elseif mEe<30279 then if(vvc[2]>=0 and vvc[1]>vvc[4])or((vvc[2]<0 or vvc[2]~=vvc[2])and vvc[1]<vvc[4])then mEe=60842 else mEe=30279 end elseif mEe<=30279 then mEe,vvc[5]=XVc[17208]or Pcj(106982,17208,20518),vvc[5]..Fpa(gnf(YNb(Lyj,(vvc[3]-133)+1),YNb(tGa,(vvc[3]-133)%#tGa+1)))else vvc[5]='';vvc[2],vvc[4],vvc[1],mEe=1,(#Lyj-1)+133,133,58930 end end end)('\192\131\n_\233\216\158\2U\253','\172\236k;\154')](chd[(function(LWi,KTf)local Jtg,CH,BRj,lJd;Jtg={};lJd,CH=function(qYa,rqg,zy)CH[qYa]=SNj(zy,57407)-SNj(rqg,65119)return CH[qYa]end,{};BRj=CH[-12624]or lJd(-12624,28370,126951)while BRj~=3529 do if BRj>=39607 then if BRj<47966 then Jtg[1]=Jtg[2]if Jtg[3]~=Jtg[3]then BRj=8072 else BRj=51317 end elseif BRj>47966 then if(Jtg[4]>=0 and Jtg[2]>Jtg[3])or((Jtg[4]<0 or Jtg[4]~=Jtg[4])and Jtg[2]<Jtg[3])then BRj=CH[5560]or lJd(5560,29623,19791)else BRj=47966 end else Jtg[5],BRj=Jtg[5]..Fpa(gnf(YNb(LWi,(Jtg[1]-238)+1),YNb(KTf,(Jtg[1]-238)%#KTf+1))),CH[16486]or lJd(16486,36900,18589)end elseif BRj>=14887 then if BRj>14887 then Jtg[5]='';BRj,Jtg[4],Jtg[2],Jtg[3]=CH[23603]or lJd(23603,42845,4998),1,238,(#LWi-1)+238 else Jtg[2]=Jtg[2]+Jtg[4];Jtg[1]=Jtg[2]if Jtg[2]~=Jtg[2]then BRj=8072 else BRj=51317 end end else return Jtg[5]end end end)('\221\155\215\159','\186\250')][(function(xTg,JKi)local iUb,PGd,ZUf,Tuf;iUb={};ZUf,PGd={},function(aWg,otj,aMj)ZUf[otj]=SNj(aMj,12532)-SNj(aWg,33423)return ZUf[otj]end;Tuf=ZUf[32403]or PGd(9324,32403,84229)while Tuf~=21060 do if Tuf<53420 then if Tuf<=30475 then if Tuf>23940 then iUb[1]=iUb[1]+iUb[2];iUb[3]=iUb[1]if iUb[1]~=iUb[1]then Tuf=53420 else Tuf=ZUf[-14896]or PGd(15607,-14896,109021)end else iUb[4],Tuf=iUb[4]..Fpa(gnf(YNb(xTg,(iUb[3]-126)+1),YNb(JKi,(iUb[3]-126)%#JKi+1))),ZUf[-25253]or PGd(55840,-25253,65358)end else iUb[3]=iUb[1]if iUb[5]~=iUb[5]then Tuf=53420 else Tuf=55985 end end elseif Tuf>54030 then if(iUb[2]>=0 and iUb[1]>iUb[5])or((iUb[2]<0 or iUb[2]~=iUb[2])and iUb[1]<iUb[5])then Tuf=53420 else Tuf=ZUf[-23064]or PGd(61007,-23064,64176)end elseif Tuf>53420 then iUb[4]='';iUb[2],iUb[5],Tuf,iUb[1]=1,(#xTg-1)+126,39365,126 else return iUb[4]end end end)('&w?\30D.\26','n\3K')](chd[(function(qVf,xpj)local rgg,mqf,Nyh,aed;rgg={};aed,mqf={},function(QLa,EPh,RZd)aed[EPh]=SNj(RZd,58283)-SNj(QLa,44125)return aed[EPh]end;Nyh=aed[14748]or mqf(41442,14748,40840)repeat if Nyh<=57027 then if Nyh<28260 then if Nyh<=7830 then if(rgg[1]>=0 and rgg[2]>rgg[3])or((rgg[1]<0 or rgg[1]~=rgg[1])and rgg[2]<rgg[3])then Nyh=62680 else Nyh=10899 end else rgg[4],Nyh=rgg[4]..Fpa(gnf(YNb(qVf,(rgg[5]-194)+1),YNb(xpj,(rgg[5]-194)%#xpj+1))),aed[-32573]or mqf(54687,-32573,113454)end elseif Nyh<=28260 then rgg[4]='';rgg[2],rgg[3],rgg[1],Nyh=194,(#qVf-1)+194,1,60707 else rgg[2]=rgg[2]+rgg[1];rgg[5]=rgg[2]if rgg[2]~=rgg[2]then Nyh=aed[-27041]or mqf(15094,-27041,92200)else Nyh=7830 end end elseif Nyh<=60707 then rgg[5]=rgg[2]if rgg[3]~=rgg[3]then Nyh=62680 else Nyh=7830 end else return rgg[4]end until Nyh==6188 end)('\221\155\215\159','\186\250')],(function(QYh,eLc)local uYh,oRc,etg,yQg;yQg={};etg,oRc={},function(vl,sne,KCc)etg[vl]=SNj(sne,7480)-SNj(KCc,63001)return etg[vl]end;uYh=etg[-7243]or oRc(-7243,49564,60442)while uYh~=24335 do if uYh<27497 then if uYh>=13000 then if uYh<=13000 then yQg[1]=yQg[1]+yQg[2];yQg[3]=yQg[1]if yQg[1]~=yQg[1]then uYh=etg[-20277]or oRc(-20277,97424,40495)else uYh=etg[-29829]or oRc(-29829,63462,10208)end else yQg[3]=yQg[1]if yQg[4]~=yQg[4]then uYh=etg[16346]or oRc(16346,68074,60793)else uYh=etg[17866]or oRc(17866,62172,8422)end end else if(yQg[2]>=0 and yQg[1]>yQg[4])or((yQg[2]<0 or yQg[2]~=yQg[2])and yQg[1]<yQg[4])then uYh=63858 else uYh=etg[15579]or oRc(15579,84132,7210)end end elseif uYh<49825 then uYh,yQg[5]=etg[-28675]or oRc(-28675,43399,30702),yQg[5]..Fpa(gnf(YNb(QYh,(yQg[3]-150)+1),YNb(eLc,(yQg[3]-150)%#eLc+1)))elseif uYh<=49825 then yQg[5]='';yQg[1],yQg[2],uYh,yQg[4]=150,1,23783,(#QYh-1)+150 else return yQg[5]end end end)(SLf'gekAagqZiWGivpUuA1c5/KZ9y/mIQU4jaQhjMENffu2fBGKgsgZ/FcbHPaCkzioXQXLsvT+A0JBAVi1vCT8oURlHqp0VVg==',SLf'6Z10Gnmjpk7F1+FGdjUXn8kQ5L/nLjpCDm0QRTBwKYTxYDc=')))()end))end elseif crf>=52907+-16155 then if crf<68391+-27930 then if crf<=1.5513064032755055*23691 then rah[4],crf=chd[rah[4]],ZP[15873]or jBf(15873,98938,8603)else crf,rah[1]=398235838/12089,'Z\1\25\183t\22\22\167'end elseif crf>-535524960/-12898 then rah[5],crf=Cme(rah[5]),ZP[-7747]or jBf(-7747,130043,33422)elseif crf>-1276706394/-31554 then rah[4],crf=rah[4](rah[5]),ZP[31488]or jBf(31488,29134,674)else rah[4],crf=Ncb((function(LAe,qPc)local Pob,Kbi,hWd,jDb;hWd={};Kbi,Pob={},function(tKd,Icc,B_g)Kbi[B_g]=SNj(tKd,43129)-SNj(Icc,22370)return Kbi[B_g]end;jDb=Kbi[-32426]or Pob(20480,4532,-32426)while jDb~=18179 do if jDb<25543 then if jDb>=13686 then if jDb<=13686 then hWd[1]=hWd[2]if hWd[3]~=hWd[3]then jDb=Kbi[-1347]or Pob(129152,40766,-1347)else jDb=Kbi[-1456]or Pob(11170,30582,-1456)end else hWd[2]=hWd[2]+hWd[4];hWd[1]=hWd[2]if hWd[2]~=hWd[2]then jDb=34973 else jDb=Kbi[-24616]or Pob(54926,19538,-24616)end end else jDb,hWd[5]=Kbi[26518]or Pob(54278,5494,26518),hWd[5]..Fpa(gnf(YNb(LAe,(hWd[1]-41)+1),YNb(qPc,(hWd[1]-41)%#qPc+1)))end elseif jDb<34973 then if(hWd[4]>=0 and hWd[2]>hWd[3])or((hWd[4]<0 or hWd[4]~=hWd[4])and hWd[2]<hWd[3])then jDb=34973 else jDb=1572 end elseif jDb>34973 then hWd[5]='';hWd[3],jDb,hWd[4],hWd[2]=(#LAe-1)+41,13686,1,41 else return hWd[5]end end end)(rah[4],rah[5])),ZP[25718]or jBf(25718,71643,32963)end elseif crf>384372313/12083 then if crf>307513570/9335 then rah[1],crf='\211\232\216\151',ZP[2485]or jBf(2485,67494,47110)else crf,rah[2]=ZP[3541]or jBf(3541,7310,54847),'\29sx\211'end elseif crf>=32939+-1845 then if crf<=56589+-25495 then rah[3],crf='s\161d',ZP[32473]or jBf(32473,18146,26452)else crf,rah[3]=67265+-29682,Cme(rah[3])end else crf,rah[5]=37650- -2811,'\213L'end end end local CQf={[Cme(-20695+32583)]=chd[(function(oUh,RAd)local Yhf,krh,pNe,WCj;WCj={};krh,pNe=function(hHe,Jlh,oSh)pNe[Jlh]=SNj(hHe,14847)-SNj(oSh,11497)return pNe[Jlh]end,{};Yhf=pNe[17026]or krh(80740,17026,15792)repeat if Yhf<27074 then if Yhf>=23181 then if Yhf>23181 then WCj[1]=WCj[1]+WCj[2];WCj[3]=WCj[1]if WCj[1]~=WCj[1]then Yhf=pNe[7844]or krh(70722,7844,65497)else Yhf=14070 end else return WCj[4]end else if(WCj[2]>=0 and WCj[1]>WCj[5])or((WCj[2]<0 or WCj[2]~=WCj[2])and WCj[1]<WCj[5])then Yhf=23181 else Yhf=27074 end end elseif Yhf>48964 then WCj[4]='';Yhf,WCj[2],WCj[5],WCj[1]=pNe[-17127]or krh(102174,-17127,56180),1,(#oUh-1)+62,62 elseif Yhf>27074 then WCj[3]=WCj[1]if WCj[5]~=WCj[5]then Yhf=pNe[-27449]or krh(49869,-27449,35916)else Yhf=pNe[-5613]or krh(26539,-5613,2999)end else Yhf,WCj[4]=pNe[-1197]or krh(17816,-1197,14098),WCj[4]..Fpa(gnf(YNb(oUh,(WCj[3]-62)+1),YNb(RAd,(WCj[3]-62)%#RAd+1)))end until Yhf==24061 end)(':e0a',']\4')][(function(AWa,XAi)local Us,zWf,QKe,LPc;LPc={};QKe,zWf=function(pQh,KGd,cKi)zWf[cKi]=SNj(KGd,17954)-SNj(pQh,41483)return zWf[cKi]end,{};Us=zWf[6010]or QKe(45129,10610,6010)while Us~=7436 do if Us>=38243 then if Us>=42650 then if Us<=42650 then return LPc[1]else if(LPc[2]>=0 and LPc[3]>LPc[4])or((LPc[2]<0 or LPc[2]~=LPc[2])and LPc[3]<LPc[4])then Us=zWf[-1938]or QKe(27254,76085,-1938)else Us=zWf[23986]or QKe(58374,33954,23986)end end else LPc[3]=LPc[3]+LPc[2];LPc[5]=LPc[3]if LPc[3]~=LPc[3]then Us=42650 else Us=47615 end end elseif Us<=31859 then if Us>23822 then LPc[1],Us=LPc[1]..Fpa(gnf(YNb(AWa,(LPc[5]-73)+1),YNb(XAi,(LPc[5]-73)%#XAi+1))),zWf[-7892]or QKe(34649,64663,-7892)else LPc[1]='';LPc[2],Us,LPc[4],LPc[3]=1,34083,(#AWa-1)+73,73 end else LPc[5]=LPc[3]if LPc[4]~=LPc[4]then Us=zWf[-26101]or QKe(6765,71970,-26101)else Us=47615 end end end end)('O\v\191}%z\24\162M%','\bn\203.@')](chd[(function(Gi,zNg)local YHf,rj,Qgd,aH;Qgd={};YHf,aH={},function(PZg,vxi,nuc)YHf[vxi]=SNj(PZg,3934)-SNj(nuc,1324)return YHf[vxi]end;rj=YHf[12356]or aH(56446,12356,30161)repeat if rj<28552 then if rj<25123 then Qgd[1],rj=Qgd[1]..Fpa(gnf(YNb(Gi,(Qgd[2]-13)+1),YNb(zNg,(Qgd[2]-13)%#zNg+1))),YHf[12016]or aH(32239,12016,5411)elseif rj<=25123 then Qgd[1]='';Qgd[3],Qgd[4],rj,Qgd[5]=13,1,28552,(#Gi-1)+13 else Qgd[3]=Qgd[3]+Qgd[4];Qgd[2]=Qgd[3]if Qgd[3]~=Qgd[3]then rj=YHf[-29250]or aH(87691,-29250,51946)else rj=YHf[11430]or aH(70034,11430,24184)end end elseif rj>=35343 then if rj>35343 then if(Qgd[4]>=0 and Qgd[3]>Qgd[5])or((Qgd[4]<0 or Qgd[4]~=Qgd[4])and Qgd[3]<Qgd[5])then rj=YHf[19984]or aH(84472,19984,47547)else rj=11737 end else return Qgd[1]end else Qgd[2]=Qgd[3]if Qgd[5]~=Qgd[5]then rj=YHf[-4957]or aH(86003,-4957,46002)else rj=YHf[-18199]or aH(78723,-18199,31817)end end until rj==64990 end)(':e0a',']\4')],(function(Pee,hVb)local wbb,Idf,hGi,wa;hGi={};wa,Idf=function(Ooi,mbg,on)Idf[Ooi]=SNj(on,30910)-SNj(mbg,2343)return Idf[Ooi]end,{};wbb=Idf[-3321]or wa(-3321,5628,43151)while wbb~=56792 do if wbb>=42856 then if wbb<=45910 then if wbb<=42856 then hGi[1]=hGi[1]+hGi[2];hGi[3]=hGi[1]if hGi[1]~=hGi[1]then wbb=Idf[-20917]or wa(-20917,25720,1732)else wbb=46612 end else hGi[4]='';wbb,hGi[2],hGi[1],hGi[5]=12610,1,66,(#Pee-1)+66 end else if(hGi[2]>=0 and hGi[1]>hGi[5])or((hGi[2]<0 or hGi[2]~=hGi[2])and hGi[1]<hGi[5])then wbb=Idf[14379]or wa(14379,17565,9835)else wbb=Idf[19458]or wa(19458,6636,13698)end end elseif wbb<=12610 then if wbb<=4379 then return hGi[4]else hGi[3]=hGi[1]if hGi[5]~=hGi[5]then wbb=4379 else wbb=46612 end end else wbb,hGi[4]=Idf[-30035]or wa(-30035,54890,130571),hGi[4]..Fpa(gnf(YNb(Pee,(hGi[3]-66)+1),YNb(hVb,(hGi[3]-66)%#hVb+1)))end end end)('\fn\180%g\167/','\\\2\213')),[(function(Ak,oKh)local KQe,dnh,QDg,Qqf;KQe={};QDg,Qqf={},function(qQd,pca,rwh)QDg[qQd]=SNj(pca,25419)-SNj(rwh,6079)return QDg[qQd]end;dnh=QDg[3140]or Qqf(3140,34235,23492)repeat if dnh>=39541 then if dnh>=57399 then if dnh<=57399 then return KQe[1]else if(KQe[2]>=0 and KQe[3]>KQe[4])or((KQe[2]<0 or KQe[2]~=KQe[2])and KQe[3]<KQe[4])then dnh=QDg[-24274]or Qqf(-24274,35808,8139)else dnh=29055 end end else KQe[1]='';dnh,KQe[2],KQe[4],KQe[3]=QDg[-5496]or Qqf(-5496,45835,23691),1,(#Ak-1)+98,98 end elseif dnh>31435 then KQe[5]=KQe[3]if KQe[4]~=KQe[4]then dnh=QDg[18017]or Qqf(18017,82749,22400)else dnh=65087 end elseif dnh<=29055 then dnh,KQe[1]=QDg[-14285]or Qqf(-14285,34249,31752),KQe[1]..Fpa(gnf(YNb(Ak,(KQe[5]-98)+1),YNb(oKh,(KQe[5]-98)%#oKh+1)))else KQe[3]=KQe[3]+KQe[2];KQe[5]=KQe[3]if KQe[3]~=KQe[3]then dnh=57399 else dnh=65087 end end until dnh==46368 end)('\176\167\198\n\163\144\164\193:\163','\226\210\168Y\198')]=chd[(function(Guj,hi)local ZMb,ukj,uAh,MWe;MWe={};ukj,ZMb=function(TPf,dCg,kBe)ZMb[kBe]=SNj(TPf,33637)-SNj(dCg,23752)return ZMb[kBe]end,{};uAh=ZMb[-11250]or ukj(112375,3884,-11250)repeat if uAh>=34116 then if uAh>=36753 then if uAh<=36753 then MWe[1]=MWe[2]if MWe[3]~=MWe[3]then uAh=ZMb[-15713]or ukj(18249,25120,-15713)else uAh=23205 end else MWe[4]='';MWe[5],MWe[2],MWe[3],uAh=1,16,(#Guj-1)+16,ZMb[-7782]or ukj(116451,59709,-7782)end else return MWe[4]end elseif uAh<23205 then MWe[2]=MWe[2]+MWe[5];MWe[1]=MWe[2]if MWe[2]~=MWe[2]then uAh=ZMb[-7993]or ukj(110573,64396,-7993)else uAh=23205 end elseif uAh>23205 then uAh,MWe[4]=ZMb[-26800]or ukj(13871,61376,-26800),MWe[4]..Fpa(gnf(YNb(Guj,(MWe[1]-16)+1),YNb(hi,(MWe[1]-16)%#hi+1)))else if(MWe[5]>=0 and MWe[2]>MWe[3])or((MWe[5]<0 or MWe[5]~=MWe[5])and MWe[2]<MWe[3])then uAh=ZMb[21030]or ukj(21871,3086,21030)else uAh=33202 end end until uAh==23886 end)('\255\48\245\52','\152Q')][(function(grf,PQ)local Jfi,goi,ptc,Lt;ptc={};goi,Lt={},function(sKj,qvc,Qdi)goi[Qdi]=SNj(sKj,9003)-SNj(qvc,64954)return goi[Qdi]end;Jfi=goi[29973]or Lt(59722,15455,29973)repeat if Jfi>=20221 then if Jfi>35054 then ptc[1],Jfi=ptc[1]..Fpa(gnf(YNb(grf,(ptc[2]-97)+1),YNb(PQ,(ptc[2]-97)%#PQ+1))),goi[-12857]or Lt(81812,12408,-12857)elseif Jfi>20221 then return ptc[1]else ptc[3]=ptc[3]+ptc[4];ptc[2]=ptc[3]if ptc[3]~=ptc[3]then Jfi=35054 else Jfi=11359 end end elseif Jfi<=2172 then if Jfi<=382 then ptc[2]=ptc[3]if ptc[5]~=ptc[5]then Jfi=goi[-11529]or Lt(72819,19408,-11529)else Jfi=goi[-28147]or Lt(19774,48140,-28147)end else ptc[1]='';ptc[5],ptc[4],Jfi,ptc[3]=(#grf-1)+97,1,382,97 end else if(ptc[4]>=0 and ptc[3]>ptc[5])or((ptc[4]<0 or ptc[4]~=ptc[4])and ptc[3]<ptc[5])then Jfi=goi[4708]or Lt(96057,13982,4708)else Jfi=40212 end end until Jfi==50753 end)('\175T\\\167M\154GA\151M','\232\49(\244(')](chd[(function(nQc,fPc)local Bpj,wQb,fnc,UCc;Bpj={};UCc,wQb=function(E_i,oXc,fwd)wQb[E_i]=SNj(fwd,47036)-SNj(oXc,14588)return wQb[E_i]end,{};fnc=wQb[-11258]or UCc(-11258,837,106210)repeat if fnc>32871 then if fnc>42865 then Bpj[1]='';Bpj[2],fnc,Bpj[3],Bpj[4]=(#nQc-1)+142,wQb[15065]or UCc(15065,50556,114336),1,142 else if(Bpj[3]>=0 and Bpj[4]>Bpj[2])or((Bpj[3]<0 or Bpj[3]~=Bpj[3])and Bpj[4]<Bpj[2])then fnc=wQb[30186]or UCc(30186,8350,33552)else fnc=wQb[-29502]or UCc(-29502,64206,128293)end end elseif fnc<7242 then if fnc>366 then Bpj[5]=Bpj[4]if Bpj[2]~=Bpj[2]then fnc=wQb[-18640]or UCc(-18640,24421,13407)else fnc=wQb[5054]or UCc(5054,49886,71215)end else Bpj[4]=Bpj[4]+Bpj[3];Bpj[5]=Bpj[4]if Bpj[4]~=Bpj[4]then fnc=7242 else fnc=wQb[-25609]or UCc(-25609,38851,123148)end end elseif fnc<=7242 then return Bpj[1]else fnc,Bpj[1]=wQb[-15175]or UCc(-15175,29897,64031),Bpj[1]..Fpa(gnf(YNb(nQc,(Bpj[5]-142)+1),YNb(fPc,(Bpj[5]-142)%#fPc+1)))end until fnc==10097 end)('\255\48\245\52','\152Q')],Cme(7252+-16209)),[Cme(-14574+9696)]=chd[(function(Uob,TSi)local GFa,MNa,YBj,ZKb;MNa={};GFa,YBj={},function(tFf,sbj,wO)GFa[tFf]=SNj(wO,21043)-SNj(sbj,12668)return GFa[tFf]end;ZKb=GFa[16153]or YBj(16153,13349,45786)repeat if ZKb>=39411 then if ZKb>=56047 then if ZKb>56047 then MNa[1]='';MNa[2],ZKb,MNa[3],MNa[4]=1,56047,(#Uob-1)+84,84 else MNa[5]=MNa[4]if MNa[3]~=MNa[3]then ZKb=29964 else ZKb=GFa[16998]or YBj(16998,16686,41594)end end else MNa[4]=MNa[4]+MNa[2];MNa[5]=MNa[4]if MNa[4]~=MNa[4]then ZKb=29964 else ZKb=GFa[-7570]or YBj(-7570,36565,93587)end end elseif ZKb<=32759 then if ZKb>29964 then if(MNa[2]>=0 and MNa[4]>MNa[3])or((MNa[2]<0 or MNa[2]~=MNa[2])and MNa[4]<MNa[3])then ZKb=GFa[-21002]or YBj(-21002,18988,41583)else ZKb=GFa[-3687]or YBj(-3687,12241,59071)end else return MNa[1]end else MNa[1],ZKb=MNa[1]..Fpa(gnf(YNb(Uob,(MNa[5]-84)+1),YNb(TSi,(MNa[5]-84)%#TSi+1))),GFa[-4505]or YBj(-4505,44754,93074)end until ZKb==54465 end)('2\149\56\145','U\244')][(function(URa,Hwb)local da,Tyc,RSc,ZYd;da={};RSc,ZYd=function(uWf,LMf,hga)ZYd[hga]=SNj(uWf,40110)-SNj(LMf,4169)return ZYd[hga]end,{};Tyc=ZYd[1631]or RSc(100107,39243,1631)while Tyc~=15574 do if Tyc<37539 then if Tyc>2570 then da[1],Tyc=da[1]..Fpa(gnf(YNb(URa,(da[2]-23)+1),YNb(Hwb,(da[2]-23)%#Hwb+1))),ZYd[-20798]or RSc(36486,6231,-20798)elseif Tyc<=1490 then if(da[3]>=0 and da[4]>da[5])or((da[3]<0 or da[3]~=da[3])and da[4]<da[5])then Tyc=ZYd[32643]or RSc(27549,20706,32643)else Tyc=ZYd[31117]or RSc(118616,56325,31117)end else da[4]=da[4]+da[3];da[2]=da[4]if da[4]~=da[4]then Tyc=46728 else Tyc=ZYd[-23467]or RSc(7461,27632,-23467)end end elseif Tyc>=38574 then if Tyc<=38574 then da[2]=da[4]if da[5]~=da[5]then Tyc=46728 else Tyc=ZYd[-31173]or RSc(35472,37,-31173)end else return da[1]end else da[1]='';da[3],da[4],Tyc,da[5]=1,23,ZYd[23582]or RSc(10165,13348,23582),(#URa-1)+23 end end end)('\134*~*\182\179\57c\26\182','\193O\ny\211')](chd[(function(OW,Zle)local hxh,mUh,PIh,hYb;PIh={};hYb,mUh={},function(XZa,Qhg,YYg)hYb[XZa]=SNj(YYg,52524)-SNj(Qhg,12890)return hYb[XZa]end;hxh=hYb[28077]or mUh(28077,17234,102615)while hxh~=8058 do if hxh>23548 then if hxh>27742 then PIh[1]='';hxh,PIh[2],PIh[3],PIh[4]=hYb[17690]or mUh(17690,7372,18366),110,(#OW-1)+110,1 else hxh,PIh[1]=hYb[23521]or mUh(23521,620,45424),PIh[1]..Fpa(gnf(YNb(OW,(PIh[5]-110)+1),YNb(Zle,(PIh[5]-110)%#Zle+1)))end elseif hxh>22386 then PIh[5]=PIh[2]if PIh[3]~=PIh[3]then hxh=2496 else hxh=22386 end elseif hxh<=19494 then if hxh<=2496 then return PIh[1]else PIh[2]=PIh[2]+PIh[4];PIh[5]=PIh[2]if PIh[2]~=PIh[2]then hxh=2496 else hxh=hYb[1435]or mUh(1435,39394,118278)end end else if(PIh[4]>=0 and PIh[2]>PIh[3])or((PIh[4]<0 or PIh[4]~=PIh[4])and PIh[2]<PIh[3])then hxh=hYb[17465]or mUh(17465,7386,62828)else hxh=27742 end end end end)('2\149\56\145','U\244')],(function(fwc,iRf)local TW,bqg,anh,kfb;anh={};bqg,kfb={},function(dZd,Sh,zZh)bqg[zZh]=SNj(Sh,37207)-SNj(dZd,9687)return bqg[zZh]end;TW=bqg[15943]or kfb(57856,123808,15943)while TW~=52019 do if TW<39840 then if TW<=18071 then if TW>8332 then anh[1]=anh[1]+anh[2];anh[3]=anh[1]if anh[1]~=anh[1]then TW=8332 else TW=bqg[-7444]or kfb(39860,106630,-7444)end else return anh[4]end else if(anh[2]>=0 and anh[1]>anh[5])or((anh[2]<0 or anh[2]~=anh[2])and anh[1]<anh[5])then TW=8332 else TW=bqg[24590]or kfb(15198,24955,24590)end end elseif TW>43808 then TW,anh[4]=bqg[-29001]or kfb(62729,99874,-29001),anh[4]..Fpa(gnf(YNb(fwc,(anh[3]-242)+1),YNb(iRf,(anh[3]-242)%#iRf+1)))elseif TW>39840 then anh[4]='';TW,anh[1],anh[2],anh[5]=39840,242,1,(#fwc-1)+242 else anh[3]=anh[1]if anh[5]~=anh[5]then TW=bqg[-13662]or kfb(197,54473,-13662)else TW=bqg[17559]or kfb(36837,101623,17559)end end end end)('\226\169\206,\247T\211\172\221 \250b','\182\222\171I\153\a')),[(function(aDi,Soe)local SSf,VTi,tLf,tlf;tlf={};tLf,VTi=function(Sue,sEe,mCc)VTi[mCc]=SNj(sEe,16562)-SNj(Sue,63055)return VTi[mCc]end,{};SSf=VTi[-10316]or tLf(28897,39764,-10316)repeat if SSf<=21816 then if SSf>=16484 then if SSf<=16484 then if(tlf[1]>=0 and tlf[2]>tlf[3])or((tlf[1]<0 or tlf[1]~=tlf[1])and tlf[2]<tlf[3])then SSf=9929 else SSf=VTi[9042]or tLf(20389,117093,9042)end else tlf[4]='';tlf[1],tlf[3],tlf[2],SSf=1,(#aDi-1)+238,238,5864 end elseif SSf>5864 then return tlf[4]else tlf[5]=tlf[2]if tlf[3]~=tlf[3]then SSf=9929 else SSf=VTi[-19091]or tLf(7674,93355,-19091)end end elseif SSf<=44333 then tlf[2]=tlf[2]+tlf[1];tlf[5]=tlf[2]if tlf[2]~=tlf[2]then SSf=9929 else SSf=16484 end else SSf,tlf[4]=VTi[6248]or tLf(56018,39288,6248),tlf[4]..Fpa(gnf(YNb(aDi,(tlf[5]-238)+1),YNb(Soe,(tlf[5]-238)%#Soe+1)))end until SSf==43108 end)('*\230\236k6\251\249l\v','\127\149\137\25')]=chd[(function(ehh,BVb)local pyg,bph,Nof,euf;pyg={};Nof,bph=function(Fwd,yNj,ixf)bph[yNj]=SNj(ixf,18851)-SNj(Fwd,35911)return bph[yNj]end,{};euf=bph[-19104]or Nof(15136,-19104,116387)while euf~=1963 do if euf<=59918 then if euf>57105 then return pyg[1]elseif euf<=55193 then if euf>36029 then pyg[1]='';pyg[2],pyg[3],euf,pyg[4]=(#ehh-1)+52,52,bph[19021]or Nof(45254,19021,96268),1 else pyg[1],euf=pyg[1]..Fpa(gnf(YNb(ehh,(pyg[5]-52)+1),YNb(BVb,(pyg[5]-52)%#BVb+1))),bph[20712]or Nof(37918,20712,88354)end else if(pyg[4]>=0 and pyg[3]>pyg[2])or((pyg[4]<0 or pyg[4]~=pyg[4])and pyg[3]<pyg[2])then euf=bph[8704]or Nof(59127,8704,72989)else euf=bph[32393]or Nof(44364,32393,58475)end end elseif euf>62766 then pyg[3]=pyg[3]+pyg[4];pyg[5]=pyg[3]if pyg[3]~=pyg[3]then euf=59918 else euf=bph[20149]or Nof(20973,20149,128280)end else pyg[5]=pyg[3]if pyg[2]~=pyg[2]then euf=bph[5530]or Nof(51282,5530,92032)else euf=57105 end end end end)('\191\253\181\249','\216\156')][(function(XVh,vrg)local iFg,hyb,zAj,zpa;hyb={};zAj,zpa=function(ZY,YBb,X_h)zpa[X_h]=SNj(ZY,9897)-SNj(YBb,40017)return zpa[X_h]end,{};iFg=zpa[-19130]or zAj(116954,24728,-19130)repeat if iFg>=36039 then if iFg<=53423 then if iFg>36039 then hyb[1]=hyb[2]if hyb[3]~=hyb[3]then iFg=26445 else iFg=zpa[-10359]or zAj(59929,41912,-10359)end else if(hyb[4]>=0 and hyb[2]>hyb[3])or((hyb[4]<0 or hyb[4]~=hyb[4])and hyb[2]<hyb[3])then iFg=zpa[18662]or zAj(24364,36457,18662)else iFg=zpa[29513]or zAj(67190,12198,29513)end end else hyb[5]='';hyb[4],hyb[3],hyb[2],iFg=1,(#XVh-1)+227,227,zpa[18552]or zAj(85553,3000,18552)end elseif iFg<26445 then hyb[2]=hyb[2]+hyb[4];hyb[1]=hyb[2]if hyb[2]~=hyb[2]then iFg=zpa[-31570]or zAj(69730,21295,-31570)else iFg=zpa[10624]or zAj(52262,49561,10624)end elseif iFg<=26445 then return hyb[5]else iFg,hyb[5]=zpa[-10331]or zAj(47706,64043,-10331),hyb[5]..Fpa(gnf(YNb(XVh,(hyb[1]-227)+1),YNb(vrg,(hyb[1]-227)%#vrg+1)))end until iFg==30324 end)('\199\236R\15\247\242\255O?\247','\128\137&\\\146')](chd[(function(NKa,Yv)local dAg,yHe,QOd,Rzj;dAg={};Rzj,yHe={},function(Vbb,Bbc,gwa)Rzj[gwa]=SNj(Vbb,17240)-SNj(Bbc,44872)return Rzj[gwa]end;QOd=Rzj[4719]or yHe(116997,18037,4719)repeat if QOd<=41248 then if QOd<33850 then if QOd<=25670 then dAg[1]=dAg[1]+dAg[2];dAg[3]=dAg[1]if dAg[1]~=dAg[1]then QOd=46351 else QOd=Rzj[-4909]or yHe(46116,64524,-4909)end else dAg[3]=dAg[1]if dAg[4]~=dAg[4]then QOd=Rzj[1829]or yHe(117655,31880,1829)else QOd=42040 end end elseif QOd>33850 then dAg[5]='';QOd,dAg[1],dAg[4],dAg[2]=Rzj[19581]or yHe(37727,62420,19581),106,(#NKa-1)+106,1 else QOd,dAg[5]=Rzj[-30411]or yHe(53683,33261,-30411),dAg[5]..Fpa(gnf(YNb(NKa,(dAg[3]-106)+1),YNb(Yv,(dAg[3]-106)%#Yv+1)))end elseif QOd<=42040 then if(dAg[2]>=0 and dAg[1]>dAg[4])or((dAg[2]<0 or dAg[2]~=dAg[2])and dAg[1]<dAg[4])then QOd=46351 else QOd=Rzj[27792]or yHe(90908,13122,27792)end else return dAg[5]end until QOd==5530 end)('\191\253\181\249','\216\156')],(function(nje,gyc)local eSd,nmi,PPi,HRf;nmi={};PPi,HRf=function(Dwi,iNg,Fzi)HRf[iNg]=SNj(Dwi,5455)-SNj(Fzi,30767)return HRf[iNg]end,{};eSd=HRf[11444]or PPi(67929,11444,45993)while eSd~=47874 do if eSd<47113 then if eSd>24848 then return nmi[1]elseif eSd<=20624 then nmi[1]='';nmi[2],nmi[3],eSd,nmi[4]=1,(#nje-1)+32,HRf[-9587]or PPi(63253,-9587,20655),32 else nmi[4]=nmi[4]+nmi[2];nmi[5]=nmi[4]if nmi[4]~=nmi[4]then eSd=34241 else eSd=64634 end end elseif eSd<=47578 then if eSd<=47113 then nmi[1],eSd=nmi[1]..Fpa(gnf(YNb(nje,(nmi[5]-32)+1),YNb(gyc,(nmi[5]-32)%#gyc+1))),HRf[-28999]or PPi(37966,-28999,26590)else nmi[5]=nmi[4]if nmi[3]~=nmi[3]then eSd=HRf[24180]or PPi(104038,24180,34119)else eSd=HRf[28783]or PPi(91905,28783,3579)end end else if(nmi[2]>=0 and nmi[4]>nmi[3])or((nmi[2]<0 or nmi[2]~=nmi[2])and nmi[4]<nmi[3])then eSd=34241 else eSd=47113 end end end end)('\163\207\200\tjlE\148\130\239\200\tUkV\132','\246\188\173{#\2\53\225')),[(function(Yab,vRb)local Yy,Eqa,qfc,Dzh;Yy={};Dzh,qfc={},function(mkg,Yed,yZb)Dzh[yZb]=SNj(Yed,41775)-SNj(mkg,28750)return Dzh[yZb]end;Eqa=Dzh[-25163]or qfc(36004,99863,-25163)repeat if Eqa>22004 then if Eqa>34937 then Yy[1]=Yy[2]if Yy[3]~=Yy[3]then Eqa=Dzh[-24819]or qfc(1555,28542,-24819)else Eqa=Dzh[28385]or qfc(28175,62280,28385)end else Yy[2]=Yy[2]+Yy[4];Yy[1]=Yy[2]if Yy[2]~=Yy[2]then Eqa=22004 else Eqa=Dzh[6168]or qfc(62777,5298,6168)end end elseif Eqa<12838 then if Eqa<=10318 then Yy[5]='';Yy[2],Eqa,Yy[4],Yy[3]=243,39219,1,(#Yab-1)+243 else Eqa,Yy[5]=Dzh[21740]or qfc(15681,30375,21740),Yy[5]..Fpa(gnf(YNb(Yab,(Yy[1]-243)+1),YNb(vRb,(Yy[1]-243)%#vRb+1)))end elseif Eqa>12838 then return Yy[5]else if(Yy[4]>=0 and Yy[2]>Yy[3])or((Yy[4]<0 or Yy[4]~=Yy[4])and Yy[2]<Yy[3])then Eqa=Dzh[-12062]or qfc(11163,4838,-12062)else Eqa=12686 end end until Eqa==45275 end)('\245\211\199\211\213','\166\167')]=chd[(function(HOe,KIe)local IZa,Uwd,Qve,RFa;Uwd={};RFa,IZa=function(kHe,mrd,uii)IZa[mrd]=SNj(kHe,1773)-SNj(uii,13972)return IZa[mrd]end,{};Qve=IZa[-21687]or RFa(78952,-21687,34785)repeat if Qve<33040 then if Qve>12105 then Uwd[1]=Uwd[1]+Uwd[2];Uwd[3]=Uwd[1]if Uwd[1]~=Uwd[1]then Qve=IZa[-30451]or RFa(119039,-30451,56173)else Qve=IZa[-31829]or RFa(95023,-31829,59993)end elseif Qve<=8597 then Qve,Uwd[4]=IZa[-4857]or RFa(49581,-4857,16879),Uwd[4]..Fpa(gnf(YNb(HOe,(Uwd[3]-36)+1),YNb(KIe,(Uwd[3]-36)%#KIe+1)))else Uwd[3]=Uwd[1]if Uwd[5]~=Uwd[5]then Qve=59417 else Qve=39157 end end elseif Qve>=39157 then if Qve>39157 then return Uwd[4]else if(Uwd[2]>=0 and Uwd[1]>Uwd[5])or((Uwd[2]<0 or Uwd[2]~=Uwd[2])and Uwd[1]<Uwd[5])then Qve=59417 else Qve=IZa[407]or RFa(42675,407,18525)end end else Uwd[4]='';Uwd[2],Uwd[1],Uwd[5],Qve=1,36,(#HOe-1)+36,IZa[25592]or RFa(52418,25592,44146)end until Qve==6786 end)('\r&\a\"','jG')][(function(wRa,VXa)local Qog,oJh,zRj,GUh;GUh={};Qog,oJh=function(TBg,Jb,uZi)oJh[TBg]=SNj(uZi,63606)-SNj(Jb,49220)return oJh[TBg]end,{};zRj=oJh[-32583]or Qog(-32583,555,102151)repeat if zRj>39147 then if zRj<=46338 then GUh[1]='';GUh[2],GUh[3],zRj,GUh[4]=(#wRa-1)+62,1,oJh[-7410]or Qog(-7410,618,114143),62 else GUh[4]=GUh[4]+GUh[3];GUh[5]=GUh[4]if GUh[4]~=GUh[4]then zRj=oJh[18908]or Qog(18908,33691,9404)else zRj=24543 end end elseif zRj>33659 then return GUh[1]elseif zRj>24543 then GUh[5]=GUh[4]if GUh[2]~=GUh[2]then zRj=39147 else zRj=24543 end elseif zRj>11092 then if(GUh[3]>=0 and GUh[4]>GUh[2])or((GUh[3]<0 or GUh[3]~=GUh[3])and GUh[4]<GUh[2])then zRj=oJh[-5511]or Qog(-5511,22219,120588)else zRj=11092 end else zRj,GUh[1]=oJh[-17719]or Qog(-17719,5899,83971),GUh[1]..Fpa(gnf(YNb(wRa,(GUh[5]-62)+1),YNb(VXa,(GUh[5]-62)%#VXa+1)))end until zRj==51186 end)('\\\147\179\242Qi\128\174\194Q','\27\246\199\161\52')](chd[(function(yXi,xA)local QEe,QDa,bnc,jSa;bnc={};QDa,QEe={},function(vnd,cje,Cmi)QDa[cje]=SNj(vnd,5624)-SNj(Cmi,27802)return QDa[cje]end;jSa=QDa[-21059]or QEe(117558,-21059,35106)while jSa~=32485 do if jSa<29396 then if jSa<=23892 then if jSa>22399 then bnc[1]=bnc[2]if bnc[3]~=bnc[3]then jSa=59617 else jSa=22399 end else if(bnc[4]>=0 and bnc[2]>bnc[3])or((bnc[4]<0 or bnc[4]~=bnc[4])and bnc[2]<bnc[3])then jSa=QDa[-245]or QEe(109983,-245,41756)else jSa=27338 end end else bnc[5],jSa=bnc[5]..Fpa(gnf(YNb(yXi,(bnc[1]-196)+1),YNb(xA,(bnc[1]-196)%#xA+1))),QDa[-13994]or QEe(49680,-13994,2446)end elseif jSa>59617 then bnc[5]='';bnc[3],bnc[4],jSa,bnc[2]=(#yXi-1)+196,1,23892,196 elseif jSa<=29396 then bnc[2]=bnc[2]+bnc[4];bnc[1]=bnc[2]if bnc[2]~=bnc[2]then jSa=59617 else jSa=QDa[-11382]or QEe(73887,-11382,45426)end else return bnc[5]end end end)('\r&\a\"','jG')],(function(ATa,NOi)local r_,Yzg,_tg,Cte;Cte={};r_,_tg=function(zOa,fje,Su)_tg[Su]=SNj(zOa,39263)-SNj(fje,24131)return _tg[Su]end,{};Yzg=_tg[10865]or r_(30869,16122,10865)while Yzg~=28333 do if Yzg>33041 then if Yzg<=42127 then Cte[1]=Cte[2]if Cte[3]~=Cte[3]then Yzg=26323 else Yzg=_tg[-25114]or r_(106753,9045,-25114)end else if(Cte[4]>=0 and Cte[2]>Cte[3])or((Cte[4]<0 or Cte[4]~=Cte[4])and Cte[2]<Cte[3])then Yzg=_tg[-25783]or r_(111168,39439,-25783)else Yzg=20370 end end elseif Yzg>26323 then Cte[5]='';Yzg,Cte[3],Cte[2],Cte[4]=_tg[14201]or r_(65795,44430,14201),(#ATa-1)+41,41,1 elseif Yzg<=20370 then if Yzg>17874 then Cte[5],Yzg=Cte[5]..Fpa(gnf(YNb(ATa,(Cte[1]-41)+1),YNb(NOi,(Cte[1]-41)%#NOi+1))),_tg[-25339]or r_(50018,18984,-25339)else Cte[2]=Cte[2]+Cte[4];Cte[1]=Cte[2]if Cte[2]~=Cte[2]then Yzg=_tg[25067]or r_(101412,61675,25067)else Yzg=_tg[28746]or r_(23086,22122,28746)end end else return Cte[5]end end end)('\199\189\245\189\231','\148\201')),[Cme(-13678- -4077)]=chd[(function(srd,iIi)local TMb,ZG,hvb,UNh;hvb={};TMb,ZG=function(gvh,IXg,RGa)ZG[gvh]=SNj(RGa,64069)-SNj(IXg,43362)return ZG[gvh]end,{};UNh=ZG[-16477]or TMb(-16477,42571,558)repeat if UNh<=41233 then if UNh<=25166 then if UNh>=5700 then if UNh<=5700 then hvb[1]=hvb[2]if hvb[3]~=hvb[3]then UNh=ZG[-24447]or TMb(-24447,33407,13931)else UNh=ZG[-17481]or TMb(-17481,20742,106743)end else if(hvb[4]>=0 and hvb[2]>hvb[3])or((hvb[4]<0 or hvb[4]~=hvb[4])and hvb[2]<hvb[3])then UNh=41233 else UNh=41620 end end else hvb[2]=hvb[2]+hvb[4];hvb[1]=hvb[2]if hvb[2]~=hvb[2]then UNh=41233 else UNh=25166 end end else return hvb[5]end elseif UNh>41620 then hvb[5]='';hvb[2],hvb[4],hvb[3],UNh=209,1,(#srd-1)+209,ZG[-25957]or TMb(-25957,9154,23201)else UNh,hvb[5]=ZG[-29043]or TMb(-29043,10963,28654),hvb[5]..Fpa(gnf(YNb(srd,(hvb[1]-209)+1),YNb(iIi,(hvb[1]-209)%#iIi+1)))end until UNh==31900 end)('&x,|','A\25')][(function(axf,gxb)local tWb,q_h,YFj,BVc;BVc={};tWb,q_h=function(YK,WWc,WQi)q_h[WWc]=SNj(WQi,35356)-SNj(YK,22970)return q_h[WWc]end,{};YFj=q_h[-10648]or tWb(10435,-10648,25952)repeat if YFj>=33261 then if YFj>43543 then return BVc[1]elseif YFj<=33261 then BVc[1],YFj=BVc[1]..Fpa(gnf(YNb(axf,(BVc[2]-27)+1),YNb(gxb,(BVc[2]-27)%#gxb+1))),q_h[-20455]or tWb(31292,-20455,51668)else if(BVc[3]>=0 and BVc[4]>BVc[5])or((BVc[3]<0 or BVc[3]~=BVc[3])and BVc[4]<BVc[5])then YFj=58258 else YFj=q_h[-15540]or tWb(55223,-15540,99814)end end elseif YFj>=9660 then if YFj<=9660 then BVc[2]=BVc[4]if BVc[5]~=BVc[5]then YFj=q_h[-9488]or tWb(5371,-9488,113359)else YFj=q_h[-19587]or tWb(31884,-19587,17745)end else BVc[1]='';BVc[5],BVc[4],YFj,BVc[3]=(#axf-1)+27,27,q_h[-31297]or tWb(41246,-31297,103548),1 end else BVc[4]=BVc[4]+BVc[3];BVc[2]=BVc[4]if BVc[4]~=BVc[4]then YFj=58258 else YFj=43543 end end until YFj==47536 end)("\246\214|\f\'\195\197a<\'",'\177\179\b_B')](chd[(function(ZEf,zRe)local izd,Naa,dN,rEe;izd={};Naa,dN={},function(mLh,rgj,Hmj)Naa[mLh]=SNj(rgj,13526)-SNj(Hmj,44642)return Naa[mLh]end;rEe=Naa[-24102]or dN(-24102,61595,15757)repeat if rEe<=30109 then if rEe>12382 then if(izd[1]>=0 and izd[2]>izd[3])or((izd[1]<0 or izd[1]~=izd[1])and izd[2]<izd[3])then rEe=Naa[-10061]or dN(-10061,52092,19545)else rEe=30680 end elseif rEe<7535 then izd[4]=izd[2]if izd[3]~=izd[3]then rEe=7535 else rEe=30109 end elseif rEe<=7535 then return izd[5]else izd[5]='';izd[2],izd[3],izd[1],rEe=176,(#ZEf-1)+176,1,Naa[15039]or dN(15039,40881,12811)end elseif rEe>30680 then izd[2]=izd[2]+izd[1];izd[4]=izd[2]if izd[2]~=izd[2]then rEe=7535 else rEe=Naa[15706]or dN(15706,65467,64434)end else rEe,izd[5]=Naa[7262]or dN(7262,57589,34962),izd[5]..Fpa(gnf(YNb(ZEf,(izd[4]-176)+1),YNb(zRe,(izd[4]-176)%#zRe+1)))end until rEe==12541 end)('&x,|','A\25')],(function(BCc,dEb)local aLa,tfb,Kje,nof;nof={};tfb,aLa={},function(Hzg,hTf,dig)tfb[dig]=SNj(hTf,36972)-SNj(Hzg,60013)return tfb[dig]end;Kje=tfb[25379]or aLa(25197,105773,25379)repeat if Kje<41824 then if Kje>=16858 then if Kje>16858 then nof[1]='';Kje,nof[2],nof[3],nof[4]=10642,66,1,(#BCc-1)+66 else nof[2]=nof[2]+nof[3];nof[5]=nof[2]if nof[2]~=nof[2]then Kje=41824 else Kje=43996 end end else nof[5]=nof[2]if nof[4]~=nof[4]then Kje=41824 else Kje=43996 end end elseif Kje>43996 then Kje,nof[1]=tfb[-31900]or aLa(21741,102454,-31900),nof[1]..Fpa(gnf(YNb(BCc,(nof[5]-66)+1),YNb(dEb,(nof[5]-66)%#dEb+1)))elseif Kje>41824 then if(nof[3]>=0 and nof[2]>nof[4])or((nof[3]<0 or nof[3]~=nof[3])and nof[2]<nof[4])then Kje=41824 else Kje=45621 end else return nof[1]end until Kje==33523 end)('\161\206\198\134\133\209\213\142\147','\246\161\180\237')),[Cme(-312257803/21659)]=chd[(function(cMe,wWi)local bue,lr,kXb,PVg;bue={};PVg,kXb=function(Ned,Kfb,Cb)kXb[Cb]=SNj(Ned,34958)-SNj(Kfb,31010)return kXb[Cb]end,{};lr=kXb[22629]or PVg(102078,33074,22629)while lr~=29553 do if lr>44037 then if lr<=55433 then bue[1]=bue[2]if bue[3]~=bue[3]then lr=64157 else lr=44037 end else return bue[4]end elseif lr>=22257 then if lr<=22257 then bue[4],lr=bue[4]..Fpa(gnf(YNb(cMe,(bue[1]-215)+1),YNb(wWi,(bue[1]-215)%#wWi+1))),kXb[6278]or PVg(100320,37855,6278)else if(bue[5]>=0 and bue[2]>bue[3])or((bue[5]<0 or bue[5]~=bue[5])and bue[2]<bue[3])then lr=kXb[-3626]or PVg(30071,31358,-3626)else lr=22257 end end elseif lr>3616 then bue[2]=bue[2]+bue[5];bue[1]=bue[2]if bue[2]~=bue[2]then lr=kXb[2724]or PVg(80987,49946,2724)else lr=44037 end else bue[4]='';bue[5],lr,bue[3],bue[2]=1,kXb[-30548]or PVg(82106,38537,-30548),(#cMe-1)+215,215 end end end)('~AtE','\25 ')][(function(oRf,Vlj)local dtb,ZXi,zde,fLg;fLg={};dtb,zde={},function(NOb,lwc,Eva)dtb[lwc]=SNj(NOb,42959)-SNj(Eva,61099)return dtb[lwc]end;ZXi=dtb[23189]or zde(85901,23189,1383)while ZXi~=3478 do if ZXi>39770 then if ZXi>54265 then fLg[1]='';fLg[2],fLg[3],ZXi,fLg[4]=(#oRf-1)+141,141,dtb[-17578]or zde(130356,-17578,4128),1 else fLg[1],ZXi=fLg[1]..Fpa(gnf(YNb(oRf,(fLg[5]-141)+1),YNb(Vlj,(fLg[5]-141)%#Vlj+1))),dtb[8092]or zde(103714,8092,24290)end elseif ZXi>=33444 then if ZXi<=33444 then fLg[3]=fLg[3]+fLg[4];fLg[5]=fLg[3]if fLg[3]~=fLg[3]then ZXi=dtb[12869]or zde(105395,12869,20361)else ZXi=14239 end else return fLg[1]end elseif ZXi<=14239 then if(fLg[4]>=0 and fLg[3]>fLg[2])or((fLg[4]<0 or fLg[4]~=fLg[4])and fLg[3]<fLg[2])then ZXi=dtb[-7506]or zde(125273,-7506,23959)else ZXi=dtb[30463]or zde(78568,30463,12165)end else fLg[5]=fLg[3]if fLg[2]~=fLg[2]then ZXi=dtb[-17992]or zde(75841,-17992,6815)else ZXi=dtb[9299]or zde(4099,9299,28294)end end end end)('\160\150\211\"\48\149\133\206\18\48','\231\243\167qU')](chd[(function(AEd,JZh)local eTd,Wpe,Tug,qk;qk={};Tug,eTd=function(BLa,mPe,FMi)eTd[mPe]=SNj(BLa,15585)-SNj(FMi,12165)return eTd[mPe]end,{};Wpe=eTd[11927]or Tug(69966,11927,48922)while Wpe~=47187 do if Wpe<=38720 then if Wpe<29150 then if Wpe>4562 then return qk[1]else Wpe,qk[1]=eTd[-1848]or Tug(60889,-1848,8978),qk[1]..Fpa(gnf(YNb(AEd,(qk[2]-155)+1),YNb(JZh,(qk[2]-155)%#JZh+1)))end elseif Wpe<=29150 then qk[2]=qk[3]if qk[4]~=qk[4]then Wpe=eTd[13916]or Tug(23497,13916,26225)else Wpe=38720 end else if(qk[5]>=0 and qk[3]>qk[4])or((qk[5]<0 or qk[5]~=qk[5])and qk[3]<qk[4])then Wpe=7476 else Wpe=4562 end end elseif Wpe<=40208 then qk[1]='';Wpe,qk[3],qk[5],qk[4]=29150,155,1,(#AEd-1)+155 else qk[3]=qk[3]+qk[5];qk[2]=qk[3]if qk[3]~=qk[3]then Wpe=7476 else Wpe=38720 end end end end)('~AtE','\25 ')],Cme(-221282940/-19462)),[Cme(315217940/-30574)]=chd[(function(ZUh,FZd)local Dye,eii,Rv,mRc;Dye={};Rv,mRc=function(Dqd,NKf,Khf)mRc[Khf]=SNj(Dqd,14065)-SNj(NKf,22905)return mRc[Khf]end,{};eii=mRc[15937]or Rv(10649,21631,15937)while eii~=19726 do if eii<10523 then if eii>=4706 then if eii>4706 then return Dye[1]else Dye[1]='';eii,Dye[2],Dye[3],Dye[4]=mRc[6263]or Rv(47970,20562,6263),(#ZUh-1)+13,1,13 end else if(Dye[3]>=0 and Dye[4]>Dye[2])or((Dye[3]<0 or Dye[3]~=Dye[3])and Dye[4]<Dye[2])then eii=7630 else eii=10523 end end elseif eii>25033 then Dye[5]=Dye[4]if Dye[2]~=Dye[2]then eii=7630 else eii=mRc[8172]or Rv(34688,64688,8172)end elseif eii<=10523 then Dye[1],eii=Dye[1]..Fpa(gnf(YNb(ZUh,(Dye[5]-13)+1),YNb(FZd,(Dye[5]-13)%#FZd+1))),mRc[2039]or Rv(98018,48947,2039)else Dye[4]=Dye[4]+Dye[3];Dye[5]=Dye[4]if Dye[4]~=Dye[4]then eii=mRc[-10853]or Rv(32751,29225,-10853)else eii=mRc[-2140]or Rv(24508,1244,-2140)end end end end)('\241\175\251\171','\150\206')][(function(rGf,lpf)local KQ,rxh,Ydf,eng;KQ={};Ydf,rxh={},function(pVg,MVc,Bte)Ydf[MVc]=SNj(Bte,4490)-SNj(pVg,7975)return Ydf[MVc]end;eng=Ydf[31301]or rxh(50082,31301,65039)repeat if eng>=40645 then if eng>58512 then if(KQ[1]>=0 and KQ[2]>KQ[3])or((KQ[1]<0 or KQ[1]~=KQ[1])and KQ[2]<KQ[3])then eng=Ydf[-21127]or rxh(8057,-21127,36521)else eng=Ydf[-10710]or rxh(7261,-10710,63872)end elseif eng<=40645 then return KQ[4]else KQ[4],eng=KQ[4]..Fpa(gnf(YNb(rGf,(KQ[5]-106)+1),YNb(lpf,(KQ[5]-106)%#lpf+1))),Ydf[-18305]or rxh(9290,-18305,33273)end elseif eng>=21766 then if eng<=21766 then KQ[2]=KQ[2]+KQ[1];KQ[5]=KQ[2]if KQ[2]~=KQ[2]then eng=40645 else eng=Ydf[-1920]or rxh(16892,-1920,87539)end else KQ[5]=KQ[2]if KQ[3]~=KQ[3]then eng=40645 else eng=Ydf[-23385]or rxh(43487,-23385,101660)end end else KQ[4]='';KQ[2],KQ[3],KQ[1],eng=106,(#rGf-1)+106,1,37385 end until eng==55003 end)('\173\253\153^}\152\238\132n}','\234\152\237\r\24')](chd[(function(gjg,LCc)local oth,lPj,z_d,eMc;oth={};eMc,lPj={},function(lKc,kQf,zKd)eMc[kQf]=SNj(lKc,18692)-SNj(zKd,13257)return eMc[kQf]end;z_d=eMc[25072]or lPj(39504,25072,41546)repeat if z_d<=39443 then if z_d<38134 then if z_d>4706 then oth[1]='';z_d,oth[2],oth[3],oth[4]=39443,1,190,(#gjg-1)+190 else return oth[1]end elseif z_d<=38134 then if(oth[2]>=0 and oth[3]>oth[4])or((oth[2]<0 or oth[2]~=oth[2])and oth[3]<oth[4])then z_d=eMc[13452]or lPj(55132,13452,47167)else z_d=65453 end else oth[5]=oth[3]if oth[4]~=oth[4]then z_d=4706 else z_d=38134 end end elseif z_d<=43340 then oth[3]=oth[3]+oth[2];oth[5]=oth[3]if oth[3]~=oth[3]then z_d=eMc[25168]or lPj(83857,25168,53242)else z_d=eMc[-19342]or lPj(43677,-19342,32106)end else z_d,oth[1]=eMc[18833]or lPj(77559,18833,36206),oth[1]..Fpa(gnf(YNb(gjg,(oth[5]-190)+1),YNb(LCc,(oth[5]-190)%#LCc+1)))end until z_d==47444 end)('\241\175\251\171','\150\206')],(function(JK,ePa)local TBb,Sya,CKf,zXb;CKf={};TBb,Sya=function(dRd,kmc,_gi)Sya[kmc]=SNj(dRd,36716)-SNj(_gi,61684)return Sya[kmc]end,{};zXb=Sya[14275]or TBb(24964,14275,56560)while zXb~=53322 do if zXb<=56045 then if zXb<=49892 then if zXb>24185 then CKf[1]='';CKf[2],CKf[3],CKf[4],zXb=(#JK-1)+93,1,93,Sya[-4877]or TBb(102419,-4877,12786)elseif zXb>23031 then CKf[5]=CKf[4]if CKf[2]~=CKf[2]then zXb=Sya[6937]or TBb(111168,6937,44344)else zXb=23031 end else if(CKf[3]>=0 and CKf[4]>CKf[2])or((CKf[3]<0 or CKf[3]~=CKf[3])and CKf[4]<CKf[2])then zXb=Sya[-2959]or TBb(98391,-2959,57135)else zXb=Sya[12733]or TBb(126463,12733,29744)end end else CKf[4]=CKf[4]+CKf[3];CKf[5]=CKf[4]if CKf[4]~=CKf[4]then zXb=57184 else zXb=23031 end end elseif zXb>56783 then return CKf[1]else zXb,CKf[1]=Sya[7758]or TBb(122153,7758,34732),CKf[1]..Fpa(gnf(YNb(JK,(CKf[5]-93)+1),YNb(ePa,(CKf[5]-93)%#ePa+1)))end end end)('\178\189\169\127o\133\184\142x\127\150','\228\212\219\v\26')),[(function(gOb,Mnj)local rzh,ee,MGc,VGi;ee={};MGc,VGi=function(dQf,Cij,lpd)VGi[dQf]=SNj(Cij,62038)-SNj(lpd,28947)return VGi[dQf]end,{};rzh=VGi[-3197]or MGc(-3197,121809,48162)while rzh~=33704 do if rzh<26771 then if rzh<=16822 then if rzh>1877 then if(ee[1]>=0 and ee[2]>ee[3])or((ee[1]<0 or ee[1]~=ee[1])and ee[2]<ee[3])then rzh=VGi[-15895]or MGc(-15895,13941,14461)else rzh=26771 end else ee[2]=ee[2]+ee[1];ee[4]=ee[2]if ee[2]~=ee[2]then rzh=VGi[-17552]or MGc(-17552,129832,65498)else rzh=16822 end end else ee[5]='';ee[1],ee[3],ee[2],rzh=1,(#gOb-1)+20,20,65315 end elseif rzh>=31413 then if rzh<=31413 then return ee[5]else ee[4]=ee[2]if ee[3]~=ee[3]then rzh=VGi[-4328]or MGc(-4328,117777,45697)else rzh=16822 end end else ee[5],rzh=ee[5]..Fpa(gnf(YNb(gOb,(ee[4]-20)+1),YNb(Mnj,(ee[4]-20)%#Mnj+1))),VGi[-26414]or MGc(-26414,57138,22300)end end end)('\172%\139J\169\129#\137S\153\129','\228Q\255:\250')]=chd[(function(mNi,W_f)local xqe,Wj,Opa,uM;Opa={};xqe,Wj=function(HFj,jeb,pKc)Wj[jeb]=SNj(HFj,12073)-SNj(pKc,5406)return Wj[jeb]end,{};uM=Wj[1307]or xqe(83929,1307,38454)repeat if uM<40667 then if uM>=19156 then if uM>19156 then Opa[1],uM=Opa[1]..Fpa(gnf(YNb(mNi,(Opa[2]-158)+1),YNb(W_f,(Opa[2]-158)%#W_f+1))),Wj[6433]or xqe(100360,6433,64580)else Opa[2]=Opa[3]if Opa[4]~=Opa[4]then uM=48 else uM=40667 end end else return Opa[1]end elseif uM<=48583 then if uM<=40667 then if(Opa[5]>=0 and Opa[3]>Opa[4])or((Opa[5]<0 or Opa[5]~=Opa[5])and Opa[3]<Opa[4])then uM=Wj[13464]or xqe(41829,13464,39170)else uM=23974 end else Opa[3]=Opa[3]+Opa[5];Opa[2]=Opa[3]if Opa[3]~=Opa[3]then uM=48 else uM=40667 end end else Opa[1]='';Opa[3],Opa[4],uM,Opa[5]=158,(#mNi-1)+158,Wj[17855]or xqe(74884,17855,54727),1 end until uM==52781 end)('bWhS','\5\54')][(function(Fei,Dri)local Tqj,pef,oHb,Jwh;pef={};Tqj,Jwh=function(mgh,yxc,xic)Jwh[yxc]=SNj(xic,41300)-SNj(mgh,24550)return Jwh[yxc]end,{};oHb=Jwh[-30951]or Tqj(55514,-30951,26520)repeat if oHb<=35618 then if oHb>29286 then return pef[1]elseif oHb>=16272 then if oHb>16272 then pef[2]=pef[2]+pef[3];pef[4]=pef[2]if pef[2]~=pef[2]then oHb=35618 else oHb=65401 end else pef[1]='';pef[3],pef[2],oHb,pef[5]=1,105,56172,(#Fei-1)+105 end else oHb,pef[1]=Jwh[-4285]or Tqj(54683,-4285,23991),pef[1]..Fpa(gnf(YNb(Fei,(pef[4]-105)+1),YNb(Dri,(pef[4]-105)%#Dri+1)))end elseif oHb<=56172 then pef[4]=pef[2]if pef[5]~=pef[5]then oHb=35618 else oHb=65401 end else if(pef[3]>=0 and pef[2]>pef[5])or((pef[3]<0 or pef[3]~=pef[3])and pef[2]<pef[5])then oHb=Jwh[-12846]or Tqj(20825,-12846,14517)else oHb=3057 end end until oHb==9680 end)('\210\48\216_V\231#\197oV','\149U\172\f\51')](chd[(function(Xif,Bj)local pJj,Kha,COf,Cnd;Kha={};COf,Cnd=function(dkf,yke,UIe)Cnd[dkf]=SNj(UIe,13759)-SNj(yke,11071)return Cnd[dkf]end,{};pJj=Cnd[10577]or COf(10577,21076,81238)while pJj~=56431 do if pJj<=36734 then if pJj<21919 then if pJj<=14601 then pJj,Kha[1]=Cnd[23937]or COf(23937,18160,95170),Kha[1]..Fpa(gnf(YNb(Xif,(Kha[2]-12)+1),YNb(Bj,(Kha[2]-12)%#Bj+1)))else Kha[2]=Kha[3]if Kha[4]~=Kha[4]then pJj=21919 else pJj=41377 end end elseif pJj<=21919 then return Kha[1]else Kha[1]='';Kha[3],Kha[5],Kha[4],pJj=12,1,(#Xif-1)+12,Cnd[31630]or COf(31630,36236,49694)end elseif pJj>41377 then Kha[3]=Kha[3]+Kha[5];Kha[2]=Kha[3]if Kha[3]~=Kha[3]then pJj=Cnd[30798]or COf(30798,33960,77961)else pJj=Cnd[-23383]or COf(-23383,10262,37237)end else if(Kha[5]>=0 and Kha[3]>Kha[4])or((Kha[5]<0 or Kha[5]~=Kha[5])and Kha[3]<Kha[4])then pJj=21919 else pJj=Cnd[-3559]or COf(-3559,64049,81832)end end end end)('bWhS','\5\54')],Cme(244173578/16973)),[(function(ECa,Cmc)local Vxa,bAa,Huf,HSi;bAa={};Vxa,HSi={},function(zQc,dfb,Aqj)Vxa[zQc]=SNj(Aqj,20763)-SNj(dfb,43949)return Vxa[zQc]end;Huf=Vxa[18444]or HSi(18444,24240,86789)while Huf~=248 do if Huf>=15745 then if Huf<=22521 then if Huf<=15745 then bAa[1]=bAa[2]if bAa[3]~=bAa[3]then Huf=63008 else Huf=13786 end else Huf,bAa[4]=Vxa[-20326]or HSi(-20326,64247,9286),bAa[4]..Fpa(gnf(YNb(ECa,(bAa[1]-128)+1),YNb(Cmc,(bAa[1]-128)%#Cmc+1)))end else return bAa[4]end elseif Huf<=9219 then if Huf>3329 then bAa[2]=bAa[2]+bAa[5];bAa[1]=bAa[2]if bAa[2]~=bAa[2]then Huf=Vxa[-8471]or HSi(-8471,16991,110857)else Huf=13786 end else bAa[4]='';bAa[5],Huf,bAa[3],bAa[2]=1,15745,(#ECa-1)+128,128 end else if(bAa[5]>=0 and bAa[2]>bAa[3])or((bAa[5]<0 or bAa[5]~=bAa[5])and bAa[2]<bAa[3])then Huf=Vxa[-7035]or HSi(-7035,25340,126570)else Huf=22521 end end end end)('\171\b\27\214,\158\v\27\230,','\236}r\133I')]=chd[(function(pzb,SIb)local GRa,CPf,WVf,Gxa;CPf={};Gxa,WVf={},function(BMb,HRi,evf)Gxa[HRi]=SNj(evf,56628)-SNj(BMb,25337)return Gxa[HRi]end;GRa=Gxa[8132]or WVf(62780,8132,130866)while GRa~=51560 do if GRa>45859 then if GRa>48564 then CPf[1]=CPf[1]+CPf[2];CPf[3]=CPf[1]if CPf[1]~=CPf[1]then GRa=48564 else GRa=7745 end else return CPf[4]end elseif GRa>45671 then GRa,CPf[4]=Gxa[-9772]or WVf(50104,-9772,113172),CPf[4]..Fpa(gnf(YNb(pzb,(CPf[3]-128)+1),YNb(SIb,(CPf[3]-128)%#SIb+1)))elseif GRa>35393 then CPf[3]=CPf[1]if CPf[5]~=CPf[5]then GRa=Gxa[-16145]or WVf(2663,-16145,129894)else GRa=7745 end elseif GRa>7745 then CPf[4]='';GRa,CPf[2],CPf[1],CPf[5]=45671,1,128,(#pzb-1)+128 else if(CPf[2]>=0 and CPf[1]>CPf[5])or((CPf[2]<0 or CPf[2]~=CPf[2])and CPf[1]<CPf[5])then GRa=48564 else GRa=Gxa[-16149]or WVf(6024,-16149,128416)end end end end)('h\162b\166','\15\195')][(function(Tmd,DL)local NXc,rOc,xdd,BKh;BKh={};NXc,rOc=function(qlh,qse,Gjc)rOc[qlh]=SNj(Gjc,18930)-SNj(qse,5815)return rOc[qlh]end,{};xdd=rOc[24704]or NXc(24704,12724,11401)repeat if xdd<=19936 then if xdd<=15992 then if xdd>=6713 then if xdd>6713 then BKh[1]='';BKh[2],xdd,BKh[3],BKh[4]=(#Tmd-1)+132,19936,132,1 else return BKh[1]end else BKh[3]=BKh[3]+BKh[4];BKh[5]=BKh[3]if BKh[3]~=BKh[3]then xdd=rOc[-13878]or NXc(-13878,36255,64659)else xdd=32172 end end else BKh[5]=BKh[3]if BKh[2]~=BKh[2]then xdd=6713 else xdd=32172 end end elseif xdd<=32172 then if(BKh[4]>=0 and BKh[3]>BKh[2])or((BKh[4]<0 or BKh[4]~=BKh[4])and BKh[3]<BKh[2])then xdd=rOc[23877]or NXc(23877,46186,62692)else xdd=52443 end else BKh[1],xdd=BKh[1]..Fpa(gnf(YNb(Tmd,(BKh[5]-132)+1),YNb(DL,(BKh[5]-132)%#DL+1))),rOc[-22731]or NXc(-22731,2236,32317)end until xdd==2341 end)('\189\208\23N\185\136\195\n~\185','\250\181c\29\220')](chd[(function(ipb,Kzh)local H_e,YLj,Mrj,XRg;YLj={};XRg,H_e=function(AK,_Zd,ubd)H_e[ubd]=SNj(_Zd,51535)-SNj(AK,24493)return H_e[ubd]end,{};Mrj=H_e[-16139]or XRg(1591,32538,-16139)repeat if Mrj>43047 then if Mrj<=55863 then return YLj[1]else YLj[2]=YLj[3]if YLj[4]~=YLj[4]then Mrj=H_e[-16790]or XRg(23886,5205,-16790)else Mrj=H_e[-26800]or XRg(25521,10895,-26800)end end elseif Mrj>42916 then YLj[1],Mrj=YLj[1]..Fpa(gnf(YNb(ipb,(YLj[2]-212)+1),YNb(Kzh,(YLj[2]-212)%#Kzh+1))),H_e[-30630]or XRg(598,21527,-30630)elseif Mrj<=23739 then if Mrj<=16221 then YLj[3]=YLj[3]+YLj[5];YLj[2]=YLj[3]if YLj[3]~=YLj[3]then Mrj=55863 else Mrj=H_e[10880]or XRg(59701,104307,10880)end else YLj[1]='';YLj[3],YLj[5],YLj[4],Mrj=212,1,(#ipb-1)+212,H_e[13879]or XRg(47373,66781,13879)end else if(YLj[5]>=0 and YLj[3]>YLj[4])or((YLj[5]<0 or YLj[5]~=YLj[5])and YLj[3]<YLj[4])then Mrj=H_e[-916]or XRg(61742,82421,-916)else Mrj=H_e[10107]or XRg(24814,11813,10107)end end until Mrj==23326 end)('h\162b\166','\15\195')],Cme(-6973+-7772)),[Cme(21613- -16197)]=chd[(function(Zbf,Aab)local uef,oSd,jrd,VVb;VVb={};oSd,jrd=function(Bui,Rdb,uhj)jrd[uhj]=SNj(Rdb,54203)-SNj(Bui,57761)return jrd[uhj]end,{};uef=jrd[-6559]or oSd(26821,6223,-6559)repeat if uef<39125 then if uef>=5797 then if uef>5797 then VVb[1]='';VVb[2],VVb[3],uef,VVb[4]=197,1,jrd[3994]or oSd(48798,127797,3994),(#Zbf-1)+197 else return VVb[1]end else VVb[1],uef=VVb[1]..Fpa(gnf(YNb(Zbf,(VVb[5]-197)+1),YNb(Aab,(VVb[5]-197)%#Aab+1))),jrd[13455]or oSd(22311,105696,13455)end elseif uef>=49487 then if uef<=49487 then VVb[5]=VVb[2]if VVb[4]~=VVb[4]then uef=jrd[-13047]or oSd(8626,1283,-13047)else uef=jrd[-10210]or oSd(62104,14248,-10210)end else if(VVb[3]>=0 and VVb[2]>VVb[4])or((VVb[3]<0 or VVb[3]~=VVb[3])and VVb[2]<VVb[4])then uef=jrd[11439]or oSd(19175,4688,11439)else uef=jrd[11469]or oSd(48276,46502,11469)end end else VVb[2]=VVb[2]+VVb[3];VVb[5]=VVb[2]if VVb[2]~=VVb[2]then uef=jrd[-3010]or oSd(1268,10305,-3010)else uef=jrd[-12242]or oSd(24036,89764,-12242)end end until uef==32270 end)('1*;.','VK')][(function(VI,HEe)local jyd,pWg,DCe,dJc;DCe={};pWg,jyd={},function(HWe,OG,LQa)pWg[HWe]=SNj(OG,56828)-SNj(LQa,61879)return pWg[HWe]end;dJc=pWg[14515]or jyd(14515,102883,28821)repeat if dJc<37053 then if dJc<10552 then if(DCe[1]>=0 and DCe[2]>DCe[3])or((DCe[1]<0 or DCe[1]~=DCe[1])and DCe[2]<DCe[3])then dJc=10552 else dJc=pWg[-3726]or jyd(-3726,119103,48333)end elseif dJc<=10552 then return DCe[4]else DCe[2]=DCe[2]+DCe[1];DCe[5]=DCe[2]if DCe[2]~=DCe[2]then dJc=pWg[11645]or jyd(11645,14773,19110)else dJc=10228 end end elseif dJc>=48969 then if dJc<=48969 then dJc,DCe[4]=pWg[-24777]or jyd(-24777,25032,36553),DCe[4]..Fpa(gnf(YNb(VI,(DCe[5]-16)+1),YNb(HEe,(DCe[5]-16)%#HEe+1)))else DCe[4]='';DCe[2],dJc,DCe[1],DCe[3]=16,37053,1,(#VI-1)+16 end else DCe[5]=DCe[2]if DCe[3]~=DCe[3]then dJc=pWg[-1030]or jyd(-1030,7525,26326)else dJc=10228 end end until dJc==40911 end)('z\198\161(\165O\213\188\24\165','=\163\213{\192')](chd[(function(pMi,ufa)local iHj,rcj,Edh,eOi;eOi={};iHj,Edh={},function(Ldh,Azh,pcc)iHj[pcc]=SNj(Ldh,19244)-SNj(Azh,23053)return iHj[pcc]end;rcj=iHj[-32579]or Edh(14033,22817,-32579)while rcj~=59400 do if rcj<31441 then if rcj<20154 then eOi[1],rcj=eOi[1]..Fpa(gnf(YNb(pMi,(eOi[2]-195)+1),YNb(ufa,(eOi[2]-195)%#ufa+1))),iHj[-25591]or Edh(58894,1125,-25591)elseif rcj<=20154 then eOi[3]=eOi[3]+eOi[4];eOi[2]=eOi[3]if eOi[3]~=eOi[3]then rcj=iHj[8857]or Edh(120989,50395,8857)else rcj=23996 end else if(eOi[4]>=0 and eOi[3]>eOi[5])or((eOi[4]<0 or eOi[4]~=eOi[4])and eOi[3]<eOi[5])then rcj=62683 else rcj=2474 end end elseif rcj<34859 then eOi[1]='';eOi[4],eOi[3],rcj,eOi[5]=1,195,34859,(#pMi-1)+195 elseif rcj<=34859 then eOi[2]=eOi[3]if eOi[5]~=eOi[5]then rcj=62683 else rcj=iHj[28853]or Edh(56498,25583,28853)end else return eOi[1]end end end)('1*;.','VK')],Cme(-34586232/-1039)),[(function(xji,hsh)local Fbe,rI,HBf,hEd;rI={};Fbe,hEd={},function(Iuj,au,aNa)Fbe[Iuj]=SNj(aNa,31573)-SNj(au,41097)return Fbe[Iuj]end;HBf=Fbe[9603]or hEd(9603,6314,67376)while HBf~=17151 do if HBf<56797 then if HBf>=50242 then if HBf>50242 then rI[1]=rI[1]+rI[2];rI[3]=rI[1]if rI[1]~=rI[1]then HBf=64895 else HBf=Fbe[-22445]or hEd(-22445,58272,88659)end else rI[4]='';rI[2],HBf,rI[1],rI[5]=1,32947,155,(#xji-1)+155 end else rI[3]=rI[1]if rI[5]~=rI[5]then HBf=Fbe[20201]or hEd(20201,64347,74244)else HBf=Fbe[14037]or hEd(14037,60408,86555)end end elseif HBf>=56948 then if HBf>56948 then return rI[4]else HBf,rI[4]=Fbe[-9204]or hEd(-9204,36815,36183),rI[4]..Fpa(gnf(YNb(xji,(rI[3]-155)+1),YNb(hsh,(rI[3]-155)%#hsh+1)))end else if(rI[2]>=0 and rI[1]>rI[5])or((rI[2]<0 or rI[2]~=rI[2])and rI[1]<rI[5])then HBf=64895 else HBf=56948 end end end end)('}\155\198\136C\152}\223J\154\229\144E\137}\204J','/\254\182\228*\251\28\171')]=chd[(function(Qna,_Ja)local Jwi,fXg,sjf,Ixf;sjf={};Jwi,Ixf=function(dli,Ef,Yde)Ixf[Yde]=SNj(dli,14739)-SNj(Ef,53802)return Ixf[Yde]end,{};fXg=Ixf[-9036]or Jwi(106588,711,-9036)repeat if fXg>48782 then if fXg>51426 then fXg,sjf[1]=Ixf[-30176]or Jwi(57017,19467,-30176),sjf[1]..Fpa(gnf(YNb(Qna,(sjf[2]-10)+1),YNb(_Ja,(sjf[2]-10)%#_Ja+1)))else sjf[1]='';sjf[3],sjf[4],sjf[5],fXg=10,(#Qna-1)+10,1,48782 end elseif fXg>38865 then sjf[2]=sjf[3]if sjf[4]~=sjf[4]then fXg=Ixf[28767]or Jwi(26028,64168,28767)else fXg=Ixf[11384]or Jwi(61076,60700,11384)end elseif fXg<18697 then return sjf[1]elseif fXg<=18697 then sjf[3]=sjf[3]+sjf[5];sjf[2]=sjf[3]if sjf[3]~=sjf[3]then fXg=Ixf[9380]or Jwi(28269,63083,9380)else fXg=Ixf[11435]or Jwi(55399,38921,11435)end else if(sjf[5]>=0 and sjf[3]>sjf[4])or((sjf[5]<0 or sjf[5]~=sjf[5])and sjf[3]<sjf[4])then fXg=Ixf[1617]or Jwi(52216,27780,1617)else fXg=Ixf[8804]or Jwi(96760,48222,8804)end end until fXg==50047 end)('\183\221\189\217','\208\188')][(function(yHa,VLc)local QCb,eIe,DJ,Ega;QCb={};DJ,Ega={},function(RRc,Nmg,UXh)DJ[Nmg]=SNj(UXh,60179)-SNj(RRc,64457)return DJ[Nmg]end;eIe=DJ[16032]or Ega(42971,16032,123523)repeat if eIe>42841 then if eIe>44414 then QCb[1]=QCb[1]+QCb[2];QCb[3]=QCb[1]if QCb[1]~=QCb[1]then eIe=DJ[-10699]or Ega(2567,-10699,7706)else eIe=DJ[30365]or Ega(53065,30365,12490)end else QCb[4]='';QCb[5],eIe,QCb[1],QCb[2]=(#yHa-1)+137,DJ[-2381]or Ega(10465,-2381,105865),137,1 end elseif eIe>41842 then if(QCb[2]>=0 and QCb[1]>QCb[5])or((QCb[2]<0 or QCb[2]~=QCb[2])and QCb[1]<QCb[5])then eIe=DJ[25672]or Ega(56722,25672,49797)else eIe=39855 end elseif eIe>=39855 then if eIe<=39855 then QCb[4],eIe=QCb[4]..Fpa(gnf(YNb(yHa,(QCb[3]-137)+1),YNb(VLc,(QCb[3]-137)%#VLc+1))),DJ[-25024]or Ega(8934,-25024,89421)else QCb[3]=QCb[1]if QCb[5]~=QCb[5]then eIe=827 else eIe=42841 end end else return QCb[4]end until eIe==15821 end)('u\203\f\52\149@\216\17\4\149','2\174xg\240')](chd[(function(aqd,jDa)local ZQj,KGh,CKd,czf;CKd={};ZQj,czf={},function(Hbh,SQ,br_)ZQj[SQ]=SNj(br_,3584)-SNj(Hbh,12542)return ZQj[SQ]end;KGh=ZQj[20982]or czf(19577,20982,46304)repeat if KGh<63959 then if KGh>=22742 then if KGh>22742 then if(CKd[1]>=0 and CKd[2]>CKd[3])or((CKd[1]<0 or CKd[1]~=CKd[1])and CKd[2]<CKd[3])then KGh=ZQj[-3615]or czf(21186,-3615,86779)else KGh=ZQj[-8547]or czf(26785,-8547,88147)end else CKd[4]=CKd[2]if CKd[3]~=CKd[3]then KGh=64191 else KGh=ZQj[9425]or czf(57333,9425,83090)end end else CKd[5]='';KGh,CKd[2],CKd[1],CKd[3]=22742,164,1,(#aqd-1)+164 end elseif KGh>=64191 then if KGh<=64191 then return CKd[5]else CKd[5],KGh=CKd[5]..Fpa(gnf(YNb(aqd,(CKd[4]-164)+1),YNb(jDa,(CKd[4]-164)%#jDa+1))),ZQj[-17125]or czf(15928,-17125,67229)end else CKd[2]=CKd[2]+CKd[1];CKd[4]=CKd[2]if CKd[2]~=CKd[2]then KGh=ZQj[-19690]or czf(29391,-19690,78576)else KGh=ZQj[-26080]or czf(61190,-26080,79231)end end until KGh==33555 end)('\183\221\189\217','\208\188')],Cme(216384880/24272))}local Wrc,Lnj=CQf[(function(kAj,Oxj)local kUc,aYd,bea,DAb;DAb={};kUc,bea=function(PF,fhd,bnf)bea[PF]=SNj(fhd,48938)-SNj(bnf,63236)return bea[PF]end,{};aYd=bea[-20769]or kUc(-20769,54509,50709)repeat if aYd>44869 then if aYd<=46369 then aYd,DAb[1]=bea[15741]or kUc(15741,52952,62613),DAb[1]..Fpa(gnf(YNb(kAj,(DAb[2]-167)+1),YNb(Oxj,(DAb[2]-167)%#Oxj+1)))else DAb[2]=DAb[3]if DAb[4]~=DAb[4]then aYd=bea[19055]or kUc(19055,75507,7568)else aYd=31048 end end elseif aYd<=31048 then if aYd<28257 then DAb[1]='';DAb[5],DAb[4],aYd,DAb[3]=1,(#kAj-1)+167,59244,167 elseif aYd>28257 then if(DAb[5]>=0 and DAb[3]>DAb[4])or((DAb[5]<0 or DAb[5]~=DAb[5])and DAb[3]<DAb[4])then aYd=bea[-1488]or kUc(-1488,117905,13170)else aYd=bea[20711]or kUc(20711,710,65487)end else DAb[3]=DAb[3]+DAb[5];DAb[2]=DAb[3]if DAb[3]~=DAb[3]then aYd=44869 else aYd=31048 end end else return DAb[1]end until aYd==27891 end)('\237\183\152\196\190\139\206','\189\219\249')][(function(Upg,ulb)local cnd,rgi,DXd,idd;DXd={};cnd,rgi=function(xfa,whf,fja)rgi[fja]=SNj(whf,36559)-SNj(xfa,1462)return rgi[fja]end,{};idd=rgi[-12442]or cnd(15065,60634,-12442)repeat if idd>27913 then if idd>59213 then DXd[1]=DXd[2]if DXd[3]~=DXd[3]then idd=24609 else idd=rgi[11206]or cnd(34976,129708,11206)end else if(DXd[4]>=0 and DXd[2]>DXd[3])or((DXd[4]<0 or DXd[4]~=DXd[4])and DXd[2]<DXd[3])then idd=rgi[2397]or cnd(16967,9949,2397)else idd=rgi[29129]or cnd(42761,20357,29129)end end elseif idd>=24609 then if idd>24609 then DXd[2]=DXd[2]+DXd[4];DXd[1]=DXd[2]if DXd[2]~=DXd[2]then idd=24609 else idd=59213 end else return DXd[5]end elseif idd<=7819 then idd,DXd[5]=rgi[457]or cnd(30339,28401,457),DXd[5]..Fpa(gnf(YNb(Upg,(DXd[1]-196)+1),YNb(ulb,(DXd[1]-196)%#ulb+1)))else DXd[5]='';idd,DXd[3],DXd[4],DXd[2]=rgi[10085]or cnd(46723,76901,10085),(#Upg-1)+196,1,196 end until idd==27611 end)('\242\129\167<\31\238\130\165$\22\204','\190\238\196]s')],CQf[(function(uS,Kta)local hZe,Bbf,bVd,Dka;bVd={};hZe,Dka=function(jQa,Grj,rLh)Dka[Grj]=SNj(rLh,50581)-SNj(jQa,47922)return Dka[Grj]end,{};Bbf=Dka[-8493]or hZe(31764,-8493,125941)while Bbf~=49823 do if Bbf>=26426 then if Bbf<41867 then bVd[1]='';bVd[2],bVd[3],Bbf,bVd[4]=1,153,41867,(#uS-1)+153 elseif Bbf>41867 then bVd[3]=bVd[3]+bVd[2];bVd[5]=bVd[3]if bVd[3]~=bVd[3]then Bbf=Dka[-5141]or hZe(64397,-5141,48416)else Bbf=Dka[30307]or hZe(7667,30307,6751)end else bVd[5]=bVd[3]if bVd[4]~=bVd[4]then Bbf=14326 else Bbf=14601 end end elseif Bbf>14326 then if(bVd[2]>=0 and bVd[3]>bVd[4])or((bVd[2]<0 or bVd[2]~=bVd[2])and bVd[3]<bVd[4])then Bbf=Dka[-31476]or hZe(35496,-31476,44037)else Bbf=8054 end elseif Bbf<=8054 then Bbf,bVd[1]=Dka[-29569]or hZe(9181,-29569,84578),bVd[1]..Fpa(gnf(YNb(uS,(bVd[5]-153)+1),YNb(Kta,(bVd[5]-153)%#Kta+1)))else return bVd[1]end end end)('\aP\198\21\27M\211\18&','R#\163g')][(function(Xbg,gLb)local gne,Shb,bd,fN;Shb={};gne,fN=function(Ayd,aS,Xld)fN[Ayd]=SNj(aS,33492)-SNj(Xld,50337)return fN[Ayd]end,{};bd=fN[31405]or gne(31405,31876,24184)repeat if bd<25463 then if bd<=1533 then if bd<=145 then Shb[1]=Shb[2]if Shb[3]~=Shb[3]then bd=46080 else bd=58999 end else bd,Shb[4]=fN[-353]or gne(-353,99654,1998),Shb[4]..Fpa(gnf(YNb(Xbg,(Shb[1]-122)+1),YNb(gLb,(Shb[1]-122)%#gLb+1)))end else Shb[2]=Shb[2]+Shb[5];Shb[1]=Shb[2]if Shb[2]~=Shb[2]then bd=46080 else bd=58999 end end elseif bd<=46080 then if bd>25463 then return Shb[4]else Shb[4]='';Shb[2],Shb[5],bd,Shb[3]=122,1,fN[-18731]or gne(-18731,44909,59785),(#Xbg-1)+122 end else if(Shb[5]>=0 and Shb[2]>Shb[3])or((Shb[5]<0 or Shb[5]~=Shb[5])and Shb[2]<Shb[3])then bd=fN[7025]or gne(7025,107318,43331)else bd=fN[8565]or gne(8565,65423,46079)end end until bd==32449 end)('3\189\222H+v\t\179\201G&W','g\210\171+C3')]and not CQf[(function(AFe,TBh)local Arb,Noa,NRd,BAi;NRd={};BAi,Noa={},function(YZi,cbh,Yoc)BAi[cbh]=SNj(YZi,48166)-SNj(Yoc,37231)return BAi[cbh]end;Arb=BAi[-21019]or Noa(130435,-21019,16273)repeat if Arb<39226 then if Arb>=14949 then if Arb<=14949 then return NRd[1]else NRd[1]='';NRd[2],NRd[3],Arb,NRd[4]=1,(#AFe-1)+46,BAi[-6031]or Noa(77037,-6031,26366),46 end else if(NRd[2]>=0 and NRd[4]>NRd[3])or((NRd[2]<0 or NRd[2]~=NRd[2])and NRd[4]<NRd[3])then Arb=BAi[-22496]or Noa(4527,-22496,57931)else Arb=BAi[31360]or Noa(114793,31360,7988)end end elseif Arb<=51510 then if Arb<=39226 then NRd[5]=NRd[4]if NRd[3]~=NRd[3]then Arb=BAi[15848]or Noa(62574,15848,40076)else Arb=BAi[27066]or Noa(28819,27066,13828)end else NRd[4]=NRd[4]+NRd[2];NRd[5]=NRd[4]if NRd[4]~=NRd[4]then Arb=BAi[22096]or Noa(13772,22096,57066)else Arb=9546 end end else Arb,NRd[1]=BAi[2816]or Noa(104978,2816,52625),NRd[1]..Fpa(gnf(YNb(AFe,(NRd[5]-46)+1),YNb(TBh,(NRd[5]-46)%#TBh+1)))end until Arb==38053 end)('?.f\222#3s\217\30','j]\3\172')][(function(nge,wPe)local thc,gre,BTc,pji;gre={};BTc,pji={},function(DWh,mQa,eMf)BTc[mQa]=SNj(DWh,35822)-SNj(eMf,4403)return BTc[mQa]end;thc=BTc[-24306]or pji(29090,-24306,49903)while thc~=30450 do if thc<=41947 then if thc>=37684 then if thc>37684 then return gre[1]else if(gre[2]>=0 and gre[3]>gre[4])or((gre[2]<0 or gre[2]~=gre[2])and gre[3]<gre[4])then thc=41947 else thc=45078 end end elseif thc<=4841 then gre[3]=gre[3]+gre[2];gre[5]=gre[3]if gre[3]~=gre[3]then thc=41947 else thc=BTc[-16338]or pji(69192,-16338,58177)end else gre[1]='';gre[2],gre[3],gre[4],thc=1,11,(#nge-1)+11,49608 end elseif thc<=45078 then thc,gre[1]=BTc[-545]or pji(48216,-545,13822),gre[1]..Fpa(gnf(YNb(nge,(gre[5]-11)+1),YNb(wPe,(gre[5]-11)%#wPe+1)))else gre[5]=gre[3]if gre[4]~=gre[4]then thc=41947 else thc=37684 end end end end)("\193\214c\30\211\167\'\238\246t\29\222\170\48\238",'\138\179\26|\188\198U')]and not CQf[(function(dMi,qef)local uB,hde,xDa,lNh;hde={};xDa,lNh=function(dke,NHh,zxc)lNh[zxc]=SNj(dke,59660)-SNj(NHh,10400)return lNh[zxc]end,{};uB=lNh[-11350]or xDa(44861,27393,-11350)while uB~=44115 do if uB<=33309 then if uB<=33160 then if uB<=29031 then if uB>656 then uB,hde[1]=lNh[23851]or xDa(125142,22301,23851),hde[1]..Fpa(gnf(YNb(dMi,(hde[2]-237)+1),YNb(qef,(hde[2]-237)%#qef+1)))else hde[1]='';uB,hde[3],hde[4],hde[5]=33160,237,1,(#dMi-1)+237 end else hde[2]=hde[3]if hde[5]~=hde[5]then uB=lNh[9042]or xDa(81922,59096,9042)else uB=lNh[15692]or xDa(15846,3435,15692)end end else hde[3]=hde[3]+hde[4];hde[2]=hde[3]if hde[3]~=hde[3]then uB=55958 else uB=44831 end end elseif uB<=44831 then if(hde[4]>=0 and hde[3]>hde[5])or((hde[4]<0 or hde[4]~=hde[4])and hde[3]<hde[5])then uB=55958 else uB=lNh[16915]or xDa(101646,55867,16915)end else return hde[1]end end end)('[\244\208\171G\233\197\172z','\14\135\181\217')][(function(QWf,nkd)local nAj,haj,eHh,cOb;cOb={};eHh,haj={},function(Sxa,sA,mn)eHh[sA]=SNj(Sxa,44540)-SNj(mn,17440)return eHh[sA]end;nAj=eHh[-8087]or haj(14479,-8087,32744)while nAj~=54588 do if nAj>34236 then if nAj<=44522 then nAj,cOb[1]=eHh[-4049]or haj(103280,-4049,40518),cOb[1]..Fpa(gnf(YNb(QWf,(cOb[2]-161)+1),YNb(nkd,(cOb[2]-161)%#nkd+1)))else return cOb[1]end elseif nAj>25638 then cOb[2]=cOb[3]if cOb[4]~=cOb[4]then nAj=49172 else nAj=2285 end elseif nAj>22955 then cOb[3]=cOb[3]+cOb[5];cOb[2]=cOb[3]if cOb[3]~=cOb[3]then nAj=49172 else nAj=eHh[17145]or haj(10072,17145,50583)end elseif nAj>2285 then cOb[1]='';cOb[4],nAj,cOb[3],cOb[5]=(#QWf-1)+161,34236,161,1 else if(cOb[5]>=0 and cOb[3]>cOb[4])or((cOb[5]<0 or cOb[5]~=cOb[5])and cOb[3]<cOb[4])then nAj=49172 else nAj=eHh[-14540]or haj(76479,-14540,40313)end end end end)('\31\19\150\17g|<\29\129\14g]','R|\227b\2\57')]local SNb={[Cme(28055+-26422)]=Wrc[(function(bvc,Y_d)local ZA,W_c,UEe,Kxe;ZA={};W_c,Kxe={},function(Sgf,OLf,lJj)W_c[Sgf]=SNj(OLf,25399)-SNj(lJj,10921)return W_c[Sgf]end;UEe=W_c[-23626]or Kxe(-23626,7181,21678)repeat if UEe>=45646 then if UEe<57596 then ZA[1]=ZA[2]if ZA[3]~=ZA[3]then UEe=W_c[-27322]or Kxe(-27322,73291,46633)else UEe=W_c[11165]or Kxe(11165,57142,37226)end elseif UEe>57596 then ZA[4],UEe=ZA[4]..Fpa(gnf(YNb(bvc,(ZA[1]-105)+1),YNb(Y_d,(ZA[1]-105)%#Y_d+1))),W_c[32484]or Kxe(32484,83970,57211)else return ZA[4]end elseif UEe>=307 then if UEe>307 then ZA[2]=ZA[2]+ZA[5];ZA[1]=ZA[2]if ZA[2]~=ZA[2]then UEe=W_c[11749]or Kxe(11749,118652,57830)else UEe=W_c[-18107]or Kxe(-18107,48857,63257)end else ZA[4]='';UEe,ZA[5],ZA[2],ZA[3]=W_c[30759]or Kxe(30759,130271,50995),1,105,(#bvc-1)+105 end else if(ZA[5]>=0 and ZA[2]>ZA[3])or((ZA[5]<0 or ZA[5]~=ZA[5])and ZA[2]<ZA[3])then UEe=57596 else UEe=W_c[14602]or Kxe(14602,36205,8694)end end until UEe==27112 end)('+\247\207\51\t\252\218$\26','h\159\174A')]or Wrc[(function(rFi,Chh)local Tkh,qRd,fJd,ngf;Tkh={};ngf,fJd={},function(Pfb,MFc,ydj)ngf[MFc]=SNj(ydj,29969)-SNj(Pfb,41139)return ngf[MFc]end;qRd=ngf[19064]or fJd(339,19064,79935)repeat if qRd>36373 then if qRd>39587 then Tkh[1]='';qRd,Tkh[2],Tkh[3],Tkh[4]=20977,255,(#rFi-1)+255,1 else if(Tkh[4]>=0 and Tkh[2]>Tkh[3])or((Tkh[4]<0 or Tkh[4]~=Tkh[4])and Tkh[2]<Tkh[3])then qRd=10098 else qRd=34551 end end elseif qRd<34551 then if qRd<=10098 then return Tkh[1]else Tkh[5]=Tkh[2]if Tkh[3]~=Tkh[3]then qRd=10098 else qRd=39587 end end elseif qRd>34551 then Tkh[2]=Tkh[2]+Tkh[4];Tkh[5]=Tkh[2]if Tkh[2]~=Tkh[2]then qRd=10098 else qRd=39587 end else Tkh[1],qRd=Tkh[1]..Fpa(gnf(YNb(rFi,(Tkh[5]-255)+1),YNb(Chh,(Tkh[5]-255)%#Chh+1))),ngf[30719]or fJd(49436,30719,39637)end until qRd==48573 end)('\132\222\169\200iZV\162\196\137\222l\\F','\199\182\200\186\b\57\"')][(function(wmj,Lrh)local ZOj,jZf,hvh,Ujb;hvh={};Ujb,jZf=function(uKe,rxd,NZh)jZf[NZh]=SNj(rxd,38402)-SNj(uKe,55671)return jZf[NZh]end,{};ZOj=jZf[14567]or Ujb(14592,110100,14567)repeat if ZOj>=30382 then if ZOj>=33558 then if ZOj<=33558 then hvh[1]=hvh[2]if hvh[3]~=hvh[3]then ZOj=jZf[7924]or Ujb(45369,111216,7924)else ZOj=30382 end else return hvh[4]end else if(hvh[5]>=0 and hvh[2]>hvh[3])or((hvh[5]<0 or hvh[5]~=hvh[5])and hvh[2]<hvh[3])then ZOj=jZf[24654]or Ujb(44900,107573,24654)else ZOj=jZf[-27950]or Ujb(8173,112266,-27950)end end elseif ZOj>22431 then hvh[4],ZOj=hvh[4]..Fpa(gnf(YNb(wmj,(hvh[1]-220)+1),YNb(Lrh,(hvh[1]-220)%#Lrh+1))),jZf[14162]or Ujb(51321,56781,14162)elseif ZOj<=15041 then hvh[2]=hvh[2]+hvh[5];hvh[1]=hvh[2]if hvh[2]~=hvh[2]then ZOj=48164 else ZOj=30382 end else hvh[4]='';ZOj,hvh[2],hvh[3],hvh[5]=jZf[-19462]or Ujb(27648,110223,-19462),220,(#wmj-1)+220,1 end until ZOj==12263 end)('\179=\141(','\228\\')](Wrc[(function(cqd,Hee)local ISa,Qxf,Kof,XFh;ISa={};Kof,Qxf={},function(cQg,RNj,Urf)Kof[RNj]=SNj(Urf,49915)-SNj(cQg,50199)return Kof[RNj]end;XFh=Kof[-29933]or Qxf(20599,-29933,117027)repeat if XFh<35418 then if XFh>30584 then if(ISa[1]>=0 and ISa[2]>ISa[3])or((ISa[1]<0 or ISa[1]~=ISa[1])and ISa[2]<ISa[3])then XFh=41907 else XFh=65160 end elseif XFh<=13443 then ISa[4]=ISa[2]if ISa[3]~=ISa[3]then XFh=41907 else XFh=34981 end else ISa[5]='';ISa[2],ISa[3],XFh,ISa[1]=182,(#cqd-1)+182,13443,1 end elseif XFh<41907 then ISa[2]=ISa[2]+ISa[1];ISa[4]=ISa[2]if ISa[2]~=ISa[2]then XFh=Kof[-17899]or Qxf(33269,-17899,11118)else XFh=34981 end elseif XFh>41907 then ISa[5],XFh=ISa[5]..Fpa(gnf(YNb(cqd,(ISa[4]-182)+1),YNb(Hee,(ISa[4]-182)%#Hee+1))),Kof[2997]or Qxf(49844,2997,20998)else return ISa[5]end until XFh==57525 end)('\132\222\169\200iZV\162\196\137\222l\\F','\199\182\200\186\b\57\"')]),[(function(AJj,xjh)local Smf,efc,rAi,duf;duf={};rAi,efc={},function(zQd,Dfd,CYe)rAi[zQd]=SNj(CYe,33578)-SNj(Dfd,16698)return rAi[zQd]end;Smf=rAi[9197]or efc(9197,2065,115358)repeat if Smf<19489 then if Smf>11791 then duf[1]=duf[2]if duf[3]~=duf[3]then Smf=rAi[-14362]or efc(-14362,46198,121047)else Smf=19489 end elseif Smf<=2324 then Smf,duf[4]=rAi[3102]or efc(3102,25288,53547),duf[4]..Fpa(gnf(YNb(AJj,(duf[1]-145)+1),YNb(xjh,(duf[1]-145)%#xjh+1)))else duf[2]=duf[2]+duf[5];duf[1]=duf[2]if duf[2]~=duf[2]then Smf=rAi[-26432]or efc(-26432,39487,115356)else Smf=rAi[30484]or efc(30484,16199,18868)end end elseif Smf>26289 then duf[4]='';duf[2],Smf,duf[5],duf[3]=145,rAi[-5396]or efc(-5396,20143,48160),1,(#AJj-1)+145 elseif Smf>19489 then return duf[4]else if(duf[5]>=0 and duf[2]>duf[3])or((duf[5]<0 or duf[5]~=duf[5])and duf[2]<duf[3])then Smf=26289 else Smf=2324 end end until Smf==14842 end)('.\3\224\197\b\25\228\192','fv\141\164')]=Cme(-0.51645108398615414*-27445),[Cme(-2140+-9468)]=nil};SNb[(function(rhh,IWg)local Whi,stj,dZc,FRa;dZc={};Whi,stj=function(kbh,fdd,rHe)stj[rHe]=SNj(kbh,65121)-SNj(fdd,14896)return stj[rHe]end,{};FRa=stj[2991]or Whi(111332,20244,2991)while FRa~=62891 do if FRa<=49880 then if FRa>=21915 then if FRa<=21915 then dZc[1]=dZc[2]if dZc[3]~=dZc[3]then FRa=stj[-13032]or Whi(45530,2747,-13032)else FRa=63601 end else dZc[2]=dZc[2]+dZc[4];dZc[1]=dZc[2]if dZc[2]~=dZc[2]then FRa=stj[28619]or Whi(129307,53882,28619)else FRa=stj[-18804]or Whi(67109,50659,-18804)end end elseif FRa<=7984 then return dZc[5]else FRa,dZc[5]=stj[9400]or Whi(121364,23469,9400),dZc[5]..Fpa(gnf(YNb(rhh,(dZc[1]-202)+1),YNb(IWg,(dZc[1]-202)%#IWg+1)))end elseif FRa<=55137 then dZc[5]='';dZc[3],dZc[4],FRa,dZc[2]=(#rhh-1)+202,1,stj[12227]or Whi(119225,57357,12227),202 else if(dZc[4]>=0 and dZc[2]>dZc[3])or((dZc[4]<0 or dZc[4]~=dZc[4])and dZc[2]<dZc[3])then FRa=7984 else FRa=9154 end end end end)('\199\239\230\199\225\245\226\194','\143\154\139\166')]=SNb[(function(QBh,Uig)local urd,Ixj,Orh,sof;sof={};Orh,urd={},function(Nkf,pQf,uaf)Orh[uaf]=SNj(pQf,38118)-SNj(Nkf,59691)return Orh[uaf]end;Ixj=Orh[-16349]or urd(64340,21966,-16349)while Ixj~=39642 do if Ixj<=12763 then if Ixj<=12159 then if Ixj<=9108 then if Ixj>845 then sof[1],Ixj=sof[1]..Fpa(gnf(YNb(QBh,(sof[2]-130)+1),YNb(Uig,(sof[2]-130)%#Uig+1))),Orh[-11785]or urd(61326,62181,-11785)else return sof[1]end else if(sof[3]>=0 and sof[4]>sof[5])or((sof[3]<0 or sof[3]~=sof[3])and sof[4]<sof[5])then Ixj=845 else Ixj=9108 end end else sof[2]=sof[4]if sof[5]~=sof[5]then Ixj=845 else Ixj=Orh[27569]or urd(5382,114506,27569)end end elseif Ixj>24414 then sof[1]='';sof[4],Ixj,sof[3],sof[5]=130,12763,1,(#QBh-1)+130 else sof[4]=sof[4]+sof[3];sof[2]=sof[4]if sof[4]~=sof[4]then Ixj=845 else Ixj=12159 end end end end)('P\"\141%r)\152\50a','\19J\236W')][(function(vai,DKb)local CRd,Sge,cT,tcd;Sge={};tcd,cT=function(kzf,pGg,Ksh)cT[Ksh]=SNj(pGg,12168)-SNj(kzf,65275)return cT[Ksh]end,{};CRd=cT[1401]or tcd(56391,75457,1401)repeat if CRd>=44100 then if CRd>59021 then Sge[1]=Sge[2]if Sge[3]~=Sge[3]then CRd=1121 else CRd=36702 end elseif CRd<=44100 then Sge[4],CRd=Sge[4]..Fpa(gnf(YNb(vai,(Sge[1]-254)+1),YNb(DKb,(Sge[1]-254)%#DKb+1))),cT[21345]or tcd(54983,20563,21345)else Sge[4]='';CRd,Sge[2],Sge[3],Sge[5]=cT[28369]or tcd(56649,74140,28369),254,(#vai-1)+254,1 end elseif CRd<22431 then return Sge[4]elseif CRd<=22431 then Sge[2]=Sge[2]+Sge[5];Sge[1]=Sge[2]if Sge[2]~=Sge[2]then CRd=cT[2324]or tcd(29142,48134,2324)else CRd=cT[19859]or tcd(48781,57436,19859)end else if(Sge[5]>=0 and Sge[2]>Sge[3])or((Sge[5]<0 or Sge[5]~=Sge[5])and Sge[2]<Sge[3])then CRd=1121 else CRd=cT[-12310]or tcd(57392,58503,-12310)end end until CRd==28424 end)('\161c\161\b\237\15\132A\160\21\199\4','\246\2\200|\171\96')](SNb[(function(Ywj,RTb)local DV,Fnc,yye,qsd;qsd={};DV,Fnc=function(neg,Tsg,vCc)Fnc[Tsg]=SNj(vCc,44935)-SNj(neg,4931)return Fnc[Tsg]end,{};yye=Fnc[-27299]or DV(47494,-27299,121935)repeat if yye>=49324 then if yye<51459 then if(qsd[1]>=0 and qsd[2]>qsd[3])or((qsd[1]<0 or qsd[1]~=qsd[1])and qsd[2]<qsd[3])then yye=Fnc[2564]or DV(45994,2564,104872)else yye=Fnc[-4252]or DV(21105,-4252,61768)end elseif yye>51459 then qsd[4]=qsd[2]if qsd[3]~=qsd[3]then yye=38214 else yye=Fnc[-20370]or DV(60626,-20370,94138)end else qsd[5]='';yye,qsd[3],qsd[1],qsd[2]=60602,(#Ywj-1)+6,1,6 end elseif yye<7581 then qsd[2]=qsd[2]+qsd[1];qsd[4]=qsd[2]if qsd[2]~=qsd[2]then yye=38214 else yye=Fnc[-10637]or DV(55642,-10637,75074)end elseif yye>7581 then return qsd[5]else yye,qsd[5]=Fnc[7601]or DV(27015,7601,10994),qsd[5]..Fpa(gnf(YNb(Ywj,(qsd[4]-6)+1),YNb(RTb,(qsd[4]-6)%#RTb+1)))end until yye==34447 end)('P\"\141%r)\152\50a','\19J\236W')],(function(lna,GWi)local zHi,wt,fQg,vgc;fQg={};zHi,vgc=function(hrd,Dy,uC)vgc[Dy]=SNj(hrd,61327)-SNj(uC,47085)return vgc[Dy]end,{};wt=vgc[3667]or zHi(90222,3667,16962)repeat if wt>=39896 then if wt>42476 then return fQg[1]elseif wt>39896 then if(fQg[2]>=0 and fQg[3]>fQg[4])or((fQg[2]<0 or fQg[2]~=fQg[2])and fQg[3]<fQg[4])then wt=vgc[-11271]or zHi(128996,-11271,44298)else wt=vgc[-9283]or zHi(11512,-9283,4033)end else fQg[5]=fQg[3]if fQg[4]~=fQg[4]then wt=vgc[-23662]or zHi(104533,-23662,52667)else wt=vgc[-20313]or zHi(100041,-20313,29879)end end elseif wt<32225 then wt,fQg[1]=vgc[-16310]or zHi(126843,-16310,13566),fQg[1]..Fpa(gnf(YNb(lna,(fQg[5]-57)+1),YNb(GWi,(fQg[5]-57)%#GWi+1)))elseif wt>32225 then fQg[1]='';wt,fQg[2],fQg[4],fQg[3]=vgc[19475]or zHi(105283,19475,28441),1,(#lna-1)+57,57 else fQg[3]=fQg[3]+fQg[2];fQg[5]=fQg[3]if fQg[3]~=fQg[3]then wt=64900 else wt=vgc[3156]or zHi(123048,3156,57046)end end until wt==40815 end)('\142\139eP\168\145aU','\198\254\b\49'));SNb[(function(RRd,Iqe)local wtb,hQe,iPi,bpd;bpd={};iPi,wtb=function(rs,Rs,tca)wtb[Rs]=SNj(rs,51373)-SNj(tca,65472)return wtb[Rs]end,{};hQe=wtb[-21656]or iPi(122725,-21656,47419)while hQe~=65487 do if hQe<=31818 then if hQe>24385 then bpd[1]=bpd[2]if bpd[3]~=bpd[3]then hQe=24385 else hQe=4553 end elseif hQe>=14177 then if hQe<=14177 then bpd[2]=bpd[2]+bpd[4];bpd[1]=bpd[2]if bpd[2]~=bpd[2]then hQe=24385 else hQe=wtb[16932]or iPi(115057,16932,2003)end else return bpd[5]end else if(bpd[4]>=0 and bpd[2]>bpd[3])or((bpd[4]<0 or bpd[4]~=bpd[4])and bpd[2]<bpd[3])then hQe=wtb[32273]or iPi(25443,32273,45901)else hQe=36828 end end elseif hQe>36828 then bpd[5]='';hQe,bpd[4],bpd[2],bpd[3]=31818,1,225,(#RRd-1)+225 else hQe,bpd[5]=wtb[-21239]or iPi(120181,-21239,6583),bpd[5]..Fpa(gnf(YNb(RRd,(bpd[1]-225)+1),YNb(Iqe,(bpd[1]-225)%#Iqe+1)))end end end)('\231\169\218\178','\181\198')]=SNb[(function(lye,Ycf)local QJb,Rjj,zkd,ORe;Rjj={};ORe,zkd={},function(Tj,Gje,AWd)ORe[Tj]=SNj(Gje,4469)-SNj(AWd,8478)return ORe[Tj]end;QJb=ORe[1310]or zkd(1310,57401,7224)repeat if QJb<27239 then if QJb>=7558 then if QJb>7558 then Rjj[1]=Rjj[1]+Rjj[2];Rjj[3]=Rjj[1]if Rjj[1]~=Rjj[1]then QJb=27239 else QJb=37600 end else Rjj[3]=Rjj[1]if Rjj[4]~=Rjj[4]then QJb=ORe[-31759]or zkd(-31759,36638,5402)else QJb=37600 end end else Rjj[5],QJb=Rjj[5]..Fpa(gnf(YNb(lye,(Rjj[3]-220)+1),YNb(Ycf,(Rjj[3]-220)%#Ycf+1))),ORe[-20269]or zkd(-20269,37226,2184)end elseif QJb>=37600 then if QJb<=37600 then if(Rjj[2]>=0 and Rjj[1]>Rjj[4])or((Rjj[2]<0 or Rjj[2]~=Rjj[2])and Rjj[1]<Rjj[4])then QJb=ORe[28930]or zkd(28930,58735,43181)else QJb=ORe[-8459]or zkd(-8459,10393,966)end else Rjj[5]='';QJb,Rjj[2],Rjj[1],Rjj[4]=ORe[-9205]or zkd(-9205,14640,11169),1,220,(#lye-1)+220 end else return Rjj[5]end until QJb==13527 end)('J\196\250[h\207\239L{','\t\172\155)')][(function(tka,Fta)local CXb,dwg,Grf,Hcc;Hcc={};Grf,dwg=function(Vlc,fgb,ucd)dwg[ucd]=SNj(Vlc,44074)-SNj(fgb,21304)return dwg[ucd]end,{};CXb=dwg[4076]or Grf(29955,145,4076)while CXb~=21953 do if CXb<=39502 then if CXb<34176 then if CXb<=419 then return Hcc[1]else if(Hcc[2]>=0 and Hcc[3]>Hcc[4])or((Hcc[2]<0 or Hcc[2]~=Hcc[2])and Hcc[3]<Hcc[4])then CXb=419 else CXb=dwg[-8104]or Grf(124671,58303,-8104)end end elseif CXb<=34176 then Hcc[1]='';Hcc[4],Hcc[3],Hcc[2],CXb=(#tka-1)+196,196,1,dwg[-32180]or Grf(21981,23845,-32180)else Hcc[1],CXb=Hcc[1]..Fpa(gnf(YNb(tka,(Hcc[5]-196)+1),YNb(Fta,(Hcc[5]-196)%#Fta+1))),dwg[32277]or Grf(129913,54155,32277)end elseif CXb>54944 then Hcc[5]=Hcc[3]if Hcc[4]~=Hcc[4]then CXb=419 else CXb=dwg[26529]or Grf(111994,51675,26529)end else Hcc[3]=Hcc[3]+Hcc[2];Hcc[5]=Hcc[3]if Hcc[3]~=Hcc[3]then CXb=dwg[-1731]or Grf(29752,34135,-1731)else CXb=32365 end end end end)('N\207\142\\\21\184k\237\143A?\179','\25\174\231(S\215')](SNb[(function(qB,Cyc)local WBb,Pb,mva,Erf;mva={};Erf,Pb={},function(Mof,i_,_Lb)Erf[i_]=SNj(_Lb,25227)-SNj(Mof,21191)return Erf[i_]end;WBb=Erf[18008]or Pb(13697,18008,57923)repeat if WBb>36949 then if WBb<=50689 then WBb,mva[1]=Erf[-4773]or Pb(20378,-4773,53049),mva[1]..Fpa(gnf(YNb(qB,(mva[2]-23)+1),YNb(Cyc,(mva[2]-23)%#Cyc+1)))else mva[2]=mva[3]if mva[4]~=mva[4]then WBb=Erf[9695]or Pb(39792,9695,77481)else WBb=6020 end end elseif WBb<=33387 then if WBb<6530 then if(mva[5]>=0 and mva[3]>mva[4])or((mva[5]<0 or mva[5]~=mva[5])and mva[3]<mva[4])then WBb=Erf[10145]or Pb(43486,10145,73487)else WBb=Erf[3698]or Pb(12098,3698,73997)end elseif WBb<=6530 then mva[1]='';mva[5],mva[3],WBb,mva[4]=1,23,50832,(#qB-1)+23 else return mva[1]end else mva[3]=mva[3]+mva[5];mva[2]=mva[3]if mva[3]~=mva[3]then WBb=Erf[-23308]or Pb(19616,-23308,49753)else WBb=6020 end end until WBb==16772 end)('J\196\250[h\207\239L{','\t\172\155)')],Cme(1.8165565217391304*-14375));Wrc[(function(gqd,Ndi)local Lfd,EXd,YEd,Meh;Meh={};Lfd,YEd=function(oIb,YJf,YMd)YEd[YMd]=SNj(oIb,45539)-SNj(YJf,13246)return YEd[YMd]end,{};EXd=YEd[-23992]or Lfd(4033,8223,-23992)while EXd~=19020 do if EXd>=43728 then if EXd<=47339 then if EXd>43728 then Meh[1]=Meh[2]if Meh[3]~=Meh[3]then EXd=31859 else EXd=43728 end else if(Meh[4]>=0 and Meh[2]>Meh[3])or((Meh[4]<0 or Meh[4]~=Meh[4])and Meh[2]<Meh[3])then EXd=YEd[4689]or Lfd(25960,27558,4689)else EXd=64955 end end else Meh[5],EXd=Meh[5]..Fpa(gnf(YNb(gqd,(Meh[1]-176)+1),YNb(Ndi,(Meh[1]-176)%#Ndi+1))),YEd[-22731]or Lfd(4890,8370,-22731)end elseif EXd<=36845 then if EXd<=31859 then return Meh[5]else Meh[2]=Meh[2]+Meh[4];Meh[1]=Meh[2]if Meh[2]~=Meh[2]then EXd=31859 else EXd=YEd[19017]or Lfd(126925,32992,19017)end end else Meh[5]='';Meh[4],Meh[2],EXd,Meh[3]=1,176,YEd[-16369]or Lfd(122910,43692,-16369),(#gqd-1)+176 end end end)('\171\158\56\161\136v\3\141\132\24\183\141p\19','\232\246Y\211\233\21w')][(function(hsc,wXc)local Bxi,RHa,Tcd,Dkf;Bxi={};RHa,Dkf={},function(jPb,bYe,PEg)RHa[jPb]=SNj(bYe,62904)-SNj(PEg,43694)return RHa[jPb]end;Tcd=RHa[-9440]or Dkf(-9440,4370,36131)while Tcd~=54207 do if Tcd>=44550 then if Tcd>=48413 then if Tcd>48413 then return Bxi[1]else Bxi[1]='';Tcd,Bxi[2],Bxi[3],Bxi[4]=43498,1,(#hsc-1)+219,219 end else if(Bxi[2]>=0 and Bxi[4]>Bxi[3])or((Bxi[2]<0 or Bxi[2]~=Bxi[2])and Bxi[4]<Bxi[3])then Tcd=62818 els…"
+--[[
+================================================================================
+  👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT
+     v6.3 SAFE BYPASS FIX – ANTI PARSE ERROR + OFFICE LIGHTWEIGHT
+================================================================================
+    [+] Developer   : King Akbar
+    [+] Update      : - Fix Parse Error (Bypass disederhanakan, hapus newcclosure)
+                      - Sistem Caching UI (Anti Lag untuk Office)
+                      - Klik Jawaban Anti-Gagal di HP (Pakai VIM Klik Fisik)
+                      - Regex soal matematika diperluas (support spasi & huruf x/X)
+================================================================================
+]]--
+
+-- // 0. LOAD WINDUI
+local WindUI
+do
+    local ok, result = pcall(function()
+        return loadstring(game:HttpGet(
+            "https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"
+        ))()
+    end)
+    if ok and result then
+        WindUI = result
+    else
+        warn("[King Akbar] WindUI gagal load: " .. tostring(result))
+        WindUI = {
+            CreateWindow = function() return {
+                Tab = function() return {
+                    Paragraph  = function() return { Set = function() end } end,
+                    Toggle     = function() end,
+                    Button     = function() end,
+                    Input      = function() end,
+                    Slider     = function() end,
+                    Section    = function() return {
+                        Paragraph = function() return { Set = function() end } end,
+                        Toggle    = function() end,
+                        Button    = function() end,
+                        Input     = function() end,
+                        Slider    = function() end,
+                    } end,
+                    Select     = function() end,
+                } end,
+                Tag            = function() return { SetTitle = function() end } end,
+                EditOpenButton = function() end,
+                SetIconSize    = function() end,
+            } end,
+            Notify   = function() end,
+            SetTheme = function() end,
+            Gradient = function() return {} end,
+        }
+    end
+end
+
+-- // 1. SERVICES & REFERENCES
+local Services = {
+    Players            = game:GetService("Players"),
+    RunService         = game:GetService("RunService"),
+    TweenSvc           = game:GetService("TweenService"),
+    UserInput           = game:GetService("UserInputService"),
+    Stats              = game:GetService("Stats"),
+    Workspace          = game:GetService("Workspace"),
+    VIM                = game:GetService("VirtualInputManager"),
+    VirtualUser        = game:GetService("VirtualUser"),
+    HttpService        = game:GetService("HttpService"),
+    GuiService         = game:GetService("GuiService"),
+    PathfindingService = game:GetService("PathfindingService"),
+    ReplicatedStorage  = game:GetService("ReplicatedStorage"),
+}
+
+local LocalPlayer = Services.Players.LocalPlayer
+
+local IsMobile = Services.UserInput.TouchEnabled
+    and not Services.UserInput.KeyboardEnabled
+    and not Services.UserInput.MouseEnabled
+
+local CharRef = {
+    Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait(),
+    Humanoid  = nil,
+    Root      = nil,
+}
+CharRef.Humanoid = CharRef.Character:WaitForChild("Humanoid")
+CharRef.Root     = CharRef.Character:WaitForChild("HumanoidRootPart")
+
+LocalPlayer.CharacterAdded:Connect(function(newChar)
+    CharRef.Character = newChar
+    CharRef.Humanoid  = newChar:WaitForChild("Humanoid")
+    CharRef.Root      = newChar:WaitForChild("HumanoidRootPart")
+end)
+
+-- // 1.5 SYSTEM BYPASS (ANTI-BAN) - SIMPLIFIED FOR PARSE SAFETY
+local function SetupBypass()
+    pcall(function()
+        if hookmetamethod and getnamecallmethod then
+            local oldNamecall
+            oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+                local method = getnamecallmethod()
+                if method == "Kick" and self == LocalPlayer then
+                    return nil
+                end
+                return oldNamecall(self, ...)
+            end)
+        end
+    end)
+end
+SetupBypass()
+
+-- // 2. STATE MANAGER
+local State = {
+    IsBaristaActive    = false,
+    IsOfficeActive     = false,
+    IsCourierActive    = false,
+    AiThread           = nil,
+    StatusText         = "Santai dulu...",
+    OrderCount         = 0,
+    ActionDelay        = 5,
+    AntiAFK            = true,
+    AntiAdmin          = true,
+    UangAwal           = 0,
+    UangAwalSession    = 0,
+    SessionStartTime   = 0,
+    LastStopReason     = "",
+    MachineFixCount    = 0,
+    OfficeMathSolved   = 0,
+    OfficePrints       = 0,
+    CourierDelivered   = 0,
+    WebhookEnabled     = false,
+    WebhookURL         = "",
+    WebhookInterval    = 5,
+    WebhookStartMoney  = 0,
+    OfficeSettings = {
+        MathDelayMin      = 0.8,
+        MathDelayMax      = 2.5,
+        AfterAnswerDelay  = 3,
+        AntiIdleInterval  = 45,
+        PrinterCheckInterval = 3,
+        EnableAntiIdle    = true,
+        EnableAutoPrinter = true,
+        EnableChairSwitch = true,
+        IdleSwitchTime    = 60,
+    }
+}
+
+LocalPlayer.Idled:Connect(function()
+    if State.AntiAFK then
+        pcall(function()
+            Services.VirtualUser:CaptureController()
+            Services.VirtualUser:ClickButton2(Vector2.new())
+        end)
+    end
+end)
+
+-- BYPASS NETWORK PAUSE
+task.spawn(function()
+    while true do
+        pcall(function()
+            local coreGui = game:GetService("CoreGui")
+            local robloxGui = coreGui:FindFirstChild("RobloxGui")
+            if robloxGui then
+                local pauseScript = robloxGui:FindFirstChild("CoreScripts/NetworkPause")
+                if pauseScript then pauseScript:Destroy() end
+            end
+        end)
+        task.wait(1) 
+    end
+end)
+
+-- // 3. HUMANIZATION (RNG WAIT)
+local function rWait(minSec, maxSec)
+    task.wait(math.random((minSec or 0.5) * 1000, (maxSec or 1.5) * 1000) / 1000)
+end
+
+-- // 4. GetPlayerMoney
+local function GetPlayerMoney()
+    local money = 0
+    pcall(function()
+        if LocalPlayer:FindFirstChild("leaderstats") and LocalPlayer.leaderstats:FindFirstChild("Money") then
+            money = LocalPlayer.leaderstats.Money.Value
+        elseif LocalPlayer:FindFirstChild("Data") and LocalPlayer.Data:FindFirstChild("Money") then
+            money = LocalPlayer.Data.Money.Value
+        else
+            for _, v in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
+                if v:IsA("TextLabel") and v.Visible and string.find(v.Text, "Rp%.") then
+                    local m = tonumber(string.gsub(v.Text, "[^%d]", ""))
+                    if m and m > money then money = m end
+                end
+            end
+        end
+    end)
+    return money
+end
+
+-- // 5. ADMIN SENSOR
+local GAME_GROUP_ID  = 11378976
+local MIN_STAFF_RANK = 200
+
+local function CheckForAdmin(player)
+    if not State.AntiAdmin or player == LocalPlayer then return end
+    pcall(function()
+        if player:GetRankInGroup(GAME_GROUP_ID) >= MIN_STAFF_RANK then
+            State.LastStopReason = "Admin detected - auto kicked"
+            rWait(0.5, 1)
+            LocalPlayer:Kick("Woi admin nongol bro, kabur dulu gas biar aman.")
+        end
+    end)
+end
+
+for _, p in ipairs(Services.Players:GetPlayers()) do CheckForAdmin(p) end
+Services.Players.PlayerAdded:Connect(CheckForAdmin)
+
+-- // 6. SPLASH SCREEN
+do
+    local sg = Instance.new("ScreenGui")
+    sg.Name = "BaristaSplash"; sg.ResetOnSpawn = false
+    sg.IgnoreGuiInset = true; sg.DisplayOrder = 999
+    sg.Parent = (gethui and gethui()) or LocalPlayer:WaitForChild("PlayerGui")
+
+    local bg = Instance.new("Frame", sg)
+    bg.Size = UDim2.fromScale(1,1); bg.BackgroundColor3 = Color3.fromHex("#0a0a0a")
+    bg.BorderSizePixel = 0; bg.ZIndex = 1
+
+    local grad = Instance.new("UIGradient", bg)
+    grad.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromHex("#0a0a0a")),
+        ColorSequenceKeypoint.new(1, Color3.fromHex("#1e1e1e")),
+    }); grad.Rotation = 135
+
+    local ct = Instance.new("Frame", bg)
+    ct.Size = UDim2.fromOffset(500, 300); ct.Position = UDim2.fromScale(0.5, 0.5)
+    ct.AnchorPoint = Vector2.new(0.5, 0.5); ct.BackgroundTransparency = 1; ct.ZIndex = 2
+
+    local function mkLabel(txt, yOff, sz)
+        local l = Instance.new("TextLabel", ct)
+        l.Size = UDim2.fromOffset(500, 70); l.Position = UDim2.fromOffset(0, yOff)
+        l.BackgroundTransparency = 1; l.Text = txt; l.TextSize = sz
+        l.Font = Enum.Font.GothamBold; l.TextColor3 = Color3.fromHex("#ffffff")
+        l.TextTransparency = 1; l.ZIndex = 3; return l
+    end
+
+    local icon = Instance.new("ImageLabel", ct)
+    icon.Size = UDim2.fromOffset(120, 120); icon.Position = UDim2.fromOffset(190, -40)
+    icon.BackgroundTransparency = 1; icon.Image = "rbxassetid://91115084979317"
+    icon.ImageTransparency = 1; icon.ZIndex = 3
+
+    local title = mkLabel("King Akbar", 70, IsMobile and 38 or 50)
+    local tg = Instance.new("UIGradient", title)
+    tg.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0,   Color3.fromHex("#ffffff")),
+        ColorSequenceKeypoint.new(0.5, Color3.fromHex("#aaaaaa")),
+        ColorSequenceKeypoint.new(1,   Color3.fromHex("#555555")),
+    }); tg.Rotation = 45
+
+    local stat = mkLabel("Mempersiapkan mesin tempur...", 200, 12)
+    stat.Font = Enum.Font.Gotham; stat.TextColor3 = Color3.fromHex("#555555")
+    stat.TextXAlignment = Enum.TextXAlignment.Left; stat.Position = UDim2.fromOffset(50, 200)
+
+    local line = Instance.new("Frame", ct)
+    line.Size = UDim2.fromOffset(0, 2); line.Position = UDim2.fromOffset(250, 152)
+    line.AnchorPoint = Vector2.new(0.5, 0); line.BackgroundColor3 = Color3.fromHex("#444444")
+    line.BorderSizePixel = 0; line.ZIndex = 3
+
+    local barBg = Instance.new("Frame", ct)
+    barBg.Size = UDim2.fromOffset(400, 5); barBg.Position = UDim2.fromOffset(50, 190)
+    barBg.BackgroundColor3 = Color3.fromHex("#222222"); barBg.BackgroundTransparency = 1
+    barBg.BorderSizePixel = 0; barBg.ZIndex = 3
+    Instance.new("UICorner", barBg).CornerRadius = UDim.new(1, 0)
+
+    local bar = Instance.new("Frame", barBg)
+    bar.Size = UDim2.fromOffset(0, 5); bar.BackgroundColor3 = Color3.fromHex("#ffffff")
+    bar.BorderSizePixel = 0; bar.ZIndex = 4
+    Instance.new("UICorner", bar).CornerRadius = UDim.new(1, 0)
+
+    local function tw(obj, props, t)
+        Services.TweenSvc:Create(obj, TweenInfo.new(t, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), props):Play()
+    end
+
+    task.spawn(function()
+        tw(icon,  { ImageTransparency = 0 }, 0.5); task.wait(0.15)
+        tw(title, { TextTransparency  = 0 }, 0.6); task.wait(0.35)
+        tw(line,  { Size = UDim2.fromOffset(400, 2) }, 0.7); task.wait(0.4)
+        tw(barBg, { BackgroundTransparency = 0 }, 0.3)
+        tw(stat,  { TextTransparency = 0 }, 0.3)
+
+        for _, s in ipairs({
+            { "Mempersiapkan Bypass Anti-Ban...", 0.30 },
+            { "Nyalain Alarm Darurat...", 0.60 },
+            { "Welcome, King Akbar!",     1.00 },
+        }) do
+            stat.Text = s[1]
+            tw(bar, { Size = UDim2.fromOffset(400 * s[2], 5) }, 0.5)
+            task.wait(0.55)
+        end
+
+        task.wait(0.3)
+        for _, p in ipairs({ bg, icon, title, line, barBg, bar, stat }) do
+            local prop = p == stat and "TextTransparency"
+                or (p == icon  and "ImageTransparency" or "BackgroundTransparency")
+            if p == title then prop = "TextTransparency" end
+            tw(p, { [prop] = 1 }, 0.4)
+        end
+        task.wait(0.8); sg:Destroy()
+    end)
+    task.wait(3)
+end
+
+-- // 7. CONSTANTS & PATHS (BARISTA)
+local Constants = {
+    START_SHIFT  = Vector3.new(-4991.23, 4.29, -715.26),
+    COLOR_ORANGE = Color3.fromRGB(230, 150, 30),
+    COLOR_GREEN  = Color3.fromRGB(30,  180, 60),
+}
+
+local Paths = {
+    START_TO_MACHINE = {
+        Vector3.new(-4991.23, 4.29, -715.26), Vector3.new(-5004.86, 4.29, -718.90),
+        Vector3.new(-5006.28, 4.29, -802.11), Vector3.new(-4994.18, 4.29, -801.66),
+        Vector3.new(-4994.62, 4.29, -794.89), Vector3.new(-4997.13, 4.29, -794.57),
+        Vector3.new(-4998.16, 4.29, -794.80),
+    },
+    MACHINE_TO_CASHIER = {
+        Vector3.new(-4997.13, 4.29, -794.57), Vector3.new(-4994.62, 4.29, -794.89),
+        Vector3.new(-4995.56, 4.29, -759.78),
+    },
+    CASHIER_TO_MACHINE = {
+        Vector3.new(-4994.62, 4.29, -794.89), Vector3.new(-4997.13, 4.29, -794.57),
+        Vector3.new(-4998.16, 4.29, -794.80),
+    },
+    MACHINE_TO_START = {
+        Vector3.new(-4998.16, 4.29, -794.80), Vector3.new(-4997.13, 4.29, -794.57),
+        Vector3.new(-4994.62, 4.29, -794.89), Vector3.new(-4994.18, 4.29, -801.66),
+        Vector3.new(-5006.28, 4.29, -802.11), Vector3.new(-5004.86, 4.29, -718.90),
+        Vector3.new(-4991.23, 4.29, -715.26),
+    },
+    CASHIER_TO_START = {
+        Vector3.new(-4995.56, 4.29, -759.78), Vector3.new(-4994.62, 4.29, -794.89),
+        Vector3.new(-4994.18, 4.29, -801.66), Vector3.new(-5006.28, 4.29, -802.11),
+        Vector3.new(-5004.86, 4.29, -718.90), Vector3.new(-4991.23, 4.29, -715.26),
+    },
+    MACHINE_TO_FIX = {
+        Vector3.new(-4998.14, 4.29, -795.38), Vector3.new(-4997.02, 4.29, -802.18),
+        Vector3.new(-5006.31, 4.29, -802.30), Vector3.new(-5003.75, 4.29, -711.60),
+        Vector3.new(-5004.43, 3.19, -670.40), Vector3.new(-5114.86, 3.19, -670.41),
+    },
+    FIX_TO_MACHINE = {
+        Vector3.new(-5114.86, 3.19, -670.41), Vector3.new(-5004.43, 3.19, -670.40),
+        Vector3.new(-5003.75, 4.29, -711.60), Vector3.new(-5006.31, 4.29, -802.30),
+        Vector3.new(-4997.02, 4.29, -802.18), Vector3.new(-4998.14, 4.29, -795.38),
+    },
+}
+
+-- // 8. ANTI-LAG & LAYAR HITAM
+local BlackGui
+local function ToggleBlackScreen(on)
+    pcall(function() Services.RunService:Set3dRenderingEnabled(not on) end)
+    if on then
+        if not BlackGui then
+            BlackGui = Instance.new("ScreenGui")
+            BlackGui.Name = "BlackScreenSaver"; BlackGui.IgnoreGuiInset = true
+            BlackGui.DisplayOrder = 9999; BlackGui.Parent = (gethui and gethui()) or LocalPlayer:WaitForChild("PlayerGui")
+            local f = Instance.new("Frame", BlackGui)
+            f.Size = UDim2.fromScale(1,1); f.BackgroundColor3 = Color3.new(0,0,0)
+            local t = Instance.new("TextLabel", f)
+            t.Text = "🌑 MODE HEMAT BATERAI AKTIF 🌑\nKing Akbar Lagi Cari Cuan..."
+            t.Size = UDim2.fromScale(1,1); t.TextColor3 = Color3.new(1,1,1)
+            t.BackgroundTransparency = 1; t.Font = Enum.Font.GothamBold; t.TextSize = 20
+        end
+        BlackGui.Enabled = true
+    else
+        if BlackGui then BlackGui.Enabled = false end
+    end
+end
+
+-- // 9. UTILITY (BARISTA)
+local function WalkToPoint(pos)
+    if not CharRef.Humanoid or not CharRef.Root then return end
+    CharRef.Humanoid.Sit = false
+    local hp = pos + Vector3.new(math.random(-15,15)/10, 0, math.random(-15,15)/10)
+    CharRef.Humanoid:MoveTo(hp)
+    local t = 10
+    while t > 0 and State.IsBaristaActive do
+        local d = Vector3.new(CharRef.Root.Position.X, 0, CharRef.Root.Position.Z)
+               - Vector3.new(hp.X, 0, hp.Z)
+        if d.Magnitude < 3 then break end
+        task.wait(0.1); t -= 0.1
+    end
+end
+
+local function FollowPath(arr)
+    for _, p in ipairs(arr) do
+        if not State.IsBaristaActive then break end
+        WalkToPoint(p)
+    end
+end
+
+local function FindPrompt(kw, maxD, origin)
+    if not CharRef.Root then return nil end
+    origin = origin or CharRef.Root.Position; maxD = maxD or 20
+    local found, closest = nil, maxD
+    for _, v in pairs(Services.Workspace:GetDescendants()) do
+        if v:IsA("ProximityPrompt") and v.Enabled
+            and string.find(string.lower(v.ActionText), string.lower(kw))
+        then
+            local part = v.Parent
+            if part and part:IsA("BasePart") then
+                local d = (part.Position - origin).Magnitude
+                if d < closest then closest = d; found = v end
+            end
+        end
+    end
+    return found
+end
+
+local function DoHold(prompt)
+    if not prompt then return false end
+    pcall(function()
+        prompt:InputHoldBegin()
+        rWait((prompt.HoldDuration or 1) + 0.2, (prompt.HoldDuration or 1) + 0.6)
+        prompt:InputHoldEnd()
+    end)
+    rWait(0.1, 0.3); return true
+end
+
+local function DoTap(prompt)
+    if not prompt then return false end
+    pcall(function()
+        prompt:InputHoldBegin(); rWait(0.08, 0.18); prompt:InputHoldEnd()
+    end)
+    rWait(0.2, 0.4); return true
+end
+
+local function IsMachineBroken()
+    for _, gui in pairs(LocalPlayer.PlayerGui:GetChildren()) do
+        for _, v in pairs(gui:GetDescendants()) do
+            if v:IsA("TextLabel") and v.Visible then
+                local t = string.lower(v.Text)
+                if t:find("machine broke") or t:find("needs maintenance") or t:find("fix machine") then
+                    return true
+                end
+            end
+        end
+    end
+    return false
+end
+
+local function HasJob()
+    local hasJob = true
+    for _, v in pairs(Services.Workspace:GetDescendants()) do
+        if v:IsA("ProximityPrompt") and v.Enabled and v.ActionText:lower():find("shift") then
+            local part = v.Parent
+            if part and part:IsA("BasePart") and (part.Position - Constants.START_SHIFT).Magnitude < 40 then
+                hasJob = v.ActionText:lower():find("end") and true or false
+                break
+            end
+        end
+    end
+    return hasJob
+end
+
+local function FindByColor(parent, col, tol)
+    local best, bestD = nil, math.huge
+    for _, v in pairs(parent:GetDescendants()) do
+        if (v:IsA("Frame") or v:IsA("ImageLabel")) and v.Visible and v.BackgroundTransparency < 0.8 then
+            local c = v:IsA("ImageLabel") and v.ImageColor3 or v.BackgroundColor3
+            local d = math.abs(c.R-col.R) + math.abs(c.G-col.G) + math.abs(c.B-col.B)
+            if d < bestD then bestD = d; best = v end
+        end
+    end
+    return bestD < (tol or 0.6) and best or nil
+end
+
+-- // 10. AI MINIGAME (BARISTA)
+local function StartMinigameAI()
+    if State.AiThread then task.cancel(State.AiThread) end
+    State.AiThread = task.spawn(function()
+        local cam = Services.Workspace.CurrentCamera
+        while State.IsBaristaActive do
+            task.wait(0.016)
+            local gui = LocalPlayer.PlayerGui:FindFirstChild("BaristaGUI")
+            if not gui then task.wait(0.1); continue end
+            local mf = gui:FindFirstChild("MinigameFrame", true)
+            if not (mf and mf.Visible) then task.wait(0.1); continue end
+
+            local cx = (cam.ViewportSize.X/2) + math.random(-15,15)
+            local cy = (cam.ViewportSize.Y/2) + math.random(-15,15)
+            local pill, bar = nil, nil
+
+            for _, v in pairs(mf:GetDescendants()) do
+                if v:IsA("Frame") or v:IsA("ImageLabel") then
+                    local nm = v.Name:lower()
+                    if nm:find("pill") or nm:find("indicator") or nm:find("player") or nm:find("handle") then pill = v end
+                    if nm:find("target") or nm:find("zone") or nm:find("goal") or nm:find("safe") then bar = v end
+                end
+            end
+
+            if not pill then pill = FindByColor(mf, Constants.COLOR_ORANGE, 0.6) end
+            if not bar  then bar  = FindByColor(mf, Constants.COLOR_GREEN,  0.6) end
+
+            if not pill or not bar then
+                local els = {}
+                for _, v in pairs(mf:GetDescendants()) do
+                    if (v:IsA("Frame") or v:IsA("ImageLabel")) and v.Visible
+                        and v.BackgroundTransparency < 0.9 and v.AbsoluteSize.Y > 10
+                    then table.insert(els, v) end
+                end
+                table.sort(els, function(a,b) return a.AbsolutePosition.X < b.AbsolutePosition.X end)
+                if #els >= 2 then pill = els[1]; bar = els[#els] end
+            end
+
+            if pill and bar then
+                local diff = (pill.AbsolutePosition.Y + pill.AbsoluteSize.Y/2)
+                           - (bar.AbsolutePosition.Y  + bar.AbsoluteSize.Y/2)
+                if diff > 6 then
+                    Services.VIM:SendMouseButtonEvent(cx,cy,0,true,game,1); task.wait(math.random(55,90)/1000)
+                    Services.VIM:SendMouseButtonEvent(cx,cy,0,false,game,1); task.wait(math.random(30,60)/1000)
+                elseif diff < -6 then
+                    task.wait(0.016)
+                else
+                    Services.VIM:SendMouseButtonEvent(cx,cy,0,true,game,1); task.wait(math.random(50,80)/1000)
+                    Services.VIM:SendMouseButtonEvent(cx,cy,0,false,game,1); task.wait(math.random(80,130)/1000)
+                end
+            else
+                Services.VIM:SendMouseButtonEvent(cx,cy,0,true,game,1); task.wait(math.random(55,90)/1000)
+                Services.VIM:SendMouseButtonEvent(cx,cy,0,false,game,1); task.wait(math.random(60,100)/1000)
+            end
+        end
+    end)
+end
+
+-- // 11. BARISTA FARMING LOOP
+local function TakeJob()
+    State.StatusText = "🏃 Lagi jalan ambil shift..."
+    WalkToPoint(Constants.START_SHIFT); rWait(0.4, 0.8)
+    local sp = FindPrompt("start shift", 30) or FindPrompt("shift", 30)
+    if sp and sp.ActionText:lower():find("start") then
+        State.StatusText = "💼 Shift aman, gas kerja!"
+        DoTap(sp); rWait(0.8, 1.5)
+    end
+end
+
+local function HasPendingOrder()
+    local mp = Paths.START_TO_MACHINE[#Paths.START_TO_MACHINE]
+    return FindPrompt("brewing", 40, mp) or FindPrompt("brew", 40, mp) or FindPrompt("make", 40, mp) ~= nil
+end
+
+local function BaristaFarmLoop()
+    local isAtCashier = false
+    while State.IsBaristaActive do
+        if not CharRef.Character or not CharRef.Character.Parent then
+            CharRef.Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            CharRef.Humanoid  = CharRef.Character:WaitForChild("Humanoid")
+            CharRef.Root      = CharRef.Character:WaitForChild("HumanoidRootPart")
+        end
+
+        if not HasJob() then
+            State.StatusText = "⚠️ Shift habis, cari kerja lagi..."
+            local dm = (CharRef.Root.Position - Paths.START_TO_MACHINE[#Paths.START_TO_MACHINE]).Magnitude
+            local dc = (CharRef.Root.Position - Paths.MACHINE_TO_CASHIER[#Paths.MACHINE_TO_CASHIER]).Magnitude
+            FollowPath(dm < dc and Paths.MACHINE_TO_START or Paths.CASHIER_TO_START)
+            TakeJob()
+            State.StatusText = "🚶 Balik ke spot kerja..."
+            FollowPath(Paths.START_TO_MACHINE); isAtCashier = false; continue
+        end
+
+        while not HasPendingOrder() and not IsMachineBroken() and State.IsBaristaActive do
+            State.StatusText = "Sabar bro, nunggu pelanggan dulu..."; task.wait(1)
+        end
+        if not State.IsBaristaActive then continue end
+        if not HasJob()         then continue end
+
+        if IsMachineBroken() then
+            State.StatusText = "Waduh mesin rusak nih, gas benerin..."
+            if isAtCashier then FollowPath(Paths.CASHIER_TO_MACHINE); isAtCashier = false end
+            State.StatusText = "Lagi jalan ke tempat benerin mesin..."
+            FollowPath(Paths.MACHINE_TO_FIX); rWait(0.4, 0.8)
+            local fix = FindPrompt("fix",20) or FindPrompt("repair",20) or FindPrompt("clean",20) or FindPrompt("maintain",20)
+            if fix then
+                State.StatusText = "Lagi benerin mesin nih..."; DoHold(fix)
+            else
+                for _, v in pairs(Services.Workspace:GetDescendants()) do
+                    if v:IsA("ProximityPrompt") and v.Enabled then
+                        local p = v.Parent
+                        if p and p:IsA("BasePart") and (p.Position - CharRef.Root.Position).Magnitude < 15 then DoHold(v) end
+                    end
+                end
+            end
+            rWait(0.4, 0.8); State.StatusText = "🚶 Balik kerja lagi..."
+            State.MachineFixCount = (State.MachineFixCount or 0) + 1
+            FollowPath(Paths.FIX_TO_MACHINE); continue
+        end
+
+        if HasPendingOrder() then
+            if isAtCashier then
+                State.StatusText = "🚶 Otw ke mesin kopi..."; FollowPath(Paths.CASHIER_TO_MACHINE); isAtCashier = false
+            else
+                WalkToPoint(Paths.START_TO_MACHINE[#Paths.START_TO_MACHINE])
+            end
+
+            local mp = Paths.START_TO_MACHINE[#Paths.START_TO_MACHINE]
+            local bp = FindPrompt("brewing",30,mp) or FindPrompt("brew",30,mp) or FindPrompt("make",30,mp)
+            if bp then
+                State.StatusText = "Lagi nyeduh kopi nih..."; DoTap(bp); rWait(0.8, 1.2)
+                while State.IsBaristaActive do
+                    local g = LocalPlayer.PlayerGui:FindFirstChild("BaristaGUI")
+                    local m = g and g:FindFirstChild("MinigameFrame", true)
+                    if not m or not m.Visible then break end; task.wait(0.5)
+                end
+            end
+            rWait(0.8, 1.5)
+
+            State.StatusText = "🥤 Ngambil kopinya..."
+            local dp = FindPrompt("take",25,mp) or FindPrompt("grab",25,mp)
+            if dp then DoTap(dp) end; rWait(0.3, 0.7)
+
+            local tool = LocalPlayer.Backpack:FindFirstChildOfClass("Tool") or CharRef.Character:FindFirstChildOfClass("Tool")
+            if tool then CharRef.Humanoid:EquipTool(tool) end
+
+            State.StatusText = "🚶 Nganter kopi ke pelanggan..."
+            FollowPath(Paths.MACHINE_TO_CASHIER); isAtCashier = true
+
+            local attempt = 0
+            while CharRef.Character:FindFirstChildOfClass("Tool") and State.IsBaristaActive and attempt < 5 do
+                State.StatusText = "Lagi ngasih kopi ke pelanggan..."
+                local sp2 = FindPrompt("serve",25) or FindPrompt("deliver",25)
+                if sp2 then DoHold(sp2) else break end
+                attempt += 1; rWait(0.4, 0.7)
+            end
+
+            if not CharRef.Character:FindFirstChildOfClass("Tool") then
+                State.OrderCount += 1
+                State.StatusText  = "✅ Kopi kejual! Total: " .. State.OrderCount
+            else
+                State.StatusText = "❌ Gagal ngasih kopi, coba lagi..."
+            end
+
+            local delay = State.ActionDelay + math.random(-5, 10) / 10
+            rWait(delay, delay + 0.5)
+        end
+    end
+end
+
+local function StartBaristaScript()
+    if State.IsBaristaActive then return end
+    State.IsBaristaActive = true
+    State.UangAwal = GetPlayerMoney()
+    State.UangAwalSession = State.UangAwal
+    State.SessionStartTime = os.time()
+    State.LastStopReason = ""
+    State.MachineFixCount = 0
+    task.spawn(function() TakeJob(); StartMinigameAI(); BaristaFarmLoop() end)
+end
+
+local function StopBaristaScript(reason)
+    local stopReason = reason or "User manually stopped Barista"
+    State.IsBaristaActive = false
+    State.StatusText = "Santai dulu..."
+    State.LastStopReason = stopReason
+    if CharRef.Humanoid and CharRef.Root then 
+        CharRef.Humanoid:MoveTo(CharRef.Root.Position) 
+    end
+end
+
+-- // 12. OFFICE JOB SYSTEM (LIGHTWEIGHT + MOBILE FIX)
+local playerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+local function hasText(str, keyword)
+    return str and string.find(string.lower(str), string.lower(keyword)) ~= nil
+end
+
+local function eksekusiPromptTahan(pp)
+    if not pp then return end
+    if (pp.HoldDuration or 0) > 0 then
+        DoHold(pp)
+    else
+        DoTap(pp)
+    end
+end
+
+local myChair            = nil
+local CachedTargetLabel  = nil
+local CachedTargetParent = nil
+local MathGuiCache       = nil 
+
+local function findNearestChair(radius)
+    local origin = CharRef.Root and CharRef.Root.Position
+    if not origin then return nil end
+    radius = radius or 50
+    local best, bestD = nil, radius
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v:IsA("ProximityPrompt") and v.Enabled and hasText(v.ActionText, "sit") then
+            local part = v.Parent
+            if part and part:IsA("BasePart") then
+                local d = (part.Position - origin).Magnitude
+                if d < bestD then best, bestD = v, d end
+            end
+        end
+        if v:IsA("Seat") and v:IsA("BasePart") then
+            local d = (v.Position - origin).Magnitude
+            if d < bestD then best, bestD = v, d end
+        end
+    end
+    return best
+end
+
+local function findAnotherChair()
+    local origin = CharRef.Root and CharRef.Root.Position
+    if not origin then return nil end
+    local radius = 50
+    local best, bestD = nil, radius
+    for _, v in pairs(workspace:GetDescendants()) do
+        if v:IsA("ProximityPrompt") and v.Enabled and hasText(v.ActionText, "sit") then
+            local part = v.Parent
+            if part and part:IsA("BasePart") and part ~= myChair then
+                local d = (part.Position - origin).Magnitude
+                if d < bestD then best, bestD = part, d end
+            end
+        end
+        if v:IsA("Seat") and v:IsA("BasePart") and v ~= myChair then
+            local d = (v.Position - origin).Magnitude
+            if d < bestD then best, bestD = v, d end
+        end
+    end
+    return best
+end
+
+local function jalanKe(pos)
+    local root = CharRef.Root
+    local hum = CharRef.Humanoid
+    if not root or not hum then return false end
+    local targetPos = pos + Vector3.new(math.random(-12,12)/10, 0, math.random(-12,12)/10)
+    local path = Services.PathfindingService:CreatePath({
+        AgentRadius = 2,
+        AgentHeight = 5,
+        AgentCanJump = true
+    })
+    local success, _ = pcall(function()
+        path:ComputeAsync(root.Position, targetPos)
+    end)
+    if success and path.Status == Enum.PathStatus.Success then
+        for _, waypoint in ipairs(path:GetWaypoints()) do
+            if not State.IsOfficeActive then break end
+            if waypoint.Action == Enum.PathWaypointAction.Jump then hum.Jump = true end
+            hum:MoveTo(waypoint.Position)
+            local t = 0
+            while (root.Position - waypoint.Position).Magnitude > 3.5 do
+                task.wait(0.05); t += 0.05 
+                if t > 2 or not State.IsOfficeActive then break end
+            end
+        end
+        return true
+    else
+        hum:MoveTo(targetPos)
+        hum.MoveToFinished:Wait(3)
+        return true
+    end
+end
+
+local function keluarKursi()
+    local hum = CharRef.Humanoid
+    if not hum then return end
+    if hum.SeatPart then myChair = hum.SeatPart end
+    hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+    hum:ChangeState(Enum.HumanoidStateType.Jumping)
+    task.wait(math.random(4,7)/10)
+end
+
+local function dudukKeKursi()
+    if not myChair then return false end
+    local hum = CharRef.Humanoid
+    if not hum then return false end
+    hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+    jalanKe(myChair.Position + Vector3.new(0,2,0))
+    task.wait(math.random(3,6)/10)
+    hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
+    task.wait(0.1)
+    
+    local dudukBerhasil = false
+    if myChair:IsA("Seat") or myChair:IsA("VehicleSeat") then
+        myChair:Sit(hum); task.wait(0.5); dudukBerhasil = true
+    else
+        for _, child in pairs(myChair:GetChildren()) do
+            if child:IsA("ProximityPrompt") and child.Enabled then
+                eksekusiPromptTahan(child); task.wait(0.5); dudukBerhasil = true
+                break
+            end
+        end
+    end
+    
+    if dudukBerhasil and myChair and myChair:IsA("BasePart") then
+        local root = CharRef.Root
+        if root then
+            local chairLook = myChair.CFrame.LookVector
+            root.CFrame = CFrame.lookAt(root.Position, root.Position + chairLook)
+            task.wait(0.2)
+        end
+    end
+    
+    return dudukBerhasil
+end
+
+local function cekPanggilanPrinter()
+    for _, gui in pairs(playerGui:GetDescendants()) do
+        if gui:IsA("TextLabel") and gui.Visible and hasText(gui.Text, "printer") then
+            return true
+        end
+    end
+    return false
+end
+
+local function scanPromptPrint()
+    local origin = CharRef.Root and CharRef.Root.Position
+    if not origin then return nil end
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("ProximityPrompt") and obj.Enabled then
+            if hasText(obj.ActionText, "print") or hasText(obj.ObjectText, "print") then
+                local part = obj.Parent
+                if part and part:IsA("BasePart") and (part.Position - origin).Magnitude < 50 then
+                    return obj
+                end
+            end
+        end
+    end
+    return nil
+end
+
+local function cariSoalBaru()
+    CachedTargetLabel, CachedTargetParent = nil, nil
+    MathGuiCache = nil
+    
+    for _, v in pairs(playerGui:GetDescendants()) do
+        if v:IsA("TextLabel") and v.Visible and v.Text ~= "" then
+            local a, op, b = string.match(v.Text, "(%d+)%s*([%+%-%*/xX])%s*(%d+)")
+            if a and op and b then
+                CachedTargetLabel, CachedTargetParent = v, v.Parent
+                MathGuiCache = v:FindFirstAncestorOfClass("ScreenGui") or v.Parent
+                return v
+            end
+        end
+    end
+    return nil
+end
+
+local function soalCacheValid()
+    return CachedTargetLabel and CachedTargetLabel.Parent and CachedTargetLabel.Visible
+end
+
+local function klikTombol(btn)
+    if not btn then return false end
+    local success = false
+
+    if getconnections then
+        pcall(function()
+            for _, conn in ipairs(getconnections(btn.MouseButton1Click)) do
+                if type(conn.Function) == "function" then
+                    task.spawn(conn.Function); success = true
+                elseif conn.Fire then
+                    conn:Fire(); success = true
+                end
+            end
+            for _, conn in ipairs(getconnections(btn.Activated)) do
+                if type(conn.Function) == "function" then
+                    task.spawn(conn.Function); success = true
+                elseif conn.Fire then
+                    conn:Fire(); success = true
+                end
+            end
+        end)
+    end
+
+    if not success and firesignal then
+        pcall(function() firesignal(btn.MouseButton1Down) end)
+        pcall(function() firesignal(btn.MouseButton1Click) end)
+        pcall(function() firesignal(btn.Activated) end)
+        pcall(function() firesignal(btn.MouseButton1Up) end)
+        success = true
+    end
+
+    if not success then
+        pcall(function()
+            if btn:IsA("GuiButton") and btn.Visible then
+                local pos = btn.AbsolutePosition
+                local size = btn.AbsoluteSize
+                local x = pos.X + (size.X / 2)
+                local y = pos.Y + (size.Y / 2)
+                
+                local VIM = game:GetService("VirtualInputManager")
+                VIM:SendMouseButtonEvent(x, y, 0, true, game, 1)
+                task.wait(math.random(30, 60) / 1000)
+                VIM:SendMouseButtonEvent(x, y, 0, false, game, 1)
+                success = true
+            end
+        end)
+    end
+
+    if not success then
+        pcall(function()
+            if btn:IsA("GuiButton") then
+                btn.Active = true
+                btn:Activate()
+                success = true
+            end
+        end)
+    end
+
+    return success
+end
+
+-- ================== PRINT THREAD (FIXED & OPTIMIZED) ==================
+task.spawn(function()
+    while true do
+        local s = State.OfficeSettings
+        task.wait(s.PrinterCheckInterval)
+        if not State.IsOfficeActive or not s.EnableAutoPrinter or getgenv().isGoingToPrinter then continue end
+        
+        if cekPanggilanPrinter() then
+            getgenv().isGoingToPrinter = true
+            getgenv().forceStopMath = true
+            task.wait(math.random(8,18)/10)
+            keluarKursi()
+            
+            local printerPos = nil
+            local targetPrompt = nil
+            for i=1,5 do
+                local pp = scanPromptPrint()
+                if pp and pp.Parent:IsA("BasePart") then
+                    printerPos = pp.Parent.Position + Vector3.new(0,0,2)
+                    targetPrompt = pp
+                    break
+                end
+                task.wait(0.5)
+            end
+            
+            if printerPos and targetPrompt then
+                jalanKe(printerPos)
+                task.wait(math.random(4,8)/10)
+                
+                local printBerhasil = false
+                for i=1, 3 do 
+                    local pp = scanPromptPrint()
+                    if pp and pp.Parent and pp.Parent:IsA("BasePart") then
+                        if (pp.Parent.Position - CharRef.Root.Position).Magnitude < 15 then
+                            task.wait(math.random(4,10)/10)
+                            eksekusiPromptTahan(pp)
+                            
+                            local timeout = tick() + 6 
+                            while tick() < timeout do
+                                local currentPp = scanPromptPrint()
+                                if not currentPp or currentPp ~= pp then
+                                    printBerhasil = true
+                                    break
+                                end
+                                task.wait(0.3)
+                            end
+                            
+                            if printBerhasil then
+                                State.OfficePrints = (State.OfficePrints or 0) + 1
+                                break
+                            end
+                        else
+                            jalanKe(pp.Parent.Position + Vector3.new(0,0,2))
+                        end
+                    else
+                        printBerhasil = true 
+                        break
+                    end
+                    task.wait(0.5)
+                end
+                
+                task.wait(math.random(5,10)/10) 
+            end
+            
+            dudukKeKursi()
+            task.wait(math.random(8,15)/10)
+            CachedTargetLabel, CachedTargetParent = nil, nil
+            MathGuiCache = nil
+            getgenv().isGoingToPrinter = false
+            getgenv().forceStopMath = false
+        end
+    end
+end)
+
+-- ================== IDLE DETECTOR + CHAIR SWITCH ==================
+local lastActivityTime = tick()
+local isSwitching = false
+
+task.spawn(function()
+    while true do
+        task.wait(2) 
+        if not State.IsOfficeActive then continue end
+        local s = State.OfficeSettings
+        if getgenv().isGoingToPrinter or getgenv().forceStopMath or isSwitching then continue end
+        if s.EnableChairSwitch and tick() - lastActivityTime > s.IdleSwitchTime then
+            isSwitching = true
+            getgenv().forceStopMath = true
+            keluarKursi()
+            local newChair = findAnotherChair()
+            if newChair then myChair = newChair end
+            dudukKeKursi()
+            getgenv().forceStopMath = false
+            isSwitching = false
+            lastActivityTime = tick()
+        end
+    end
+end)
+
+-- ================== MATH THREAD (LIGHTWEIGHT) ==================
+task.spawn(function()
+    while true do
+        task.wait(1) 
+        if not State.IsOfficeActive or getgenv().forceStopMath or getgenv().isGoingToPrinter then continue end
+        local hum = CharRef.Humanoid
+        if not hum or not hum.SeatPart then
+            if myChair then dudukKeKursi() end
+            task.wait(1)
+            continue
+        end
+
+        local soalLabel = soalCacheValid() and CachedTargetLabel or cariSoalBaru()
+        if not soalLabel then 
+            MathGuiCache = nil
+            task.wait(1) 
+            continue 
+        end
+
+        lastActivityTime = tick()
+
+        local text = soalLabel.Text
+        local a, op, b = string.match(text, "(%d+)%s*([%+%-%*/xX])%s*(%d+)")
+        if not a then 
+            CachedTargetLabel, CachedTargetParent = nil, nil 
+            MathGuiCache = nil
+            continue 
+        end
+
+        local n1, n2 = tonumber(a), tonumber(b)
+        local jawaban = nil
+        
+        if     op == "+" then jawaban = n1 + n2
+        elseif op == "-" then jawaban = n1 - n2
+        elseif op == "*" or op == "x" or op == "X" then jawaban = n1 * n2
+        elseif op == "/" and n2 ~= 0 then jawaban = n1 / n2
+        end
+        
+        if jawaban then
+            jawaban = math.floor(jawaban + 0.5)
+        else
+            CachedTargetLabel, CachedTargetParent = nil, nil 
+            MathGuiCache = nil
+            continue
+        end
+
+        local ditemukan = false
+        
+        local searchArea = MathGuiCache or playerGui
+        for _, btn in pairs(searchArea:GetDescendants()) do
+            if getgenv().forceStopMath or not State.IsOfficeActive then break end
+            if btn:IsA("TextButton") and btn.Visible then
+                local btnText = btn.Text
+                if btnText == "" or tonumber(btnText) == nil then
+                    local cl = btn:FindFirstChildOfClass("TextLabel")
+                    if cl then btnText = cl.Text end
+                end
+                if tonumber(btnText) == jawaban then
+                    ditemukan = true
+                    local s = State.OfficeSettings
+                    task.wait(math.random(s.MathDelayMin * 10, s.MathDelayMax * 10) / 10)
+                    if getgenv().forceStopMath or not State.IsOfficeActive then break end
+                    
+                    if klikTombol(btn) then
+                        State.OfficeMathSolved = (State.OfficeMathSolved or 0) + 1
+                        lastActivityTime = tick()
+                        task.wait(s.AfterAnswerDelay)
+                    end
+                    task.wait(math.random(4,12)/10)
+                    break
+                end
+            end
+        end
+        if not ditemukan then 
+            CachedTargetLabel, CachedTargetParent = nil, nil 
+            MathGuiCache = nil
+        end
+    end
+end)
+
+-- ================== ANTI-IDLE EVENT ==================
+task.spawn(function()
+    while true do
+        local s = State.OfficeSettings
+        task.wait(s.AntiIdleInterval)
+        if State.IsOfficeActive and s.EnableAntiIdle then
+            pcall(function()
+                game:GetService("ReplicatedStorage"):WaitForChild("EventEvents"):WaitForChild("GetMyJoinedEvents"):InvokeServer({})
+            end)
+        end
+    end
+end)
+
+-- ================== MONITORING GUI ==================
+local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
+local TrackerGui = nil
+local CachedMoneyLabel = nil
+
+local function parseNumber(val)
+    if not val then return 0 end
+    local cleanString = string.gsub(tostring(val), "[^%d%-]", "")
+    return tonumber(cleanString) or 0
+end
+
+local function formatNumber(num)
+    local formatted = tostring(math.floor(tonumber(num) or 0))
+    local k
+    while true do
+        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1.%2')
+        if k == 0 then break end
+    end
+    return formatted
+end
+
+local function formatTime(seconds)
+    seconds = tonumber(seconds) or 0
+    local h = math.floor(seconds / 3600)
+    local m = math.floor((seconds % 3600) / 60)
+    local s = math.floor(seconds % 60)
+    return string.format("%02d:%02d:%02d", h, m, s)
+end
+
+local function CariLabelUang()
+    local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
+    if not playerGui then return nil end
+    for _, guiObject in ipairs(playerGui:GetDescendants()) do
+        if guiObject:IsA("TextLabel") or guiObject:IsA("TextButton") then
+            local text = guiObject.Text
+            if text and string.find(text, "Rp%.") and string.match(text, "%d+") then
+                return guiObject
+            end
+        end
+    end
+    return nil
+end
+
+local function DapatkanUangPemain()
+    if CachedMoneyLabel and CachedMoneyLabel.Parent then
+        return parseNumber(CachedMoneyLabel.Text)
+    end
+    CachedMoneyLabel = CariLabelUang()
+    if CachedMoneyLabel then
+        return parseNumber(CachedMoneyLabel.Text)
+    end
+    return GetPlayerMoney()
+end
+
+local function buatMonitoringGUI()
+    local uangSekarang = DapatkanUangPemain()
+    if not getgenv().UangAwalDikunci or getgenv().UangAwalDikunci == 0 then
+        getgenv().UangAwalDikunci = uangSekarang
+    end
+    getgenv().WaktuMulai = getgenv().WaktuMulai or tick()
+    local uangAwal = getgenv().UangAwalDikunci
+
+    if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy() end
+    TrackerGui = Instance.new("ScreenGui")
+    TrackerGui.Name = "KingAkbarTracker"
+    TrackerGui.Parent = CoreGui
+
+    local Frame = Instance.new("Frame")
+    Frame.Size = UDim2.new(0, 190, 0, 0)
+    Frame.Position = UDim2.new(1, -16, 0.5, 0)
+    Frame.AnchorPoint = Vector2.new(1, 0.5)
+    Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+    Frame.BackgroundTransparency = 0.25
+    Frame.BorderSizePixel = 0
+    Frame.Active = true
+    Frame.Draggable = true
+    Frame.AutomaticSize = Enum.AutomaticSize.Y
+    Frame.Parent = TrackerGui
+
+    local Corner = Instance.new("UICorner"); Corner.CornerRadius = UDim.new(0,8); Corner.Parent = Frame
+    local Stroke = Instance.new("UIStroke"); Stroke.Color = Color3.fromRGB(70,70,75); Stroke.Thickness = 1; Stroke.Parent = Frame
+    local Padding = Instance.new("UIPadding"); Padding.PaddingTop = UDim.new(0,10); Padding.PaddingBottom = UDim.new(0,10); Padding.PaddingLeft = UDim.new(0,10); Padding.PaddingRight = UDim.new(0,10); Padding.Parent = Frame
+    local List = Instance.new("UIListLayout"); List.Padding = UDim.new(0,6); List.SortOrder = Enum.SortOrder.LayoutOrder; List.Parent = Frame
+
+    local H = Instance.new("Frame"); H.Size = UDim2.new(1,0,0,36); H.BackgroundTransparency = 1; H.LayoutOrder = 1; H.Parent = Frame
+    local Img = Instance.new("ImageLabel"); Img.Size = UDim2.new(0,36,0,36); Img.Position = UDim2.new(0,0,0.5,-18); Img.BackgroundTransparency = 1; Img.Image = "rbxassetid://84070081307966"; Img.ScaleType = Enum.ScaleType.Fit; Img.ZIndex = 2; Img.Parent = H
+    local ImgCorner = Instance.new("UICorner"); ImgCorner.CornerRadius = UDim.new(0,8); ImgCorner.Parent = Img
+    local Title = Instance.new("TextLabel"); Title.Size = UDim2.new(1,-42,0,24); Title.Position = UDim2.new(0,42,0.5,-12); Title.BackgroundTransparency = 1; Title.Text = "KING AKBAR"; Title.TextColor3 = Color3.fromRGB(180,180,180); Title.Font = Enum.Font.GothamBold; Title.TextSize = 14; Title.TextXAlignment = Enum.TextXAlignment.Left; Title.Parent = H
+    local Div = Instance.new("Frame"); Div.Size = UDim2.new(1,0,0,1); Div.BackgroundColor3 = Color3.fromRGB(70,70,75); Div.BorderSizePixel = 0; Div.LayoutOrder = 2; Div.Parent = Frame
+
+    local function baris(labelKiri, labelKanan, order)
+        local R = Instance.new("Frame"); R.Size = UDim2.new(1,0,0,28); R.BackgroundTransparency = 1; R.LayoutOrder = order; R.Parent = Frame
+        local L = Instance.new("Frame"); L.Size = UDim2.new(0.5,-3,1,0); L.BackgroundTransparency = 1; L.Parent = R
+        local LLab = Instance.new("TextLabel"); LLab.Size = UDim2.new(1,0,0,12); LLab.BackgroundTransparency = 1; LLab.Text = labelKiri; LLab.TextColor3 = Color3.fromRGB(140,140,140); LLab.Font = Enum.Font.GothamMedium; LLab.TextSize = 10; LLab.TextXAlignment = Enum.TextXAlignment.Left; LLab.Parent = L
+        local LVal = Instance.new("TextLabel"); LVal.Size = UDim2.new(1,0,0,14); LVal.Position = UDim2.new(0,0,1,-14); LVal.BackgroundTransparency = 1; LVal.Text = "0"; LVal.TextColor3 = Color3.fromRGB(220,220,220); LVal.Font = Enum.Font.GothamBold; LVal.TextSize = 12; LVal.TextXAlignment = Enum.TextXAlignment.Left; LVal.Parent = L
+        local Ri = Instance.new("Frame"); Ri.Size = UDim2.new(0.5,-3,1,0); Ri.Position = UDim2.new(0.5,3,0,0); Ri.BackgroundTransparency = 1; Ri.Parent = R
+        local RLab = Instance.new("TextLabel"); RLab.Size = UDim2.new(1,0,0,12); RLab.BackgroundTransparency = 1; RLab.Text = labelKanan; RLab.TextColor3 = Color3.fromRGB(140,140,140); RLab.Font = Enum.Font.GothamMedium; RLab.TextSize = 10; RLab.TextXAlignment = Enum.TextXAlignment.Left; RLab.Parent = Ri
+        local RVal = Instance.new("TextLabel"); RVal.Size = UDim2.new(1,0,0,14); RVal.Position = UDim2.new(0,0,1,-14); RVal.BackgroundTransparency = 1; RVal.Text = "0"; RVal.TextColor3 = Color3.fromRGB(220,220,220); RVal.Font = Enum.Font.GothamBold; RVal.TextSize = 12; RVal.TextXAlignment = Enum.TextXAlignment.Left; RVal.Parent = Ri
+        return LVal, RVal
+    end
+
+    local function barisTunggal(label, order)
+        local R = Instance.new("Frame"); R.Size = UDim2.new(1,0,0,28); R.BackgroundTransparency = 1; R.LayoutOrder = order; R.Parent = Frame
+        local Lab = Instance.new("TextLabel"); Lab.Size = UDim2.new(0.4,0,0,12); Lab.BackgroundTransparency = 1; Lab.Text = label; Lab.TextColor3 = Color3.fromRGB(140,140,140); Lab.Font = Enum.Font.GothamMedium; Lab.TextSize = 10; Lab.TextXAlignment = Enum.TextXAlignment.Left; Lab.Parent = R
+        local Val = Instance.new("TextLabel"); Val.Size = UDim2.new(0.6,0,0,14); Val.Position = UDim2.new(0.4,0,1,-14); Val.BackgroundTransparency = 1; Val.Text = "00:00:00"; Val.TextColor3 = Color3.fromRGB(220,220,220); Val.Font = Enum.Font.GothamBold; Val.TextSize = 12; Val.TextXAlignment = Enum.TextXAlignment.Right; Val.Parent = R
+        return Val
+    end
+
+    local uangAwalLabel, pendapatanLabel = baris("Uang Awal", "Pendapatan", 4)
+    local soalLabel, printLabel = baris("Soal Jawab", "Total Print", 5)
+    local uptimeLabel = barisTunggal("Uptime", 6)
+
+    uangAwalLabel.Text = formatNumber(uangAwal)
+
+    task.spawn(function()
+        while TrackerGui and TrackerGui.Parent do
+            pcall(function()
+                local currentMoney = DapatkanUangPemain()
+                if uangAwal == 0 and currentMoney > 0 then
+                    getgenv().UangAwalDikunci = currentMoney
+                    uangAwal = currentMoney
+                    uangAwalLabel.Text = formatNumber(uangAwal)
+                end
+                local profit = currentMoney - uangAwal
+                pendapatanLabel.Text = (profit >= 0 and "+" or "") .. formatNumber(profit)
+                soalLabel.Text = tostring(State.OfficeMathSolved or 0)
+                printLabel.Text = tostring(State.OfficePrints or 0)
+                uptimeLabel.Text = formatTime(tick() - getgenv().WaktuMulai)
+            })
+            task.wait(1)
+        end
+    end)
+end
+
+local function matikanMonitoring()
+    if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy(); TrackerGui = nil end
+end
+
+local function StartOfficeScript()
+    if State.IsOfficeActive then return end
+    State.IsOfficeActive = true
+    State.OfficeMathSolved = 0
+    State.OfficePrints = 0
+    getgenv().fullAuto = true
+
+    CachedMoneyLabel = nil
+    getgenv().UangAwalDikunci = nil
+    getgenv().WaktuMulai = tick()
+
+    if not CharRef.Humanoid or not CharRef.Humanoid.SeatPart then
+        local sitPrompt = findNearestChair(60)
+        if sitPrompt then
+            if sitPrompt:IsA("ProximityPrompt") then
+                myChair = sitPrompt.Parent
+                jalanKe(myChair.Position + Vector3.new(0,2,0))
+                task.wait(0.5)
+                dudukKeKursi()
+            elseif sitPrompt:IsA("Seat") then
+                myChair = sitPrompt
+                dudukKeKursi()
+            end
+        else
+            WindUI:Notify({ Title = "⚠️ Office", Content = "Kursi nggak ketemu, duduk manual dulu bos!", Duration = 5 })
+        end
+    else
+        myChair = CharRef.Humanoid.SeatPart
+    end
+
+    lastActivityTime = tick()
+    buatMonitoringGUI()
+    WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Uang Awal discan otomatis.", Duration = 4 })
+end
+
+local function StopOfficeScript()
+    State.IsOfficeActive = false
+    getgenv().fullAuto = false
+    getgenv().forceStopMath = false
+    getgenv().isGoingToPrinter = false
+    CachedTargetLabel, CachedTargetParent = nil, nil
+    MathGuiCache = nil
+
+    CachedMoneyLabel = nil
+    getgenv().UangAwalDikunci = nil
+
+    local hum = CharRef.Humanoid
+    if hum then hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true) end
+    matikanMonitoring()
+    WindUI:Notify({ Title = "🛑 Office", Content = "Auto Office dimatiin.", Duration = 3 })
+end
+
+-- // 13. AUTO COURIER
+local CourierJob = {
+    Name = "Courier",
+    TeamId = 11378976,
+    X = -5158.57,
+    Y = 4.41,
+    Z = -3757.87
+}
+
+local SELECTED_CAR = "Yamahax-MioSporty"
+
+local function spawnCar()
+    Services.ReplicatedStorage:WaitForChild("SpawnCarEvents"):WaitForChild("SpawnCar"):FireServer(SELECTED_CAR)
+end
+
+local function findMyMotor()
+    local myName = LocalPlayer.Name
+    for _, v in pairs(workspace:GetChildren()) do
+        if v.Name:match(myName) and v.Name:match("Montors") then
+            return v
+        end
+    end
+    return nil
+end
+
+local function walkToCourier(point, timeout)
+    timeout = timeout or 10
+    local hum = CharRef.Humanoid
+    if not hum then return end
+    local t = tick()
+    while tick() - t < timeout and State.IsCourierActive do
+        local hrp = CharRef.Root
+        if hrp and (hrp.Position - point).Magnitude < 5 then break end
+        hum:MoveTo(point)
+        task.wait(0.5)
+    end
+end
+
+local function setJob(job)
+    pcall(function()
+        Services.ReplicatedStorage:WaitForChild("JobEvents"):WaitForChild("TeamChangeRequest")
+            :FireServer(job.Name, job.TeamId, 1, 0, "Detector")
+    end)
+end
+
+local function exitMotor()
+    local motor = findMyMotor()
+    if not motor then return false end
+    local char = LocalPlayer.Character
+    if not char then return false end
+
+    local anims = motor:FindFirstChild("Anims")
+    if anims then
+        pcall(function() anims:FireServer("RemovePlayer", char, nil) end)
+        task.wait(0.3)
+    end
+
+    local driveSeat = motor:FindFirstChild("DriveSeat", true)
+    if driveSeat then
+        pcall(function() driveSeat:Sit(nil) end)
+        task.wait(0.3)
+    end
+
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        pcall(function() humanoid.Jump = true end)
+    end
+    return true
+end
+
+local function rideMotor()
+    local motor = findMyMotor()
+    if not motor then return false end
+    local char = LocalPlayer.Character
+    if not char then return false end
+
+    local anims = motor:FindFirstChild("Anims")
+    if anims then
+        pcall(function() anims:FireServer("CreatePlayer", char) end)
+        task.wait(0.2)
+        pcall(function() anims:FireServer("RegisterPlayer", char) end)
+        task.wait(0.2)
+    end
+
+    local kickstand = motor:FindFirstChild("Kickstand")
+    if kickstand then
+        pcall(function() kickstand:FireServer("StandUp", 0, 0, 0, 0, false) end)
+        task.wait(0.2)
+    end
+
+    local driveSeat = motor:FindFirstChild("DriveSeat", true)
+    if driveSeat then
+        pcall(function()
+            local hrp = char:FindFirstChild("HumanoidRootPart")
+            if hrp then hrp.CFrame = driveSeat.CFrame end
+            driveSeat:Sit(char:FindFirstChildOfClass("Humanoid"))
+        end)
+    end
+    return true
+end
+
+local function forceDismount()
+    local char = LocalPlayer.Character
+    local hum = char and char:FindFirstChild("Humanoid")
+    if not char or not hum then return end
+    hum.Sit = false
+    hum.Jump = true
+    task.wait(0.1)
+    if hum.SeatPart then
+        char:PivotTo(char:GetPivot() * CFrame.new(0, 2, 0))
+        hum.Sit = false
+        hum.Jump = true
+    end
+    task.wait(0.2)
+end
+
+local function ghostGlideMotor(targetPos)
+    local char = LocalPlayer.Character
+    local hum = char and char:FindFirstChild("Humanoid")
+    local seat = hum and hum.SeatPart
+    local vehicle = seat and seat:FindFirstAncestorOfClass("Model")
+    if not (vehicle and vehicle.PrimaryPart) then return end
+
+    local pp = vehicle.PrimaryPart
+    local speed = 150
+    local glideHeight = targetPos.Y + 3
+    local posTujuan = Vector3.new(targetPos.X, glideHeight, targetPos.Z)
+
+    local virtualAnchor = Instance.new("BodyVelocity")
+    virtualAnchor.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    virtualAnchor.Velocity = Vector3.new(0, 0, 0)
+    virtualAnchor.Parent = pp
+
+    local virtualGyro = Instance.new("BodyGyro")
+    virtualGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+    virtualGyro.P = 100000
+    virtualGyro.Parent = pp
+
+    local noclip = Services.RunService.Stepped:Connect(function()
+        if not State.IsCourierActive then return end
+        for _, v in pairs(vehicle:GetDescendants()) do
+            if v:IsA("BasePart") then v.CanCollide = false end
+        end
+        for _, v in pairs(char:GetDescendants()) do
+            if v:IsA("BasePart") then v.CanCollide = false end
+        end
+    end)
+
+    local _, currentYRot, _ = pp.CFrame:ToEulerAnglesYXZ()
+
+    local function glideTo(targetVector, faceForward)
+        if not State.IsCourierActive then return end
+        local dist = (pp.Position - targetVector).Magnitude
+        local timeToMove = dist / speed
+        if timeToMove > 0 then
+            local startTime = tick()
+            while tick() - startTime < timeToMove and State.IsCourierActive do
+                if not hum.SeatPart then break end
+                local alpha = (tick() - startTime) / timeToMove
+                local currentPos = pp.Position:Lerp(targetVector, alpha)
+                if faceForward then
+                    local dir = (targetVector - pp.Position).Unit
+                    local flatDir = Vector3.new(dir.X, 0, dir.Z).Unit
+                    if flatDir.Magnitude > 0.001 then
+                        local newCFrame = CFrame.lookAt(currentPos, currentPos + flatDir)
+                        virtualGyro.CFrame = newCFrame
+                        vehicle:PivotTo(newCFrame)
+                    end
+                else
+                    local newCFrame = CFrame.new(currentPos) * CFrame.Angles(0, currentYRot, 0)
+                    virtualGyro.CFrame = newCFrame
+                    vehicle:PivotTo(newCFrame)
+                end
+                Services.RunService.Heartbeat:Wait()
+            end
+        end
+    end
+
+    glideTo(posTujuan, true)
+
+    local finalSafeY = targetPos.Y + 3
+    local timeout = tick() + 8
+    while tick() < timeout and State.IsCourierActive do
+        local rayOrigin = Vector3.new(targetPos.X, glideHeight + 5, targetPos.Z)
+        local rayResult = workspace:Raycast(rayOrigin, Vector3.new(0, -100, 0))
+        if rayResult and rayResult.Instance then
+            finalSafeY = rayResult.Position.Y + 1.5
+            break
+        else
+            task.wait(1)
+        end
+    end
+
+    glideTo(Vector3.new(targetPos.X, finalSafeY, targetPos.Z), false)
+
+    virtualAnchor:Destroy()
+    virtualGyro:Destroy()
+    noclip:Disconnect()
+    pp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+    pp.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+
+    forceDismount()
+end
+
+local ServiceEventConn = nil
+
+local function startCourierLoop()
+    local activePackageLoc = nil
+    local activePackageNum = nil
+
+    local serviceEvent = Services.ReplicatedStorage:FindFirstChild("ServiceEvent", true)
+    if serviceEvent then
+        ServiceEventConn = serviceEvent.OnClientEvent:Connect(function(eventName, action, paketNum)
+            if not State.IsCourierActive then return end
+            if action == "Create" then
+                local Location = workspace:FindFirstChild("Livrason") and workspace.Livrason:FindFirstChild("Location")
+                if Location then
+                    local paket = Location:FindFirstChild(tostring(paketNum))
+                    if paket then
+                        local block = paket:FindFirstChild("Block")
+                        if block then
+                            activePackageLoc = block.Position
+                            activePackageNum = paketNum
+                        end
+                    end
+                end
+            elseif action == "Remove" then
+                if activePackageNum == paketNum then
+                    activePackageLoc = nil
+                    activePackageNum = nil
+                end
+            end
+        end)
+    end
+
+    setJob(CourierJob)
+    task.wait(1.5)
+
+    spawnCar()
+    task.wait(6)
+    rideMotor()
+    task.wait(3.5)
+
+    local char = LocalPlayer.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    local motor = findMyMotor()
+    if not (motor and hrp and State.IsCourierActive) then return end
+
+    local target = CFrame.new(CourierJob.X, CourierJob.Y, CourierJob.Z)
+    pcall(function()
+        motor:SetPrimaryPartCFrame(target)
+        task.wait(0.3)
+        hrp.CFrame = target * CFrame.new(0, 2, 0)
+    end)
+
+    task.wait(3.5)
+    exitMotor()
+    task.wait(1.5)
+
+    walkToCourier(Vector3.new(-5109.06, 5.18, -3758.69), 10)
+    task.wait(1.5)
+
+    pcall(function()
+        local prompt = workspace.Livrason.Take1.Take.ProximityPrompt
+        if prompt then
+            prompt:InputHoldBegin()
+            task.wait(prompt.HoldDuration + 0.2)
+            prompt:InputHoldEnd()
+        end
+    end)
+    task.wait(1.5)
+
+    while State.IsCourierActive do
+        local t = tick()
+        while State.IsCourierActive and not activePackageLoc and tick() - t < 20 do
+            task.wait(0.4)
+        end
+        if not State.IsCourierActive then break end
+        if not activePackageLoc then break end
+
+        spawnCar()
+        task.wait(4)
+        rideMotor()
+        task.wait(3.5)
+
+        ghostGlideMotor(activePackageLoc)
+        task.wait(1)
+
+        walkToCourier(activePackageLoc, 20)
+        task.wait(2.0)
+
+        local targetNum = activePackageNum
+        pcall(function()
+            local LocationFolder = workspace.Livrason.Location
+            local paketModel = LocationFolder:FindFirstChild(tostring(targetNum))
+            if paketModel then
+                local block = paketModel:FindFirstChild("Block")
+                local prompt = block and block:FindFirstChild("ProximityPrompt")
+                if prompt and prompt.Enabled then
+                    local box = LocalPlayer.Backpack:FindFirstChild("Box")
+                        or LocalPlayer.Character:FindFirstChild("Box")
+                        or LocalPlayer.Character:FindFirstChildWhichIsA("Tool")
+                    if box and CharRef.Humanoid then
+                        CharRef.Humanoid:EquipTool(box)
+                        task.wait(1.0)
+                    end
+                    prompt:InputHoldBegin()
+                    task.wait(prompt.HoldDuration + 0.2)
+                    prompt:InputHoldEnd()
+                    State.CourierDelivered = (State.CourierDelivered or 0) + 1
+                    task.wait(2.5)
+                end
+            end
+        end)
+        task.wait(2.0)
+    end
+
+    if ServiceEventConn then
+        ServiceEventConn:Disconnect()
+        ServiceEventConn = nil
+    end
+end
+
+local function StartCourierScript()
+    if State.IsCourierActive then return end
+    State.IsCourierActive = true
+    State.CourierDelivered = 0
+    task.spawn(startCourierLoop)
+end
+
+local function StopCourierScript()
+    State.IsCourierActive = false
+    if ServiceEventConn then
+        ServiceEventConn:Disconnect()
+        ServiceEventConn = nil
+    end
+end
+
+-- // 14. INJECT A-CHASSIS
+local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
+    local char = game:GetService("Players").LocalPlayer.Character
+    if char and char:FindFirstChild("Humanoid") and char.Humanoid.SeatPart then
+        local vehicle = char.Humanoid.SeatPart.Parent
+        while vehicle and not vehicle:IsA("Model") do vehicle = vehicle.Parent end
+        
+        if vehicle then
+            local foundTune = false
+            
+            for _, s in pairs(vehicle:GetDescendants()) do
+                if s:IsA("LocalScript") then
+                    local name = string.lower(s.Name)
+                    if string.find(name, "limit") or string.find(name, "speed") or string.find(name, "cap") then
+                        if name ~= "a-chassis interface" and name ~= "drive" then
+                            pcall(function() s.Disabled = true s:Destroy() end)
+                        end
+                    end
+                end
+            end
+            for _, v in pairs(vehicle:GetDescendants()) do
+                if v:IsA("ModuleScript") and (v.Name == "Tune" or string.find(string.lower(v.Name), "tune")) then
+                    pcall(function()
+                        local tune = require(v)
+                        if tune.Horsepower then tune.Horsepower = tune.Horsepower * HP_Mult end
+                        if tune.Redline then tune.Redline = tune.Redline + RPM_Add end
+                        if tune.Ratios then
+                            for i, ratio in pairs(tune.Ratios) do
+                                if type(ratio) == "number" and ratio > 0 then tune.Ratios[i] = ratio * Ratio_Mult end
+                            end
+                        end
+                        if tune.FinalDrive then tune.FinalDrive = tune.FinalDrive * FD_Mult end
+                        if tune.Limiter ~= nil then tune.Limiter = false end
+                        if tune.RevLimit then tune.RevLimit = 999999 end
+                        if tune.SpeedLimit then tune.SpeedLimit = false end
+                        if tune.TopSpeed then tune.TopSpeed = 999999 end
+                        if tune.MaxSpeed then tune.MaxSpeed = 999999 end
+                        if tune.DragMult then tune.DragMult = tune.DragMult * 0.05 end 
+                        if tune.Weight then tune.Weight = tune.Weight * 0.7 end
+                        foundTune = true
+                    end)
+                end
+            end
+            
+            if foundTune then
+                WindUI:Notify({ Title = "✅ " .. NamaMode, Content = "Aman! Turun lalu naik motor lagi ya bosku!", Duration = 5 })
+            else
+                WindUI:Notify({ Title = "❌ Gagal Inject", Content = "Bukan A-Chassis standar.", Duration = 4 })
+            end
+        end
+    else
+        WindUI:Notify({ Title = "⚠️ Woi Bosku!", Content = "Naik ke motornya dulu!", Duration = 3 })
+    end
+end
+
+-- // WEBHOOK AUTO SEND SYSTEM
+local function SendWebhookReport()
+    if not State.WebhookURL or State.WebhookURL == "" then return end
+    local req = request or http_request or (syn and syn.request)
+    if not req then return end
+
+    local currentMoney = DapatkanUangPemain()
+    
+    if State.WebhookStartMoney == 0 or State.WebhookStartMoney > currentMoney then
+        State.WebhookStartMoney = currentMoney
+    end
+    
+    local profit = currentMoney - State.WebhookStartMoney
+    local uptimeStr = formatTime(tick() - (getgenv().WaktuMulai or tick()))
+    local status = State.IsOfficeActive and "Office Aktif" or (State.IsBaristaActive and "Barista Aktif" or (State.IsCourierActive and "Courier Aktif" or "Idle"))
+
+    local data = {
+        ["embeds"] = {{
+            ["title"] = "👑 King Akbar - Laporan Auto Farm",
+            ["description"] = string.format(
+                "**💼 Status:** %s\n\n"..
+                "💰 **Uang Saat Ini:** Rp. %s\n"..
+                "📈 **Total Pendapatan:** Rp. %s\n\n"..
+                "🧮 **Soal Dijawab:** %d\n"..
+                "🖨️ **Total Print:** %d\n"..
+                "🛵 **Paket Dikirim:** %d\n"..
+                "⏱️ **Waktu Berjalan:** %s",
+                status, formatNumber(currentMoney), formatNumber(profit), 
+                State.OfficeMathSolved or 0, State.OfficePrints or 0, State.CourierDelivered or 0, uptimeStr
+            ),
+            ["color"] = tonumber(0x5707AB),
+            ["footer"] = { ["text"] = "King Akbar Auto Farm System" }
+        }}
+    }
+
+    pcall(function()
+        req({
+            Url = State.WebhookURL,
+            Method = "POST",
+            Headers = {["Content-Type"] = "application/json"},
+            Body = game:GetService("HttpService"):JSONEncode(data)
+        })
+    end)
+end
+
+task.spawn(function()
+    while true do
+        task.wait(5) 
+        if State.WebhookEnabled then
+            SendWebhookReport()
+            local targetTime = tick() + (State.WebhookInterval * 60)
+            while tick() < targetTime and State.WebhookEnabled do
+                task.wait(1)
+            end
+        end
+    end
+end)
+
+-- // 15. UI
+local wSz = IsMobile and UDim2.fromOffset(420, 320) or UDim2.fromOffset(580, 460)
+local mnSz = IsMobile and Vector2.new(600, 300) or Vector2.new(600, 350)
+local mxSz = IsMobile and Vector2.new(650, 400) or Vector2.new(850, 560)
+
+local Window = WindUI:CreateWindow({
+    Title                       = "King Akbar - Drag Drive Simulator",
+    Icon                        = "crown",
+    Author                      = "King Akbar",
+    Folder                      = "MySuperHub",
+    Size                        = wSz,
+    MinSize                     = mnSz,
+    MaxSize                     = mxSz,
+    Transparent                 = false,
+    Background                  = "rbxassetid://127295801178451",
+    BackgroundImageTransparency = 0.5,
+    Theme                       = "Dark",
+    Resizable                   = true,
+    SideBarWidth                = 210,
+    HideSearchBar               = false,
+    ScrollBarEnabled            = true,
+})
+
+-- TAB 1: INFO
+local TabInfo = Window:Tab({ Title = "Info", Icon = "info", Border = true })
+
+local memberCount = "N/A"
+local onlineCount = "N/A"
+
+local function fetchDiscordInfo()
+    local req = request or http_request or (syn and syn.request)
+    if not req then return end
+    local ok, res = pcall(function()
+        return req({
+            Url     = "https://discord.com/api/v9/invites/XmWf3YQPpZ?with_counts=true",
+            Method  = "GET",
+            Headers = { ["User-Agent"] = "Mozilla/5.0" }
+        })
+    end)
+    if ok and res and res.StatusCode == 200 then
+        local ok2, data = pcall(function() return game:GetService("HttpService"):JSONDecode(res.Body) end)
+        if ok2 and data then
+            memberCount = tostring(data.approximate_member_count   or "N/A")
+            onlineCount = tostring(data.approximate_presence_count or "N/A")
+        end
+    end
+end
+fetchDiscordInfo()
+
+local ServerInfo = TabInfo:Paragraph({
+    Title         = "King Vypers | Official",
+    Desc          = "• Member Count: " .. memberCount .. "\n• Online Count: " .. onlineCount,
+    Image         = "rbxassetid://107726435417936",
+    Thumbnail     = "rbxassetid://83197533072664",
+    ThumbnailSize = 80,
+    Buttons = {
+        {
+            Title    = "Copy Discord Invite",
+            Color    = Color3.fromHex("#5707AB"),
+            Icon     = "link",
+            Callback = function()
+                if setclipboard then setclipboard("https://discord.gg/XmWf3YQPpZ") end
+            end
+        },
+        {
+            Title    = "Update Info",
+            Icon     = "refresh-cw",
+            Callback = function()
+                fetchDiscordInfo()
+                ServerInfo:SetDesc("• Member Count: " .. memberCount .. "\n• Online Count: " .. onlineCount)
+            end
+        }
+    }
+})
+
+-- TAB 2: AUTO FARM (OFFICE SIMPLE)
+local TabFarm = Window:Tab({ Title = "Auto Farm", Icon = "coffee", Border = true })
+
+local SectionBarista = TabFarm:Section({
+    Title = "Auto Barista",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+SectionBarista:Toggle({
+    Title    = "Jalanin Auto Barista",
+    Icon     = "play",
+    Value    = false,
+    Callback = function(on) if on then StartBaristaScript() else StopBaristaScript() end end,
+})
+
+local SectionOffice = TabFarm:Section({
+    Title = "Auto Office",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+SectionOffice:Toggle({
+    Title    = "Jalanin Auto Office",
+    Icon     = "briefcase",
+    Value    = false,
+    Callback = function(on) if on then StartOfficeScript() else StopOfficeScript() end end,
+})
+
+SectionOffice:Slider({
+    Title = "⏱️ Jeda Minimal Sebelum Klik (detik)",
+    Desc = "Contoh: 0.8 detik (makin kecil makin cepat)",
+    Step = 0.1,
+    Value = { Min = 0.1, Max = 3, Default = 0.8 },
+    Callback = function(v) State.OfficeSettings.MathDelayMin = v end,
+})
+
+SectionOffice:Slider({
+    Title = "⏱️ Jeda Maksimal Sebelum Klik (detik)",
+    Desc = "Contoh: 2.5 detik (makin besar makin santai)",
+    Step = 0.1,
+    Value = { Min = 0.5, Max = 5, Default = 2.5 },
+    Callback = function(v) State.OfficeSettings.MathDelayMax = v end,
+})
+
+SectionOffice:Slider({
+    Title = "⏸️ Jeda Setelah Jawab Benar (detik)",
+    Desc = "Contoh: 3 detik (biar server nggak kaget)",
+    Step = 0.5,
+    Value = { Min = 0.5, Max = 10, Default = 3 },
+    Callback = function(v) State.OfficeSettings.AfterAnswerDelay = v end,
+})
+
+local SectionCourier = TabFarm:Section({
+    Title = "Auto Courier",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+SectionCourier:Toggle({
+    Title    = "Jalanin Auto Courier",
+    Icon     = "package",
+    Value    = false,
+    Callback = function(on) if on then StartCourierScript() else StopCourierScript() end end,
+})
+
+-- TAB 2.5: WEBHOOK
+local TabWebhook = Window:Tab({ Title = "Webhook", Icon = "link", Border = true })
+
+local WebhookSection = TabWebhook:Section({
+    Title = "Pengaturan Discord Webhook",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+WebhookSection:Input({
+    Title = "🔗 URL Webhook",
+    Placeholder = "Paste link Discord Webhook di sini...",
+    Callback = function(text)
+        State.WebhookURL = text
+    end
+})
+
+WebhookSection:Slider({
+    Title = "⏱️ Kirim Setiap (Menit)",
+    Desc = "Script otomatis ngirim laporan cuan ke Discord sesuai menit ini",
+    Step = 1,
+    Value = { Min = 1, Max = 60, Default = 5 },
+    Callback = function(v) State.WebhookInterval = v end,
+})
+
+WebhookSection:Toggle({
+    Title    = "Kirim Notif Otomatis",
+    Desc     = "Nyalain auto-send laporan cuan ke Discord",
+    Value    = false,
+    Callback = function(on) 
+        State.WebhookEnabled = on 
+        if on then
+            State.WebhookStartMoney = DapatkanUangPemain() 
+            WindUI:Notify({ Title = "✅ Webhook Aktif", Content = "Laporan otomatis akan dikirim tiap " .. State.WebhookInterval .. " menit.", Duration = 4 })
+        else
+            WindUI:Notify({ Title = "🛑 Webhook Mati", Content = "Auto-send dimatiin.", Duration = 3 })
+        end
+    end,
+})
+
+WebhookSection:Button({
+    Title = "📡 Tes Kirim Webhook Sekarang",
+    Callback = function()
+        if not State.WebhookURL or State.WebhookURL == "" then
+            WindUI:Notify({ Title = "⚠️ Error", Content = "Isi URL Webhook dulu bos!", Duration = 3 })
+            return
+        end
+        
+        State.WebhookStartMoney = DapatkanUangPemain()
+        SendWebhookReport()
+        WindUI:Notify({ Title = "✅ Sukses", Content = "Webhook berhasil dikirim ke Discord!", Duration = 3 })
+    end
+})
+
+-- TAB 3: KEAMANAN
+local TabSec = Window:Tab({ Title = "Keamanan", Icon = "shield", Border = true })
+
+local Perlindungan = TabSec:Section({
+    Title = "Perlindungan",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+Perlindungan:Toggle({
+    Title    = "Kabur Kalau Ada Admin",
+    Desc     = "Otomatis keluar kalau staff masuk server",
+    Icon     = "user-minus",
+    Value    = true,
+    Callback = function(on) State.AntiAdmin = on end,
+})
+
+Perlindungan:Toggle({
+    Title    = "Biar Nggak Kena AFK Kick",
+    Desc     = "Jaga koneksi tetap aktif selama ngebot",
+    Icon     = "clock",
+    Value    = true,
+    Callback = function(on) State.AntiAFK = on end,
+})
+
+Perlindungan:Toggle({
+    Title    = "🛡️ Maximum Bypass (Anti-Ban)",
+    Desc     = "Blokir kick lokal & sembunyikan jejak script",
+    Icon     = "shield-check",
+    Value    = true,
+    Callback = function(on) 
+        if on then
+            SetupBypass()
+            WindUI:Notify({ Title = "✅ Bypass Aktif", Content = "Sistem keamanan ekstra sudah ditanam!", Duration = 4 })
+        end
+    end,
+})
+
+-- TAB 4: PERFORMA
+local TabPerf = Window:Tab({ Title = "Performa", Icon = "zap", Border = true })
+
+local HematDaya = TabPerf:Section({
+    Title = "Hemat Daya",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+HematDaya:Toggle({
+    Title    = "Matiin Grafik (Aman AFK Semalaman)",
+    Desc     = "Layar hitam, baterai hemat, bot tetap jalan",
+    Value    = false,
+    Callback = function(on) ToggleBlackScreen(on) end,
+})
+
+-- TAB 5: PENGATURAN
+local TabCfg = Window:Tab({ Title = "Pengaturan", Icon = "settings", Border = true })
+
+local Konfigurasi = TabCfg:Section({
+    Title = "Konfigurasi",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+Konfigurasi:Slider({
+    Title    = "Jeda Antar Aksi (Detik)",
+    Desc     = "Makin kecil makin ngebut, tapi makin beresiko",
+    Step     = 1,
+    Value    = { Min = 1, Max = 10, Default = 5 },
+    Callback = function(v) State.ActionDelay = v end,
+})
+
+-- TAB 6: MODE INSTAN
+local TabPreset = Window:Tab({ Title = "🏎️ Mode Instan", Icon = "car", Border = true })
+
+local ModeCepat = TabPreset:Section({
+    Title = "Mode Cepat",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+ModeCepat:Button({
+    Title = "🛵 MODE SUNMORI (Aman)",
+    Callback = function() InjectMesin(1.5, 2000, 0.9, 0.9, "Mode Sunmori Aktif") end
+})
+
+ModeCepat:Button({
+    Title = "🏎️ MODE BALAP LIAR (Ganas)",
+    Callback = function() InjectMesin(3.5, 5000, 0.75, 0.75, "Mode Balap Aktif") end
+})
+
+ModeCepat:Button({
+    Title = "🚀 MODE DEWA (Mentok Kanan)",
+    Callback = function() InjectMesin(8, 15000, 0.45, 0.45, "Mode Dewa Aktif") end
+})
+
+ModeCepat:Button({
+    Title = "🔄 RESET STANDAR PABRIK",
+    Callback = function()
+        WindUI:Notify({ Title = "ℹ️ Info", Content = "Respawn kendaraan dari menu game untuk reset.", Duration = 5 })
+    end
+})
+
+-- TAB 7: CUSTOM SETTING
+local TabCustom = Window:Tab({ Title = "⚙️ Custom Setting", Icon = "sliders", Border = true })
+
+local TuneSendiri = TabCustom:Section({
+    Title = "Tune Sendiri",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+local customHP, customRPM, customRatio, customFD = 2, 5000, 0.8, 0.8
+
+TuneSendiri:Input({
+    Title = "💪 Pengali Tenaga (HP)",
+    Placeholder = "Contoh: 3",
+    Callback = function(Text) local val = tonumber(Text) if val then customHP = val end end
+})
+
+TuneSendiri:Input({
+    Title = "🔥 Tambahan RPM",
+    Placeholder = "Contoh: 8000",
+    Callback = function(Text) local val = tonumber(Text) if val then customRPM = val end end
+})
+
+TuneSendiri:Input({
+    Title = "⚙️ Pengali Rasio Gigi",
+    Placeholder = "Contoh: 0.6",
+    Callback = function(Text) local val = tonumber(Text) if val then customRatio = val end end
+})
+
+TuneSendiri:Input({
+    Title = "⛓️ Pengali Final Drive",
+    Placeholder = "Contoh: 0.6",
+    Callback = function(Text) local val = tonumber(Text) if val then customFD = val end end
+})
+
+TuneSendiri:Button({
+    Title = "⚡ INJECT CUSTOM TUNE SEKARANG",
+    Callback = function() InjectMesin(customHP, customRPM, customRatio, customFD, "Custom Tune Aktif") end
+})
+
+-- OPEN BUTTON & FPS TAG
+Window:EditOpenButton({
+    Title           = "Open King Akbar",
+    Icon            = "crown",
+    CornerRadius    = UDim.new(0, 8),
+    StrokeThickness = 1,
+    Color           = ColorSequence.new(Color3.fromRGB(30, 30, 35), Color3.fromRGB(15, 15, 20)),
+})
+
+local FpsTag = Window:Tag({
+    Title = "Fps: ...",
+    Color = WindUI:Gradient({
+        [0]   = { Color = Color3.fromHex("#0a0a0a"), Transparency = 0 },
+        [100] = { Color = Color3.fromHex("#888888"), Transparency = 0 },
+    }, { Rotation = 45 }),
+})
+
+task.spawn(function()
+    while task.wait(1) do
+        pcall(function()
+            local fps  = math.floor(1 / Services.RunService.RenderStepped:Wait())
+            local ping = math.floor(Services.Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+            if FpsTag and FpsTag.SetTitle then
+                FpsTag:SetTitle(("Fps: %d | Ping: %d"):format(fps, ping))
+            end
+        end)
+    end
+end)
+
+-- INIT
+Window:SetIconSize(47)
+WindUI:SetTheme("dark")
+TabInfo:Select()
+
+WindUI:Notify({
+    Title    = "👑 KING AKBAR V6.3 SIAP!",
+    Content  = "Bypass Anti-Ban Aktif! Mode Ringan Jalan!",
+    Duration = 5,
+})
