@@ -581,115 +581,6 @@ InstantSection:Toggle({
 })
 
 -- ══════════════════════════════════════════
---              INSTANT FISH YTTA MODULE
--- ══════════════════════════════════════════
-local InstantYtta = (function()
-    local Ytta = {}
-    Ytta.Active = false
-    Ytta.Settings = { 
-        SpamDelay = 0.01, 
-        SpamCount = 5, -- Jumlah ikan yang didapat per 1 lempar visual
-        CastDelay = 0.05
-    }
-    local spamThread = nil
-
-    local function loop()
-        while Ytta.Active do
-            if not EmbeddedEventResolver:IsInitialized() then task.wait(1) continue end
-            local t = Workspace:GetServerTimeNow()
-            
-            -- Lempar pancingan
-            safeFire(function() if NetEvents.RF_ChargeFishingRod then NetEvents.RF_ChargeFishingRod:InvokeServer(nil, nil, t, nil) end end)
-            task.wait(Ytta.Settings.CastDelay)
-            
-            -- Bypass minigame
-            safeFire(function() if NetEvents.RF_RequestMinigame then NetEvents.RF_RequestMinigame:InvokeServer(-1.2331848144531, 0.89899236174132, t) end end)
-            task.wait(0.01)
-            
-            -- Spam dapet ikan (Visual 1x tapi dapet banyak)
-            for i = 1, Ytta.Settings.SpamCount do
-                safeFire(function()
-                    local rf = NetEvents.RE_FishingCompleted
-                    if rf then rf:FireServer() end
-                end)
-                task.wait(Ytta.Settings.SpamDelay)
-            end
-            
-            -- Reset state biar bisa lempar lagi
-            if NetEvents.RF_CancelFishingInputs then safeFire(function() NetEvents.RF_CancelFishingInputs:InvokeServer() end) end
-            task.wait(0.01)
-        end
-    end
-
-    function Ytta.Start()
-        if Ytta.Active then return end
-        if not EmbeddedEventResolver:IsInitialized() then return end
-        Ytta.Active = true
-        spamThread = task.spawn(loop)
-    end
-
-    function Ytta.Stop()
-        if not Ytta.Active then return end
-        Ytta.Active = false
-        if spamThread then task.cancel(spamThread) spamThread = nil end
-        safeFire(function()
-            if NetEvents.RF_CancelFishingInputs then NetEvents.RF_CancelFishingInputs:InvokeServer() end
-        end)
-    end
-
-    return Ytta
-end)()
-
--- ══════════════════════════════════════════
---              INSTANT FISH YTTA SECTION
--- ══════════════════════════════════════════
-local YttaSection = Fsihing:Section({ 
-    Title = "Instant Fish Ytta",
-    Box = true,
-    TextXAlignment = "Center",
-    TextSize = 15,
-    Opened = false,
-})
-
-YttaSection:Input({
-    Title = "Jumlah Ikan Per Lempar",
-    Value = tostring(InstantYtta.Settings.SpamCount),
-    Type = "Input",
-    Placeholder = "5",
-    Callback = function(input)
-        local num = tonumber(input)
-        if num and num > 0 then
-            InstantYtta.Settings.SpamCount = math.floor(num)
-        end
-    end
-})
-
-YttaSection:Input({
-    Title = "Spam Delay",
-    Value = tostring(InstantYtta.Settings.SpamDelay),
-    Type = "Input",
-    Placeholder = "0.01",
-    Callback = function(input)
-        local num = tonumber(input)
-        if num then
-            InstantYtta.Settings.SpamDelay = num
-        end
-    end
-})
-
-YttaSection:Toggle({
-    Title = "Enable Instant Fish Ytta",
-    Value = false,
-    Callback = function(state)
-        if state then
-            InstantYtta.Start()
-        else
-            InstantYtta.Stop()
-        end
-    end
-})
-
--- ══════════════════════════════════════════
 --              Legit FISH Modul
 -- ══════════════════════════════════════════
 CombinedModules.legit = (function()
@@ -953,6 +844,127 @@ BlatantSection:Toggle({
             BlatantV1.Start()
         else
             BlatantV1.Stop()
+        end
+    end
+})
+
+-- ══════════════════════════════════════════
+--              INSTANT FISH YTTA MODULE
+-- ══════════════════════════════════════════
+local InstantYtta = (function()
+    local Ytta = {}
+    Ytta.Active = false
+    Ytta.Settings = { 
+        CompleteDelay = 0.02, 
+        SpamCount = 15, 
+        SpamDelay = 0.01 
+    }
+    local spamThread = nil
+
+    local function loop()
+        while Ytta.Active do
+            if not EmbeddedEventResolver:IsInitialized() then task.wait(1) continue end
+            local t = Workspace:GetServerTimeNow()
+            
+            safeFire(function() 
+                if NetEvents.RF_ChargeFishingRod then 
+                    NetEvents.RF_ChargeFishingRod:InvokeServer(nil, nil, t, nil) 
+                end 
+            end)
+            task.wait(0.2)
+            
+            safeFire(function() 
+                if NetEvents.RF_RequestMinigame then 
+                    NetEvents.RF_RequestMinigame:InvokeServer(-1.2, 0.95, t) 
+                end 
+            end)
+            task.wait(0.05)
+            
+            -- Spam Catch Fish Completed multiple times to get multiple fish per visual cast
+            for i = 1, Ytta.Settings.SpamCount do
+                safeFire(function()
+                    local rf = NetEvents.RE_FishingCompleted
+                    if rf then rf:FireServer() end
+                end)
+                task.wait(Ytta.Settings.SpamDelay)
+            end
+            
+            safeFire(function()
+                if NetEvents.RF_CancelFishingInputs then 
+                    NetEvents.RF_CancelFishingInputs:InvokeServer() 
+                end 
+            end)
+            
+            task.wait(Ytta.Settings.CompleteDelay)
+        end
+    end
+
+    function Ytta.Start()
+        if Ytta.Active then return end
+        if not EmbeddedEventResolver:IsInitialized() then return end
+        Ytta.Active = true
+        spamThread = task.spawn(loop)
+    end
+
+    function Ytta.Stop()
+        if not Ytta.Active then return end
+        Ytta.Active = false
+        if spamThread then task.cancel(spamThread) spamThread = nil end
+        safeFire(function()
+            if NetEvents.RF_CancelFishingInputs then 
+                NetEvents.RF_CancelFishingInputs:InvokeServer() 
+            end
+        end)
+    end
+
+    return Ytta
+end)()
+
+-- ══════════════════════════════════════════
+--              INSTANT FISH YTTA SECTION
+-- ══════════════════════════════════════════
+local YttaSection = Fsihing:Section({ 
+    Title = "Instant Fish Ytta",
+    Box = true,
+    TextXAlignment = "Center",
+    TextSize = 15,
+    Opened = false,
+})
+
+YttaSection:Input({
+    Title = "Spam Catch Count",
+    Value = tostring(InstantYtta.Settings.SpamCount),
+    Type = "Input",
+    Placeholder = "15",
+    Callback = function(input)
+        local num = tonumber(input)
+        if num and num > 0 then
+            InstantYtta.Settings.SpamCount = math.floor(num)
+        end
+    end
+})
+
+YttaSection:Input({
+    Title = "Spam Delay",
+    Value = tostring(InstantYtta.Settings.SpamDelay),
+    Type = "Input",
+    Placeholder = "0.01",
+    Callback = function(input)
+        local num = tonumber(input)
+        if num then
+            InstantYtta.Settings.SpamDelay = num
+        end
+    end
+})
+
+YttaSection:Toggle({
+    Title = "Enable Instant Fish Ytta",
+    Value = false,
+    Callback = function(state)
+        if state then
+            InstantYtta.Start()
+        else
+            InstantYtta.Stop()
         end
     end
 })
@@ -3770,7 +3782,7 @@ CombinedModules.AutoTrade = (function()
     end
 
     local function playerExists(playerName)
-        return Players:FindFirstChild(playerName) <> nil
+        return Players:FindFirstChild(playerName) ~= nil
     end
 
     local function itemStillExists(uuid)
