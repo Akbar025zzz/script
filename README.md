@@ -1611,7 +1611,7 @@ local function InjectMesin(HP_Mult, RPM_Add, Ratio_Mult, FD_Mult, NamaMode)
     end
 end
 
--- // WEBHOOK AUTO SEND SYSTEM
+-- // WEBHOOK AUTO SEND SYSTEM (RAPI VERSION)
 local function SendWebhookReport()
     if not State.WebhookURL or State.WebhookURL == "" then return end
     local req = request or http_request or (syn and syn.request)
@@ -1630,19 +1630,18 @@ local function SendWebhookReport()
     local data = {
         ["embeds"] = {{
             ["title"] = "👑 King Akbar - Laporan Auto Farm",
-            ["description"] = string.format(
-                "**💼 Status:** %s\n\n"..
-                "💰 **Uang Saat Ini:** Rp. %s\n"..
-                "📈 **Total Pendapatan:** Rp. %s\n\n"..
-                "🧮 **Soal Dijawab:** %d\n"..
-                "🖨️ **Total Print:** %d\n"..
-                "🛵 **Paket Dikirim:** %d\n"..
-                "⏱️ **Waktu Berjalan:** %s",
-                status, formatNumber(currentMoney), formatNumber(profit), 
-                State.OfficeMathSolved or 0, State.OfficePrints or 0, State.CourierDelivered or 0, uptimeStr
-            ),
             ["color"] = tonumber(0x5707AB),
-            ["footer"] = { ["text"] = "King Akbar Auto Farm System" }
+            ["fields"] = {
+                { ["name"] = "💼 Status",            ["value"] = status,                          ["inline"] = true },
+                { ["name"] = "⏱️ Waktu Berjalan",    ["value"] = uptimeStr,                        ["inline"] = true },
+                { ["name"] = "💰 Uang Saat Ini",     ["value"] = "Rp. " .. formatNumber(currentMoney), ["inline"] = true },
+                { ["name"] = "📈 Total Pendapatan",   ["value"] = "Rp. " .. formatNumber(profit),  ["inline"] = true },
+                { ["name"] = "🧮 Soal Dijawab",       ["value"] = tostring(State.OfficeMathSolved or 0), ["inline"] = true },
+                { ["name"] = "🖨️ Total Print",        ["value"] = tostring(State.OfficePrints or 0), ["inline"] = true },
+                { ["name"] = "🛵 Paket Dikirim",      ["value"] = tostring(State.CourierDelivered or 0), ["inline"] = true },
+            },
+            ["footer"] = { ["text"] = "King Akbar Auto Farm System" },
+            ["timestamp"] = os.date("!%Y-%m-%dT%H:%M:%SZ")
         }}
     }
 
@@ -1653,7 +1652,7 @@ local function SendWebhookReport()
             Headers = {["Content-Type"] = "application/json"},
             Body = game:GetService("HttpService"):JSONEncode(data)
         })
-    })
+    end)
 end
 
 task.spawn(function()
