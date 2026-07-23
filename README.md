@@ -1543,7 +1543,7 @@ CombinedModules.AutoFavorite = (function()
         if isScanning then return end
 
         local hasNameFilter = next(v8.selectedName) ~= nil
-        local hasVariantFilter = next(v8.selectedVariant) <> nil
+        local hasVariantFilter = next(v8.selectedVariant) ~= nil
         local hasRarityFilter = next(v8.selectedRarity) ~= nil
 
         if not hasNameFilter and not hasVariantFilter and not hasRarityFilter then return end
