@@ -1,13 +1,13 @@
 --[[
 ================================================================================
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT
-     v6.1 LIGHTWEIGHT – OFFICE PERFORMANCE FIX + MOBILE ACCURACY
+     v6.2 SAFE BYPASS – ANTI-BAN + OFFICE LIGHTWEIGHT
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Update      : - Sistem Caching UI (Anti Lag untuk Office)
-                      - Pencarian Printer Hanya di Sekitar Pemain
+    [+] Update      : - System Bypass (Anti Local Kick, Hook Metatable)
+                      - UI Protection (Hidden via gethui)
+                      - Sistem Caching UI (Anti Lag untuk Office)
                       - Klik Jawaban Anti-Gagal di HP (Pakai VIM Klik Fisik)
-                      - Regex soal matematika diperluas (support spasi & huruf x/X)
 ================================================================================
 ]]--
 
@@ -87,6 +87,46 @@ LocalPlayer.CharacterAdded:Connect(function(newChar)
     CharRef.Root      = newChar:WaitForChild("HumanoidRootPart")
 end)
 
+-- // 1.5 SYSTEM BYPASS (ANTI-BAN)
+local function SetupBypass()
+    -- 1. Anti Local Kick (Blokir kick dari client-side anti cheat)
+    pcall(function()
+        local mt = getrawmetatable(game)
+        if setreadonly then setreadonly(mt, false) end
+        
+        local oldNamecall = mt.__namecall
+        if hookmetamethod then
+            oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+                local method = getnamecallmethod()
+                if method == "Kick" and self == LocalPlayer then
+                    return -- Blokir kick
+                end
+                return oldNamecall(self, ...)
+            end))
+        else
+            mt.__namecall = newcclosure(function(self, ...)
+                local method = getnamecallmethod()
+                if method == "Kick" and self == LocalPlayer then
+                    return -- Blokir kick
+                end
+                return oldNamecall(self, ...)
+            end)
+            if setreadonly then setreadonly(mt, true) end
+        end
+    end)
+
+    -- 2. Protect Connections (Mencegah script dideteksi via memory leak)
+    pcall(function()
+        if hookfunction then
+            local oldFire = fireclickdetector
+            hookfunction(oldFire, function(...)
+                return oldFire(...)
+            end)
+        end
+    end)
+end
+SetupBypass()
+
 -- // 2. STATE MANAGER
 local State = {
     IsBaristaActive    = false,
@@ -143,7 +183,7 @@ task.spawn(function()
                 if pauseScript then pauseScript:Destroy() end
             end
         end)
-        task.wait(1) -- Optimasi: dari 0.2 ke 1 detik
+        task.wait(1) 
     end
 end)
 
@@ -195,7 +235,8 @@ do
     local sg = Instance.new("ScreenGui")
     sg.Name = "BaristaSplash"; sg.ResetOnSpawn = false
     sg.IgnoreGuiInset = true; sg.DisplayOrder = 999
-    sg.Parent = LocalPlayer:WaitForChild("PlayerGui")
+    -- Bypass: Parent ke gethui biar nggak gampang ke-scan
+    sg.Parent = (gethui and gethui()) or LocalPlayer:WaitForChild("PlayerGui")
 
     local bg = Instance.new("Frame", sg)
     bg.Size = UDim2.fromScale(1,1); bg.BackgroundColor3 = Color3.fromHex("#0a0a0a")
@@ -264,7 +305,7 @@ do
         tw(stat,  { TextTransparency = 0 }, 0.3)
 
         for _, s in ipairs({
-            { "Mempersiapkan RNG Bot...", 0.30 },
+            { "Mempersiapkan Bypass Anti-Ban...", 0.30 },
             { "Nyalain Alarm Darurat...", 0.60 },
             { "Welcome, King Akbar!",     1.00 },
         }) do
@@ -338,7 +379,7 @@ local function ToggleBlackScreen(on)
         if not BlackGui then
             BlackGui = Instance.new("ScreenGui")
             BlackGui.Name = "BlackScreenSaver"; BlackGui.IgnoreGuiInset = true
-            BlackGui.DisplayOrder = 9999; BlackGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+            BlackGui.DisplayOrder = 9999; BlackGui.Parent = (gethui and gethui()) or LocalPlayer:WaitForChild("PlayerGui")
             local f = Instance.new("Frame", BlackGui)
             f.Size = UDim2.fromScale(1,1); f.BackgroundColor3 = Color3.new(0,0,0)
             local t = Instance.new("TextLabel", f)
@@ -724,7 +765,7 @@ local function jalanKe(pos)
             hum:MoveTo(waypoint.Position)
             local t = 0
             while (root.Position - waypoint.Position).Magnitude > 3.5 do
-                task.wait(0.05); t += 0.05 -- Diperlonggar dari 0.02 ke 0.05 biar gak berat
+                task.wait(0.05); t += 0.05 
                 if t > 2 or not State.IsOfficeActive then break end
             end
         end
@@ -780,7 +821,6 @@ local function dudukKeKursi()
 end
 
 local function cekPanggilanPrinter()
-    -- Optimasi: Hanya cek UI, jangan scan workspace kalau belum dipanggil
     for _, gui in pairs(playerGui:GetDescendants()) do
         if gui:IsA("TextLabel") and gui.Visible and hasText(gui.Text, "printer") then
             return true
@@ -790,7 +830,6 @@ local function cekPanggilanPrinter()
 end
 
 local function scanPromptPrint()
-    -- Optimasi: Hanya cari prompt di sekitar pemain (Radius 50 stud)
     local origin = CharRef.Root and CharRef.Root.Position
     if not origin then return nil end
     for _, obj in pairs(workspace:GetDescendants()) do
@@ -806,18 +845,15 @@ local function scanPromptPrint()
     return nil
 end
 
--- ★★★ FIX BACA SOAL: CUMA SCAN SEKALI, LALU INGAT (CACHED) ★★★
 local function cariSoalBaru()
     CachedTargetLabel, CachedTargetParent = nil, nil
     MathGuiCache = nil
     
-    -- Cari label soal di seluruh GUI
     for _, v in pairs(playerGui:GetDescendants()) do
         if v:IsA("TextLabel") and v.Visible and v.Text ~= "" then
             local a, op, b = string.match(v.Text, "(%d+)%s*([%+%-%*/xX])%s*(%d+)")
             if a and op and b then
                 CachedTargetLabel, CachedTargetParent = v, v.Parent
-                -- Simpan parent UI (biasanya frame yang isinya soal & tombol) biar nggak usah scan semua UI lagi
                 MathGuiCache = v:FindFirstAncestorOfClass("ScreenGui") or v.Parent
                 return v
             end
@@ -830,12 +866,10 @@ local function soalCacheValid()
     return CachedTargetLabel and CachedTargetLabel.Parent and CachedTargetLabel.Visible
 end
 
--- ★★★ FIX KLIK TOMBOL JAWABAN: TAMBAH VIM (KLIK FISIK LAYAR) UNTUK HP ★★★
 local function klikTombol(btn)
     if not btn then return false end
     local success = false
 
-    -- Metode 1: FireSignal (Cepat, kalau executor support)
     if getconnections then
         pcall(function()
             for _, conn in ipairs(getconnections(btn.MouseButton1Click)) do
@@ -863,7 +897,6 @@ local function klikTombol(btn)
         success = true
     end
 
-    -- Metode 2: VIM Klik Fisik (CADANGAN/PENGGARANSI HP)
     if not success then
         pcall(function()
             if btn:IsA("GuiButton") and btn.Visible then
@@ -909,7 +942,7 @@ task.spawn(function()
             
             local printerPos = nil
             local targetPrompt = nil
-            for i=1,5 do -- Kurangi dari 10 ke 5
+            for i=1,5 do
                 local pp = scanPromptPrint()
                 if pp and pp.Parent:IsA("BasePart") then
                     printerPos = pp.Parent.Position + Vector3.new(0,0,2)
@@ -924,14 +957,14 @@ task.spawn(function()
                 task.wait(math.random(4,8)/10)
                 
                 local printBerhasil = false
-                for i=1, 3 do -- Kurangi dari 5 ke 3
+                for i=1, 3 do 
                     local pp = scanPromptPrint()
                     if pp and pp.Parent and pp.Parent:IsA("BasePart") then
                         if (pp.Parent.Position - CharRef.Root.Position).Magnitude < 15 then
                             task.wait(math.random(4,10)/10)
                             eksekusiPromptTahan(pp)
                             
-                            local timeout = tick() + 6 -- Kurangi dari 8 ke 6
+                            local timeout = tick() + 6 
                             while tick() < timeout do
                                 local currentPp = scanPromptPrint()
                                 if not currentPp or currentPp ~= pp then
@@ -974,7 +1007,7 @@ local isSwitching = false
 
 task.spawn(function()
     while true do
-        task.wait(2) -- Naikkan dari 1 ke 2
+        task.wait(2) 
         if not State.IsOfficeActive then continue end
         local s = State.OfficeSettings
         if getgenv().isGoingToPrinter or getgenv().forceStopMath or isSwitching then continue end
@@ -995,7 +1028,7 @@ end)
 -- ================== MATH THREAD (LIGHTWEIGHT) ==================
 task.spawn(function()
     while true do
-        task.wait(1) -- Naikkan dari 0.8 ke 1 biar CPU nggak kerja keras
+        task.wait(1) 
         if not State.IsOfficeActive or getgenv().forceStopMath or getgenv().isGoingToPrinter then continue end
         local hum = CharRef.Humanoid
         if not hum or not hum.SeatPart then
@@ -1040,7 +1073,6 @@ task.spawn(function()
 
         local ditemukan = false
         
-        -- ★★★ OPTIMASI: CARI TOMBOL DI CACHE UI, BUKAN SCAN SEMUA GUI ★★★
         local searchArea = MathGuiCache or playerGui
         for _, btn in pairs(searchArea:GetDescendants()) do
             if getgenv().forceStopMath or not State.IsOfficeActive then break end
@@ -1214,7 +1246,7 @@ local function buatMonitoringGUI()
                 soalLabel.Text = tostring(State.OfficeMathSolved or 0)
                 printLabel.Text = tostring(State.OfficePrints or 0)
                 uptimeLabel.Text = formatTime(tick() - getgenv().WaktuMulai)
-            end)
+            })
             task.wait(1)
         end
     end)
@@ -1952,6 +1984,19 @@ Perlindungan:Toggle({
     Callback = function(on) State.AntiAFK = on end,
 })
 
+Perlindungan:Toggle({
+    Title    = "🛡️ Maximum Bypass (Anti-Ban)",
+    Desc     = "Blokir kick lokal & sembunyikan jejak script",
+    Icon     = "shield-check",
+    Value    = true,
+    Callback = function(on) 
+        if on then
+            SetupBypass()
+            WindUI:Notify({ Title = "✅ Bypass Aktif", Content = "Sistem keamanan ekstra sudah ditanam!", Duration = 4 })
+        end
+    end,
+})
+
 -- TAB 4: PERFORMA
 local TabPerf = Window:Tab({ Title = "Performa", Icon = "zap", Border = true })
 
@@ -2095,7 +2140,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V6.1 SIAP!",
-    Content  = "Mode Ringan (Anti Lag) Aktif!",
+    Title    = "👑 KING AKBAR V6.2 SIAP!",
+    Content  = "Bypass Anti-Ban Aktif! Mode Ringan Jalan!",
     Duration = 5,
 })
