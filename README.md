@@ -1,12 +1,12 @@
 --[[
 ================================================================================
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT
-     v6.2 FINAL – SMART SITTING (MAJU-MUNDUR OTOMATIS)
+     v6.3 FINAL – NO JUMP SITTING FIX (ANTI LONCAT KURSI)
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Update      : - Auto Office 100% Otomatis Langsung ON
-                      - Metode duduk cerdas: Jalan maju & mundur biar nabrak kursi
-                      - Nearest Chair Fix (No Teleport)
+    [+] Update      : - Bot dilarang lompat saat mendekati kursi
+                      - Metode Maju/Mundur disesuaikan di sumbu X & Z aja
+                      - Auto Office langsung ON otomatis
 ================================================================================
 ]]--
 
@@ -640,7 +640,7 @@ local function StopBaristaScript(reason)
     end
 end
 
--- // 12. OFFICE JOB SYSTEM (SMART SITTING MAJU-MUNDUR)
+-- // 12. OFFICE JOB SYSTEM (ANTI LONCAT FIX)
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
 local function hasText(str, keyword)
@@ -698,7 +698,8 @@ local function findAnotherChair()
     return best
 end
 
-local function jalanKe(pos)
+-- Tambahin parameter allowJump biar bisa dimatiin pas mau duduk
+local function jalanKe(pos, allowJump)
     local root = CharRef.Root
     local hum = CharRef.Humanoid
     if not root or not hum then return false end
@@ -706,7 +707,7 @@ local function jalanKe(pos)
     local path = Services.PathfindingService:CreatePath({
         AgentRadius = 2,
         AgentHeight = 5,
-        AgentCanJump = true
+        AgentCanJump = allowJump ~= false -- Default true, kalau false dia nggak akan lompat
     })
     local success, _ = pcall(function()
         path:ComputeAsync(root.Position, targetPos)
@@ -714,7 +715,7 @@ local function jalanKe(pos)
     if success and path.Status == Enum.PathStatus.Success then
         for _, waypoint in ipairs(path:GetWaypoints()) do
             if not State.IsOfficeActive then break end
-            if waypoint.Action == Enum.PathWaypointAction.Jump then hum.Jump = true end
+            if waypoint.Action == Enum.PathWaypointAction.Jump and allowJump ~= false then hum.Jump = true end
             hum:MoveTo(waypoint.Position)
             local t = 0
             while (root.Position - waypoint.Position).Magnitude > 3.5 do
@@ -739,7 +740,7 @@ local function keluarKursi()
     task.wait(math.random(4,7)/10)
 end
 
--- METODE MAJU MUNDUR BIAR NEMPEL KURSI
+-- METODE MAJU MUNDUR TANPA LONCAT
 local function dudukKeKursi(useNearest)
     local targetChair = myChair
     if useNearest or not targetChair then
@@ -759,9 +760,10 @@ local function dudukKeKursi(useNearest)
     if not hum or not root or not targetChair then return false end
     
     hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+    hum.Jump = false -- Paksa jangan lompat
     
-    -- Jalan mendekat posisi kursi
-    jalanKe(targetChair.Position + Vector3.new(0, 2, 0))
+    -- Jalan mendekat posisi kursi (AGENT CAN JUMP = FALSE)
+    jalanKe(targetChair.Position, false)
     
     local startTime = tick()
     while tick() - startTime < 4 do
@@ -770,18 +772,25 @@ local function dudukKeKursi(useNearest)
         
         local dist = (root.Position - targetChair.Position).Magnitude
         
-        if dist < 4 then
-            -- Udah deket, tapi belum duduk. Maju/Mundur dikit biar nabrak.
-            hum:MoveTo(targetChair.Position)
+        if dist < 5 then
+            -- Udah deket, maju lurus ke arah kursi (Y disamakan biar nggak merangkak/lompat)
+            hum.Jump = false
+            hum:MoveTo(Vector3.new(targetChair.Position.X, root.Position.Y, targetChair.Position.Z))
             task.wait(0.5)
-            -- Mundur dikit
-            hum:MoveTo(root.Position - root.CFrame.LookVector * 2)
-            task.wait(0.4)
-            -- Maju lagi ke kursi
-            hum:MoveTo(targetChair.Position)
-            task.wait(0.5)
+            
+            if not hum.SeatPart then
+                -- Mundur dikit
+                hum.Jump = false
+                hum:MoveTo(root.Position - root.CFrame.LookVector * 2)
+                task.wait(0.4)
+                -- Maju lagi
+                hum.Jump = false
+                hum:MoveTo(Vector3.new(targetChair.Position.X, root.Position.Y, targetChair.Position.Z))
+                task.wait(0.5)
+            end
         else
             -- Masih jauh, jalan lurus aja
+            hum.Jump = false
             hum:MoveTo(targetChair.Position)
             task.wait(0.3)
         end
@@ -918,7 +927,7 @@ task.spawn(function()
             end
             
             if printerPos and targetPrompt then
-                jalanKe(printerPos)
+                jalanKe(printerPos, true) -- Boleh lompat kalau jalan ke printer
                 task.wait(math.random(4,8)/10)
                 
                 local printBerhasil = false
@@ -944,7 +953,7 @@ task.spawn(function()
                                 break
                             end
                         else
-                            jalanKe(pp.Parent.Position + Vector3.new(0,0,2))
+                            jalanKe(pp.Parent.Position + Vector3.new(0,0,2), true)
                         end
                     else
                         printBerhasil = true
@@ -2060,8 +2069,8 @@ WindUI:SetTheme("Dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V6.2 SIAP!",
-    Content  = "Auto Office Langsung Aktif & Metode Maju-Mundur!",
+    Title    = "👑 KING AKBAR V6.3 SIAP!",
+    Content  = "Anti Loncat Fix! Auto Office Langsung Aktif!",
     Duration = 5,
 })
 
