@@ -1,11 +1,12 @@
 --[[
 ================================================================================
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT
-     v5.9 FINAL – OFFICE PRINT FIX + WEBHOOK AUTO SEND INTERVAL
+     v6.0 FINAL – OFFICE NO TELEPORT + NEAREST CHAIR FIX
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Update      : - Fix Auto Print (Begitu selesai print baru balik kursi)
-                      - Webhook Auto Send (Bisa atur kirim berapa menit sekali)
+    [+] Update      : - Auto Office 100% Jalan (No Teleport)
+                      - Balik ke kursi TERDEKAT setelah print (Hemat waktu)
+                      - Tambah UI Slider Waktu Idle (Anti Bug Soal)
                       - Fix perhitungan uang awal & pendapatan di webhook
 ================================================================================
 ]]--
@@ -105,10 +106,9 @@ local State = {
     OfficeMathSolved   = 0,
     OfficePrints       = 0,
     CourierDelivered   = 0,
-    -- Webhook State
     WebhookEnabled     = false,
     WebhookURL         = "",
-    WebhookInterval    = 5, -- Default 5 menit
+    WebhookInterval    = 5,
     WebhookStartMoney  = 0,
     OfficeSettings = {
         MathDelayMin      = 0.8,
@@ -119,7 +119,7 @@ local State = {
         EnableAntiIdle    = true,
         EnableAutoPrinter = true,
         EnableChairSwitch = true,
-        IdleSwitchTime    = 60,
+        IdleSwitchTime    = 15, -- Default 15 detik kalau ngebug
     }
 }
 
@@ -641,7 +641,7 @@ local function StopBaristaScript(reason)
     end
 end
 
--- // 12. OFFICE JOB SYSTEM (ENHANCED – Nearest Chair + Adjustable Idle Switch)
+-- // 12. OFFICE JOB SYSTEM (NO TELEPORT + NEAREST CHAIR)
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
 local function hasText(str, keyword)
@@ -657,10 +657,9 @@ local function eksekusiPromptTahan(pp)
     end
 end
 
-local myChair            = nil
-local CachedTargetLabel  = nil
-local CachedTargetParent = nil
+local myChair = nil
 
+-- Pencarian Kursi Lebih Ringan & Anti-Lag
 local function findNearestChair(radius)
     local origin = CharRef.Root and CharRef.Root.Position
     if not origin then return nil end
@@ -671,10 +670,9 @@ local function findNearestChair(radius)
             local part = v.Parent
             if part and part:IsA("BasePart") then
                 local d = (part.Position - origin).Magnitude
-                if d < bestD then best, bestD = part, d end
+                if d < bestD then best, bestD = v, d end
             end
-        end
-        if v:IsA("Seat") and v:IsA("BasePart") then
+        elseif v:IsA("Seat") and v:IsA("BasePart") then
             local d = (v.Position - origin).Magnitude
             if d < bestD then best, bestD = v, d end
         end
@@ -694,8 +692,7 @@ local function findAnotherChair()
                 local d = (part.Position - origin).Magnitude
                 if d < bestD then best, bestD = part, d end
             end
-        end
-        if v:IsA("Seat") and v:IsA("BasePart") and v ~= myChair then
+        elseif v:IsA("Seat") and v:IsA("BasePart") and v ~= myChair then
             local d = (v.Position - origin).Magnitude
             if d < bestD then best, bestD = v, d end
         end
@@ -703,6 +700,7 @@ local function findAnotherChair()
     return best
 end
 
+-- Jalan Murni Pakai Kaki (No Teleport)
 local function jalanKe(pos)
     local root = CharRef.Root
     local hum = CharRef.Humanoid
@@ -744,21 +742,35 @@ local function keluarKursi()
     task.wait(math.random(4,7)/10)
 end
 
-local function dudukKeKursi()
-    if not myChair then return false end
+-- Pakai useNearest agar setelah print cari kursi terdekat
+local function dudukKeKursi(useNearest)
+    local targetChair = myChair
+    if useNearest or not targetChair then
+        local nearest = findNearestChair(100)
+        if not nearest then return false end
+        
+        if nearest:IsA("ProximityPrompt") then
+            targetChair = nearest.Parent
+        else
+            targetChair = nearest
+        end
+        myChair = targetChair
+    end
+    
     local hum = CharRef.Humanoid
-    if not hum then return false end
+    if not hum or not targetChair then return false end
+    
     hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
-    jalanKe(myChair.Position + Vector3.new(0,2,0))
+    jalanKe(targetChair.Position + Vector3.new(0, 2, 0))
     task.wait(math.random(3,6)/10)
     hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
     task.wait(0.1)
     
     local dudukBerhasil = false
-    if myChair:IsA("Seat") or myChair:IsA("VehicleSeat") then
-        myChair:Sit(hum); task.wait(0.5); dudukBerhasil = true
+    if targetChair:IsA("Seat") or targetChair:IsA("VehicleSeat") then
+        targetChair:Sit(hum); task.wait(0.5); dudukBerhasil = true
     else
-        for _, child in pairs(myChair:GetChildren()) do
+        for _, child in pairs(targetChair:GetChildren()) do
             if child:IsA("ProximityPrompt") and child.Enabled then
                 eksekusiPromptTahan(child); task.wait(0.5); dudukBerhasil = true
                 break
@@ -766,15 +778,7 @@ local function dudukKeKursi()
         end
     end
     
-    if dudukBerhasil and myChair and myChair:IsA("BasePart") then
-        local root = CharRef.Root
-        if root then
-            local chairLook = myChair.CFrame.LookVector
-            root.CFrame = CFrame.lookAt(root.Position, root.Position + chairLook)
-            task.wait(0.2)
-        end
-    end
-    
+    -- Dihapus root.CFrame (No Teleport lagi)
     return dudukBerhasil
 end
 
@@ -806,12 +810,10 @@ local function scanPromptPrint()
 end
 
 local function cariSoalBaru()
-    CachedTargetLabel, CachedTargetParent = nil, nil
     for _, v in pairs(playerGui:GetDescendants()) do
         if v:IsA("TextLabel") and v.Visible and v.Text ~= "" then
             local a, op, b = string.match(v.Text, "(%d+)%s*([%+%-%*/])%s*(%d+)")
             if a and op and b then
-                CachedTargetLabel, CachedTargetParent = v, v.Parent
                 return v
             end
         end
@@ -819,10 +821,7 @@ local function cariSoalBaru()
     return nil
 end
 
-local function soalCacheValid()
-    return CachedTargetLabel and CachedTargetLabel.Parent and CachedTargetLabel.Visible
-end
-
+local soalCacheValid = nil
 local function klikTombol(btn)
     if not btn then return false end
     local success = false
@@ -872,7 +871,7 @@ local function klikTombol(btn)
     return success
 end
 
--- ================== PRINT THREAD (FIXED + NEAREST CHAIR) ==================
+-- ================== PRINT THREAD (WALKING NO TELEPORT) ==================
 task.spawn(function()
     while true do
         local s = State.OfficeSettings
@@ -936,21 +935,17 @@ task.spawn(function()
                 task.wait(math.random(5,10)/10)
             end
             
-            -- Cari kursi terdekat lalu duduk
-            myChair = findNearestChair(60)
-            if myChair then
-                dudukKeKursi()
-                task.wait(math.random(8,15)/10)
-            end
-            
-            CachedTargetLabel, CachedTargetParent = nil, nil
+            -- Balik ke kursi TERDEKAT (true) biar nggak buang waktu
+            dudukKeKursi(true)
+            task.wait(math.random(8,15)/10)
+            soalCacheValid = nil
             getgenv().isGoingToPrinter = false
             getgenv().forceStopMath = false
         end
     end
 end)
 
--- ================== IDLE DETECTOR + CHAIR SWITCH ==================
+-- ================== IDLE DETECTOR + CHAIR SWITCH (ANTI BUG SOAL) ==================
 local lastActivityTime = tick()
 local isSwitching = false
 
@@ -966,7 +961,7 @@ task.spawn(function()
             keluarKursi()
             local newChair = findAnotherChair()
             if newChair then myChair = newChair end
-            dudukKeKursi()
+            dudukKeKursi(false)
             getgenv().forceStopMath = false
             isSwitching = false
             lastActivityTime = tick()
@@ -981,19 +976,19 @@ task.spawn(function()
         if not State.IsOfficeActive or getgenv().forceStopMath or getgenv().isGoingToPrinter then continue end
         local hum = CharRef.Humanoid
         if not hum or not hum.SeatPart then
-            if myChair then dudukKeKursi() end
+            if myChair then dudukKeKursi(false) end
             task.wait(1)
             continue
         end
 
-        local soalLabel = soalCacheValid() and CachedTargetLabel or cariSoalBaru()
+        local soalLabel = (soalCacheValid and soalCacheValid.Parent and soalCacheValid.Visible) and soalCacheValid or cariSoalBaru()
         if not soalLabel then task.wait(0.8) continue end
 
         lastActivityTime = tick()
 
         local text = soalLabel.Text
         local a, op, b = string.match(text, "(%d+)%s*([%+%-%*/])%s*(%d+)")
-        if not a then CachedTargetLabel, CachedTargetParent = nil, nil continue end
+        if not a then soalCacheValid = nil continue end
 
         local n1, n2 = tonumber(a), tonumber(b)
         local jawaban
@@ -1001,7 +996,7 @@ task.spawn(function()
         elseif op == "-" then jawaban = n1 - n2
         elseif op == "*" then jawaban = n1 * n2
         elseif op == "/" and n2 ~= 0 then jawaban = n1 / n2
-        else CachedTargetLabel, CachedTargetParent = nil, nil continue end
+        else soalCacheValid = nil continue end
 
         local ditemukan = false
         for _, btn in pairs(playerGui:GetDescendants()) do
@@ -1027,7 +1022,7 @@ task.spawn(function()
                 end
             end
         end
-        if not ditemukan then CachedTargetLabel, CachedTargetParent = nil, nil end
+        if not ditemukan then soalCacheValid = nil end
     end
 end)
 
@@ -1043,6 +1038,185 @@ task.spawn(function()
         end
     end
 end)
+
+-- ================== MONITORING GUI ==================
+local CoreGui = (gethui and gethui()) or game:GetService("CoreGui")
+local TrackerGui = nil
+local CachedMoneyLabel = nil
+
+local function parseNumber(val)
+    if not val then return 0 end
+    local cleanString = string.gsub(tostring(val), "[^%d%-]", "")
+    return tonumber(cleanString) or 0
+end
+
+local function formatNumber(num)
+    local formatted = tostring(math.floor(tonumber(num) or 0))
+    local k
+    while true do
+        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1.%2')
+        if k == 0 then break end
+    end
+    return formatted
+end
+
+local function formatTime(seconds)
+    seconds = tonumber(seconds) or 0
+    local h = math.floor(seconds / 3600)
+    local m = math.floor((seconds % 3600) / 60)
+    local s = math.floor(seconds % 60)
+    return string.format("%02d:%02d:%02d", h, m, s)
+end
+
+local function CariLabelUang()
+    local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
+    if not playerGui then return nil end
+    for _, guiObject in ipairs(playerGui:GetDescendants()) do
+        if guiObject:IsA("TextLabel") or guiObject:IsA("TextButton") then
+            local text = guiObject.Text
+            if text and string.find(text, "Rp%.") and string.match(text, "%d+") then
+                return guiObject
+            end
+        end
+    end
+    return nil
+end
+
+local function DapatkanUangPemain()
+    if CachedMoneyLabel and CachedMoneyLabel.Parent then
+        return parseNumber(CachedMoneyLabel.Text)
+    end
+    CachedMoneyLabel = CariLabelUang()
+    if CachedMoneyLabel then
+        return parseNumber(CachedMoneyLabel.Text)
+    end
+    return GetPlayerMoney()
+end
+
+local function buatMonitoringGUI()
+    local uangSekarang = DapatkanUangPemain()
+    if not getgenv().UangAwalDikunci or getgenv().UangAwalDikunci == 0 then
+        getgenv().UangAwalDikunci = uangSekarang
+    end
+    getgenv().WaktuMulai = getgenv().WaktuMulai or tick()
+    local uangAwal = getgenv().UangAwalDikunci
+
+    if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy() end
+    TrackerGui = Instance.new("ScreenGui")
+    TrackerGui.Name = "KingAkbarTracker"
+    TrackerGui.Parent = CoreGui
+
+    local Frame = Instance.new("Frame")
+    Frame.Size = UDim2.new(0, 190, 0, 0)
+    Frame.Position = UDim2.new(1, -16, 0.5, 0)
+    Frame.AnchorPoint = Vector2.new(1, 0.5)
+    Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+    Frame.BackgroundTransparency = 0.25
+    Frame.BorderSizePixel = 0
+    Frame.Active = true
+    Frame.Draggable = true
+    Frame.AutomaticSize = Enum.AutomaticSize.Y
+    Frame.Parent = TrackerGui
+
+    local Corner = Instance.new("UICorner"); Corner.CornerRadius = UDim.new(0,8); Corner.Parent = Frame
+    local Stroke = Instance.new("UIStroke"); Stroke.Color = Color3.fromRGB(70,70,75); Stroke.Thickness = 1; Stroke.Parent = Frame
+    local Padding = Instance.new("UIPadding"); Padding.PaddingTop = UDim.new(0,10); Padding.PaddingBottom = UDim.new(0,10); Padding.PaddingLeft = UDim.new(0,10); Padding.PaddingRight = UDim.new(0,10); Padding.Parent = Frame
+    local List = Instance.new("UIListLayout"); List.Padding = UDim.new(0,6); List.SortOrder = Enum.SortOrder.LayoutOrder; List.Parent = Frame
+
+    local H = Instance.new("Frame"); H.Size = UDim2.new(1,0,0,36); H.BackgroundTransparency = 1; H.LayoutOrder = 1; H.Parent = Frame
+    local Img = Instance.new("ImageLabel"); Img.Size = UDim2.new(0,36,0,36); Img.Position = UDim2.new(0,0,0.5,-18); Img.BackgroundTransparency = 1; Img.Image = "rbxassetid://84070081307966"; Img.ScaleType = Enum.ScaleType.Fit; Img.ZIndex = 2; Img.Parent = H
+    local ImgCorner = Instance.new("UICorner"); ImgCorner.CornerRadius = UDim.new(0,8); ImgCorner.Parent = Img
+    local Title = Instance.new("TextLabel"); Title.Size = UDim2.new(1,-42,0,24); Title.Position = UDim2.new(0,42,0.5,-12); Title.BackgroundTransparency = 1; Title.Text = "KING AKBAR"; Title.TextColor3 = Color3.fromRGB(180,180,180); Title.Font = Enum.Font.GothamBold; Title.TextSize = 14; Title.TextXAlignment = Enum.TextXAlignment.Left; Title.Parent = H
+    local Div = Instance.new("Frame"); Div.Size = UDim2.new(1,0,0,1); Div.BackgroundColor3 = Color3.fromRGB(70,70,75); Div.BorderSizePixel = 0; Div.LayoutOrder = 2; Div.Parent = Frame
+
+    local function baris(labelKiri, labelKanan, order)
+        local R = Instance.new("Frame"); R.Size = UDim2.new(1,0,0,28); R.BackgroundTransparency = 1; R.LayoutOrder = order; R.Parent = Frame
+        local L = Instance.new("Frame"); L.Size = UDim2.new(0.5,-3,1,0); L.BackgroundTransparency = 1; L.Parent = R
+        local LLab = Instance.new("TextLabel"); LLab.Size = UDim2.new(1,0,0,12); LLab.BackgroundTransparency = 1; LLab.Text = labelKiri; LLab.TextColor3 = Color3.fromRGB(140,140,140); LLab.Font = Enum.Font.GothamMedium; LLab.TextSize = 10; LLab.TextXAlignment = Enum.TextXAlignment.Left; LLab.Parent = L
+        local LVal = Instance.new("TextLabel"); LVal.Size = UDim2.new(1,0,0,14); LVal.Position = UDim2.new(0,0,1,-14); LVal.BackgroundTransparency = 1; LVal.Text = "0"; LVal.TextColor3 = Color3.fromRGB(220,220,220); LVal.Font = Enum.Font.GothamBold; LVal.TextSize = 12; LVal.TextXAlignment = Enum.TextXAlignment.Left; LVal.Parent = L
+        local Ri = Instance.new("Frame"); Ri.Size = UDim2.new(0.5,-3,1,0); Ri.Position = UDim2.new(0.5,3,0,0); Ri.BackgroundTransparency = 1; Ri.Parent = R
+        local RLab = Instance.new("TextLabel"); RLab.Size = UDim2.new(1,0,0,12); RLab.BackgroundTransparency = 1; RLab.Text = labelKanan; RLab.TextColor3 = Color3.fromRGB(140,140,140); RLab.Font = Enum.Font.GothamMedium; RLab.TextSize = 10; RLab.TextXAlignment = Enum.TextXAlignment.Left; RLab.Parent = Ri
+        local RVal = Instance.new("TextLabel"); RVal.Size = UDim2.new(1,0,0,14); RVal.Position = UDim2.new(0,0,1,-14); RVal.BackgroundTransparency = 1; RVal.Text = "0"; RVal.TextColor3 = Color3.fromRGB(220,220,220); RVal.Font = Enum.Font.GothamBold; RVal.TextSize = 12; RVal.TextXAlignment = Enum.TextXAlignment.Left; RVal.Parent = Ri
+        return LVal, RVal
+    end
+
+    local function barisTunggal(label, order)
+        local R = Instance.new("Frame"); R.Size = UDim2.new(1,0,0,28); R.BackgroundTransparency = 1; R.LayoutOrder = order; R.Parent = Frame
+        local Lab = Instance.new("TextLabel"); Lab.Size = UDim2.new(0.4,0,0,12); Lab.BackgroundTransparency = 1; Lab.Text = label; Lab.TextColor3 = Color3.fromRGB(140,140,140); Lab.Font = Enum.Font.GothamMedium; Lab.TextSize = 10; Lab.TextXAlignment = Enum.TextXAlignment.Left; Lab.Parent = R
+        local Val = Instance.new("TextLabel"); Val.Size = UDim2.new(0.6,0,0,14); Val.Position = UDim2.new(0.4,0,1,-14); Val.BackgroundTransparency = 1; Val.Text = "00:00:00"; Val.TextColor3 = Color3.fromRGB(220,220,220); Val.Font = Enum.Font.GothamBold; Val.TextSize = 12; Val.TextXAlignment = Enum.TextXAlignment.Right; Val.Parent = R
+        return Val
+    end
+
+    local uangAwalLabel, pendapatanLabel = baris("Uang Awal", "Pendapatan", 4)
+    local soalLabel, printLabel = baris("Soal Jawab", "Total Print", 5)
+    local uptimeLabel = barisTunggal("Uptime", 6)
+
+    uangAwalLabel.Text = formatNumber(uangAwal)
+
+    task.spawn(function()
+        while TrackerGui and TrackerGui.Parent do
+            pcall(function()
+                local currentMoney = DapatkanUangPemain()
+                if uangAwal == 0 and currentMoney > 0 then
+                    getgenv().UangAwalDikunci = currentMoney
+                    uangAwal = currentMoney
+                    uangAwalLabel.Text = formatNumber(uangAwal)
+                end
+                local profit = currentMoney - uangAwal
+                pendapatanLabel.Text = (profit >= 0 and "+" or "") .. formatNumber(profit)
+                soalLabel.Text = tostring(State.OfficeMathSolved or 0)
+                printLabel.Text = tostring(State.OfficePrints or 0)
+                uptimeLabel.Text = formatTime(tick() - getgenv().WaktuMulai)
+            end)
+            task.wait(1)
+        end
+    end)
+end
+
+local function matikanMonitoring()
+    if TrackerGui and TrackerGui.Parent then TrackerGui:Destroy(); TrackerGui = nil end
+end
+
+local function StartOfficeScript()
+    if State.IsOfficeActive then return end
+    State.IsOfficeActive = true
+    State.OfficeMathSolved = 0
+    State.OfficePrints = 0
+    getgenv().fullAuto = true
+
+    CachedMoneyLabel = nil
+    getgenv().UangAwalDikunci = nil
+    getgenv().WaktuMulai = tick()
+
+    if not CharRef.Humanoid or not CharRef.Humanoid.SeatPart then
+        -- Pakai cari kursi terdekat
+        if not dudukKeKursi(true) then
+            WindUI:Notify({ Title = "⚠️ Office", Content = "Kursi nggak ketemu, duduk manual dulu bos!", Duration = 5 })
+        end
+    else
+        myChair = CharRef.Humanoid.SeatPart
+    end
+
+    lastActivityTime = tick()
+    buatMonitoringGUI()
+    WindUI:Notify({ Title = "✅ Office", Content = "Auto Office jalan! Uang Awal discan otomatis.", Duration = 4 })
+end
+
+local function StopOfficeScript()
+    State.IsOfficeActive = false
+    getgenv().fullAuto = false
+    getgenv().forceStopMath = false
+    getgenv().isGoingToPrinter = false
+    soalCacheValid = nil
+
+    CachedMoneyLabel = nil
+    getgenv().UangAwalDikunci = nil
+
+    local hum = CharRef.Humanoid
+    if hum then hum:SetStateEnabled(Enum.HumanoidStateType.Seated, true) end
+    matikanMonitoring()
+    WindUI:Notify({ Title = "🛑 Office", Content = "Auto Office dimatiin.", Duration = 3 })
+end
 
 -- // 13. AUTO COURIER
 local CourierJob = {
@@ -1479,7 +1653,7 @@ local function SendWebhookReport()
             Headers = {["Content-Type"] = "application/json"},
             Body = game:GetService("HttpService"):JSONEncode(data)
         })
-    end)
+    })
 end
 
 task.spawn(function()
@@ -1588,7 +1762,7 @@ SectionBarista:Toggle({
 })
 
 local SectionOffice = TabFarm:Section({
-    Title = "Auto Office",
+    Title = "Auto Office (No Teleport)",
     Box = true,
     BoxBorder = true,
     Opened = true,
@@ -1626,10 +1800,10 @@ SectionOffice:Slider({
 })
 
 SectionOffice:Slider({
-    Title = "🔄 Ganti Kursi Kalau Idle (detik)",
-    Desc = "Kalau nggak ada soal selama X detik, otomatis pindah kursi terdekat",
+    Title = "🔄 Waktu Idle Anti-Bug (detik)",
+    Desc = "Kalau nggak jawab soal lebih dari ini, auto ganti kursi",
     Step = 1,
-    Value = { Min = 10, Max = 300, Default = 60 },
+    Value = { Min = 5, Max = 60, Default = 15 },
     Callback = function(v) State.OfficeSettings.IdleSwitchTime = v end,
 })
 
@@ -1871,7 +2045,7 @@ WindUI:SetTheme("dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V5.9 SIAP!",
-    Content  = "Print Office Fix + Webhook Auto-Send Fixed!",
+    Title    = "👑 KING AKBAR V6.0 SIAP!",
+    Content  = "Office No-Teleport & Nearest Chair Fix!",
     Duration = 5,
 })
