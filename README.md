@@ -855,17 +855,41 @@ local InstantYtta = (function()
     local Ytta = {}
     Ytta.Active = false
     Ytta.Settings = { 
-        CompleteDelay = 0.02, 
+        CompleteDelay = 0.05, 
         SpamCount = 15, 
         SpamDelay = 0.01 
     }
     local spamThread = nil
+    local lastFishData = nil
+    local lastFishEvent = nil
+    local eventConnected = false
+
+    -- Tangkap event visual dari server agar bisa kita spam secara lokal (client-side only)
+    local function setupVisualHook()
+        if eventConnected then return end
+        eventConnected = true
+        local events = {
+            EmbeddedEventResolver:GetRE("ObtainedNewFishNotification"),
+            EmbeddedEventResolver:GetRE("FishCaught")
+        }
+        for _, ev in ipairs(events) do
+            if ev and ev.OnClientEvent then
+                ev.OnClientEvent:Connect(function(...)
+                    if Ytta.Active then
+                        lastFishData = {...}
+                        lastFishEvent = ev
+                    end
+                end)
+            end
+        end
+    end
 
     local function loop()
         while Ytta.Active do
             if not EmbeddedEventResolver:IsInitialized() then task.wait(1) continue end
             local t = Workspace:GetServerTimeNow()
             
+            -- Lempar pancing (Visual sekali)
             safeFire(function() 
                 if NetEvents.RF_ChargeFishingRod then 
                     NetEvents.RF_ChargeFishingRod:InvokeServer(nil, nil, t, nil) 
@@ -880,13 +904,29 @@ local InstantYtta = (function()
             end)
             task.wait(0.05)
             
-            -- Spam Catch Fish Completed multiple times to get multiple fish per visual cast
-            for i = 1, Ytta.Settings.SpamCount do
-                safeFire(function()
-                    local rf = NetEvents.RE_FishingCompleted
-                    if rf then rf:FireServer() end
-                end)
-                task.wait(Ytta.Settings.SpamDelay)
+            -- Complete 1 fish (HANYA 1 IKAN ASLI YANG MASUK TAS)
+            safeFire(function()
+                local rf = NetEvents.RE_FishingCompleted
+                if rf then rf:FireServer() end
+            end)
+            
+            -- Tunggu data visual dari server maksimal 2 detik
+            local waitTime = 0
+            lastFishData = nil
+            lastFishEvent = nil
+            while not lastFishData and waitTime < 2 do
+                task.wait(0.05)
+                waitTime = waitTime + 0.05
+            end
+            
+            -- Spam visual saja agar tampak banyak ikan tanpa nambah berat tas
+            if lastFishData and lastFishEvent and lastFishEvent.OnClientEvent and firesignal then
+                for i = 1, Ytta.Settings.SpamCount do
+                    pcall(function()
+                        firesignal(lastFishEvent.OnClientEvent, table.unpack(lastFishData))
+                    end)
+                    task.wait(Ytta.Settings.SpamDelay)
+                end
             end
             
             safeFire(function()
@@ -902,6 +942,7 @@ local InstantYtta = (function()
     function Ytta.Start()
         if Ytta.Active then return end
         if not EmbeddedEventResolver:IsInitialized() then return end
+        setupVisualHook()
         Ytta.Active = true
         spamThread = task.spawn(loop)
     end
@@ -932,7 +973,7 @@ local YttaSection = Fsihing:Section({
 })
 
 YttaSection:Input({
-    Title = "Spam Catch Count",
+    Title = "Visual Spam Count",
     Value = tostring(InstantYtta.Settings.SpamCount),
     Type = "Input",
     Placeholder = "15",
@@ -2651,7 +2692,7 @@ local BuyCharm = (function()
     end
 
     function M.TestConnection()
-        return getPurchaseRemote() ~= nil
+        return getPurchaseRemote() <> nil
     end
 
     return M
@@ -4832,7 +4873,7 @@ fishWebhookToggle = FishWebhookSection:Toggle({
             pcall(function()
                 WebhookModule:SetFishWebhookURL(currentFishWebhookURL)
                 if currentFishDiscordID ~= "" then WebhookModule:SetFishDiscordUserID(currentFishDiscordID) end
-                if currentFishHideIdentity ~= "" then WebhookModule:SetFishHideIdentity(currentFishHideIdentity) end
+                if currentFishHideIdentity <> "" then WebhookModule:SetFishHideIdentity(currentFishHideIdentity) end
                 WebhookModule:StartFishWebhook()
             end)
         else
