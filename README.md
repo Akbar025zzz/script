@@ -1,11 +1,11 @@
 --[[
 ================================================================================
   👑 KING AKBAR - ULTIMATE AUTO FARM SCRIPT
-     v6.3 FINAL – NO JUMP SITTING FIX (ANTI LONCAT KURSI)
+     v6.4 FINAL – SLOW WALK SITTING (JALAN PELAN SAAT DEKAT KURSI)
 ================================================================================
     [+] Developer   : King Akbar
-    [+] Update      : - Bot dilarang lompat saat mendekati kursi
-                      - Metode Maju/Mundur disesuaikan di sumbu X & Z aja
+    [+] Update      : - Bot berjalan pelan saat mendekati kursi (Anti nabrak/lari)
+                      - Anti lompat loncat kursi
                       - Auto Office langsung ON otomatis
 ================================================================================
 ]]--
@@ -640,7 +640,7 @@ local function StopBaristaScript(reason)
     end
 end
 
--- // 12. OFFICE JOB SYSTEM (ANTI LONCAT FIX)
+-- // 12. OFFICE JOB SYSTEM (SLOW WALK SITTING)
 local playerGui = LocalPlayer:WaitForChild("PlayerGui")
 
 local function hasText(str, keyword)
@@ -698,7 +698,6 @@ local function findAnotherChair()
     return best
 end
 
--- Tambahin parameter allowJump biar bisa dimatiin pas mau duduk
 local function jalanKe(pos, allowJump)
     local root = CharRef.Root
     local hum = CharRef.Humanoid
@@ -707,7 +706,7 @@ local function jalanKe(pos, allowJump)
     local path = Services.PathfindingService:CreatePath({
         AgentRadius = 2,
         AgentHeight = 5,
-        AgentCanJump = allowJump ~= false -- Default true, kalau false dia nggak akan lompat
+        AgentCanJump = allowJump ~= false
     })
     local success, _ = pcall(function()
         path:ComputeAsync(root.Position, targetPos)
@@ -740,7 +739,7 @@ local function keluarKursi()
     task.wait(math.random(4,7)/10)
 end
 
--- METODE MAJU MUNDUR TANPA LONCAT
+-- METODE MAJU MUNDUR PELAN TANPA LONCAT
 local function dudukKeKursi(useNearest)
     local targetChair = myChair
     if useNearest or not targetChair then
@@ -759,8 +758,9 @@ local function dudukKeKursi(useNearest)
     local root = CharRef.Root
     if not hum or not root or not targetChair then return false end
     
+    local originalWalkSpeed = hum.WalkSpeed
     hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
-    hum.Jump = false -- Paksa jangan lompat
+    hum.Jump = false
     
     -- Jalan mendekat posisi kursi (AGENT CAN JUMP = FALSE)
     jalanKe(targetChair.Position, false)
@@ -768,12 +768,19 @@ local function dudukKeKursi(useNearest)
     local startTime = tick()
     while tick() - startTime < 4 do
         if not State.IsOfficeActive then break end
-        if hum.SeatPart then break end -- Kalau udah duduk, keluar
+        if hum.SeatPart then break end
         
         local dist = (root.Position - targetChair.Position).Magnitude
         
+        -- KALAU UDAH DEKAT, JALAN PELAN!
+        if dist < 8 then
+            hum.WalkSpeed = 2
+        else
+            hum.WalkSpeed = originalWalkSpeed > 0 and originalWalkSpeed or 16
+        end
+        
         if dist < 5 then
-            -- Udah deket, maju lurus ke arah kursi (Y disamakan biar nggak merangkak/lompat)
+            -- Maju lurus ke arah kursi (Y disamakan biar nggak merangkak/lompat)
             hum.Jump = false
             hum:MoveTo(Vector3.new(targetChair.Position.X, root.Position.Y, targetChair.Position.Z))
             task.wait(0.5)
@@ -795,6 +802,9 @@ local function dudukKeKursi(useNearest)
             task.wait(0.3)
         end
     end
+    
+    -- Kembalikan kecepatan asli
+    hum.WalkSpeed = originalWalkSpeed > 0 and originalWalkSpeed or 16
     
     -- Kalau masih belum duduk, coba klik paksa prompt-nya
     if not hum.SeatPart and targetChair then
@@ -927,7 +937,7 @@ task.spawn(function()
             end
             
             if printerPos and targetPrompt then
-                jalanKe(printerPos, true) -- Boleh lompat kalau jalan ke printer
+                jalanKe(printerPos, true)
                 task.wait(math.random(4,8)/10)
                 
                 local printBerhasil = false
@@ -1791,7 +1801,6 @@ local SectionOffice = TabFarm:Section({
     Opened = true,
 })
 
--- UI DEFAULT NYALA (Value = true)
 SectionOffice:Toggle({
     Title    = "Jalanin Auto Office",
     Icon     = "briefcase",
@@ -2069,14 +2078,13 @@ WindUI:SetTheme("Dark")
 TabInfo:Select()
 
 WindUI:Notify({
-    Title    = "👑 KING AKBAR V6.3 SIAP!",
-    Content  = "Anti Loncat Fix! Auto Office Langsung Aktif!",
+    Title    = "👑 KING AKBAR V6.4 SIAP!",
+    Content  = "Jalan Pelan Saat Dekat Kursi & Anti Loncat!",
     Duration = 5,
 })
 
--- AUTO INITIATE OFFICE SCRIPT
 task.spawn(function()
-    task.wait(3) -- Tunggu splash screen selesai dan character load
+    task.wait(3)
     if not State.IsOfficeActive then
         StartOfficeScript()
     end
